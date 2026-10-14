@@ -265,11 +265,11 @@ const FileDetailsModal = ( { attachmentId, onClose, onSaved } ) => {
 									) }
 									<div>
 										<label className="gcs-label" htmlFor="gcs-file-caption">{ __( 'Caption', 'gemcloudstorage' ) }</label>
-										<textarea id="gcs-file-caption" className="gcs-input !h-auto" rows={ 2 } value={ form.caption } onChange={ set( 'caption' ) } />
+										<textarea id="gcs-file-caption" className="gcs-input" rows={ 2 } value={ form.caption } onChange={ set( 'caption' ) } />
 									</div>
 									<div>
 										<label className="gcs-label" htmlFor="gcs-file-description">{ __( 'Description', 'gemcloudstorage' ) }</label>
-										<textarea id="gcs-file-description" className="gcs-input !h-auto" rows={ 4 } value={ form.description } onChange={ set( 'description' ) } />
+										<textarea id="gcs-file-description" className="gcs-input" rows={ 4 } value={ form.description } onChange={ set( 'description' ) } />
 										<p className="gcs-help">{ __( 'Shown on the file\'s attachment page.', 'gemcloudstorage' ) }</p>
 									</div>
 								</div>

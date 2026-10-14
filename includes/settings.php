@@ -74,6 +74,9 @@ class Settings {
 
 		$settings = self::merge( self::defaults(), $saved );
 
+		// Not a choice: always where WordPress keeps uploads (see path_prefix()).
+		$settings['path_prefix'] = self::path_prefix();
+
 		// Constants win over stored values.
 		if ( defined( 'GEMCLOUDSTORAGE_PROVIDER' ) && in_array( GEMCLOUDSTORAGE_PROVIDER, self::PROVIDERS, true ) ) {
 			$settings['provider'] = GEMCLOUDSTORAGE_PROVIDER;
@@ -123,7 +126,7 @@ class Settings {
 			'endpoint'         => $profiles[ $provider ]['endpoint'],
 			'buckets'          => $profiles[ $provider ]['buckets'],
 			'profiles'         => $profiles,
-			'path_prefix'      => trim( preg_replace( '#[^A-Za-z0-9/_.-]#', '', (string) $merged['path_prefix'] ), '/' ),
+			'path_prefix'      => self::path_prefix(),
 			'media'            => [
 				'offload'     => ! empty( $merged['media']['offload'] ),
 				'local_files' => in_array( $merged['media']['local_files'], self::LOCAL_FILE_LEVELS, true ) ? $merged['media']['local_files'] : 'keep',
@@ -152,6 +155,34 @@ class Settings {
 		do_action( 'gemcloudstorage/settings_saved', $clean, $current );
 
 		return self::get();
+	}
+
+	/**
+	 * The folder public media keys start with: the uploads folder's path on
+	 * this site, so a file's cloud address mirrors its local one
+	 * (wp-content/uploads/2026/10/photo.jpg). On a multisite subsite it
+	 * includes sites/<id>, so subsites never overwrite each other's files.
+	 */
+	public static function path_prefix(): string {
+		$uploads = wp_get_upload_dir();
+		$path    = (string) wp_parse_url( (string) $uploads['baseurl'], PHP_URL_PATH );
+		$home    = (string) wp_parse_url( home_url(), PHP_URL_PATH );
+
+		// A site installed in a subfolder (example.com/blog/) keeps its
+		// uploads path without the subfolder.
+		if ( '' !== trim( $home, '/' ) && 0 === strpos( $path, untrailingslashit( $home ) . '/' ) ) {
+			$path = substr( $path, strlen( untrailingslashit( $home ) ) );
+		}
+
+		$prefix = trim( (string) preg_replace( '#[^A-Za-z0-9/_.-]#', '', $path ), '/' );
+
+		/**
+		 * Filters the folder public media keys start with. Changing it only
+		 * affects files uploaded afterwards; stored files keep their keys.
+		 *
+		 * @param string $prefix For example "wp-content/uploads".
+		 */
+		return trim( (string) apply_filters( 'gemcloudstorage/path_prefix', '' !== $prefix ? $prefix : 'wp-content/uploads' ), '/' );
 	}
 
 	/**

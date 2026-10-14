@@ -3,6 +3,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import Field from '@GCSComponents/Field';
 import GCSToggle from '@GCSComponents/GCSToggle';
 import GCSAlert from '@GCSComponents/GCSAlert';
+import { Lock } from 'lucide-react';
 import { ChoiceCard, SectionTitle } from './common';
 
 const MediaTab = ( { form, meta, setSetting } ) => {
@@ -64,12 +65,28 @@ const MediaTab = ( { form, meta, setSetting } ) => {
 				</div>
 			</div>
 
-			<div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+			<div className="grid grid-cols-1 gap-5">
 				<Field
-					label={ __( 'Path prefix', 'gemcloudstorage' ) }
-					help={ __( 'Public media keys mirror the uploads folder under this prefix: wp-content/uploads/2026/10/photo.jpg. Changing it only affects new uploads.', 'gemcloudstorage' ) }
+					label={
+						<>
+							{ __( 'Path prefix', 'gemcloudstorage' ) }
+							<span className="inline-flex items-center gap-1 rounded-full bg-[var(--gcs-secondary-color)] px-2 py-0.5 text-[11px] font-medium text-[var(--gcs-font-secondary-color)]">
+								<Lock size={ 11 } />
+								{ __( 'Automatic', 'gemcloudstorage' ) }
+							</span>
+						</>
+					}
+					help={
+						<>
+							{ __( 'Set automatically from where WordPress keeps uploads, so a file\'s cloud address mirrors its local one:', 'gemcloudstorage' ) }{ ' ' }
+							<code className="gcs-code">{ `${ s.path_prefix }/2026/10/photo.jpg` }</code>
+						</>
+					}
 				>
-					<input className="gcs-input" value={ s.path_prefix } onChange={ ( e ) => setSetting( [ 'path_prefix' ], e.target.value ) } placeholder="wp-content/uploads" />
+					<div className="relative">
+						<input id="gcs-f-path-prefix" className="gcs-input !pr-10" value={ s.path_prefix } readOnly aria-readonly="true" />
+						<Lock size={ 15 } className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[var(--gcs-text-muted)]" aria-hidden="true" />
+					</div>
 				</Field>
 			</div>
 

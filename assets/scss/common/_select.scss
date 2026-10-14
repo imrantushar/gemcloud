@@ -9,9 +9,10 @@
 	font-size: 14px;
 
 	&__control {
-		min-height: 38px !important;
+		height: var(--gcs-control-height) !important;
+		min-height: var(--gcs-control-height) !important;
 		border: 1px solid var(--gcs-border-color) !important;
-		border-radius: 6px !important;
+		border-radius: var(--gcs-control-radius) !important;
 		background: var(--gcs-background) !important;
 		box-shadow: none !important;
 		cursor: pointer !important;
@@ -21,9 +22,10 @@
 			border-color: color-mix(in srgb, var(--gcs-font-color) 30%, var(--gcs-border-color)) !important;
 		}
 
+		// The same focus ring as the text boxes.
 		&--is-focused {
 			border-color: var(--gcs-primary) !important;
-			box-shadow: 0 0 0 1px var(--gcs-primary) !important;
+			box-shadow: var(--gcs-control-focus) !important;
 		}
 
 		&--is-disabled {
@@ -32,8 +34,14 @@
 		}
 	}
 
+	// Text starts 12px in, like the text boxes (10px + the value's 2px).
 	&__value-container {
-		padding: 2px 10px !important;
+		height: 100%;
+		padding: 0 10px !important;
+	}
+
+	&__indicators {
+		height: 100%;
 	}
 
 	&__input-container {
