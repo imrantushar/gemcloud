@@ -8,6 +8,7 @@ import StatusPill from '@GCSComponents/StatusPill';
 import ConfirmModal from '@GCSComponents/ConfirmModal';
 import { API, namespace, errorMessage, formatBytes, formatDateTime, formatNumber, notify } from '@GCSUtils/helper';
 import { ChoiceCard, SectionTitle } from './common';
+import CodeBlock from '@GCSComponents/CodeBlock';
 
 const KEEP_DAYS = [ 7, 14, 30, 90 ];
 
@@ -249,9 +250,7 @@ const BackupsTab = ( { form, setSetting } ) => {
 					title={ __( 'Restoring', 'gemcloudstorage' ) }
 					description={ __( 'A restore replaces every table, so anything written since the backup is lost. It runs from WP-CLI, not from a button, so it can\'t be clicked by accident. The file is plain SQL: phpMyAdmin or any MySQL tool can import a downloaded backup too.', 'gemcloudstorage' ) }
 				/>
-				<pre className="overflow-x-auto rounded-[8px] bg-[var(--gcs-secondary-color)] p-4 text-[12px] leading-[1.7]">
-					{ 'wp gemcloudstorage backup list\nwp gemcloudstorage backup restore <ID>' }
-				</pre>
+				<CodeBlock title={ __( 'Terminal', 'gemcloudstorage' ) } code={ 'wp gemcloudstorage backup list\nwp gemcloudstorage backup restore <ID>' } />
 			</div>
 
 			<ConfirmModal

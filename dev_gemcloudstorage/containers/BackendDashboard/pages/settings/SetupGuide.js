@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { __, sprintf } from '@wordpress/i18n';
-import { BookOpen, Check, ChevronDown, Copy, CornerDownRight, ExternalLink } from 'lucide-react';
+import { BookOpen, Check, ChevronDown, CornerDownRight, ExternalLink } from 'lucide-react';
+import CodeBlock from '@GCSComponents/CodeBlock';
 
 const json = ( value ) => JSON.stringify( value, null, 2 );
 
@@ -21,31 +22,6 @@ const jumpTo = ( id ) => {
 		el.scrollIntoView( { behavior: 'smooth', block: 'center' } );
 		el.focus( { preventScroll: true } );
 	}
-};
-
-const CopyBlock = ( { label, text } ) => {
-	const [ copied, setCopied ] = useState( false );
-	const copy = async () => {
-		try {
-			await navigator.clipboard.writeText( text );
-			setCopied( true );
-			setTimeout( () => setCopied( false ), 1500 );
-		} catch ( e ) {
-			// Clipboard refused: the text is selectable.
-		}
-	};
-	return (
-		<div className="mt-2 overflow-hidden rounded-[6px] border border-[var(--gcs-border-color)]">
-			<div className="flex items-center justify-between gap-2 border-b border-[var(--gcs-border-color)] bg-[var(--gcs-secondary-color)] px-3 py-1.5">
-				<span className="text-[12px] font-medium text-[var(--gcs-font-secondary-color)]">{ label }</span>
-				<button type="button" className="gcs-btn gcs-btn--outline gcs-btn--sm" onClick={ copy }>
-					{ copied ? <Check size={ 13 } /> : <Copy size={ 13 } /> }
-					{ copied ? __( 'Copied', 'gemcloudstorage' ) : __( 'Copy', 'gemcloudstorage' ) }
-				</button>
-			</div>
-			<pre className="m-0 max-h-[260px] overflow-auto bg-[var(--gcs-background)] p-3 text-[12px] leading-[1.55]">{ text }</pre>
-		</div>
-	);
 };
 
 // ── Provider guides ──────────────────────────────────────────────────────
@@ -302,7 +278,11 @@ const Step = ( { step, index } ) => {
 					</div>
 				) }
 
-				{ step.copy && <CopyBlock { ...step.copy } /> }
+				{ step.copy && (
+					<div className="mt-2">
+						<CodeBlock title={ step.copy.label } code={ step.copy.text } maxHeight={ 260 } />
+					</div>
+				) }
 
 				{ ( step.links?.length > 0 || fills.length > 0 ) && (
 					<div className="mt-2.5 flex flex-wrap items-center gap-2">

@@ -337,3 +337,96 @@ textarea.gcs-input {
 		}
 	}
 }
+
+// A row of joined choice buttons, the same height and rounding as inputs.
+.gcs-segmented {
+	display: inline-flex;
+	max-width: 100%;
+	height: var(--gcs-control-height);
+	overflow-x: auto;
+	scrollbar-width: none;
+	border: 1px solid var(--gcs-border-color);
+	border-radius: var(--gcs-control-radius);
+	background: var(--gcs-background);
+
+	button {
+		height: 100%;
+		margin: 0;
+		padding: 0 14px;
+		border: 0;
+		border-left: 1px solid var(--gcs-border-color);
+		background: transparent;
+		color: var(--gcs-font-color);
+		font-size: 13px;
+		font-weight: 500;
+		white-space: nowrap;
+		cursor: pointer;
+		transition: background-color 0.15s ease, color 0.15s ease;
+
+		&:first-child {
+			border-left: 0;
+		}
+
+		&:hover {
+			background: var(--gcs-secondary-color);
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--gcs-primary);
+			outline-offset: -2px;
+		}
+
+		&.is-active {
+			background: var(--gcs-second-primary);
+			color: var(--gcs-primary);
+			font-weight: 600;
+		}
+	}
+}
+
+// Code to copy (components/CodeBlock).
+.gcs-codeblock {
+	overflow: hidden;
+	border: 1px solid var(--gcs-border-color);
+	border-radius: var(--gcs-control-radius);
+	background: var(--gcs-secondary-color);
+
+	&__bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		padding: 6px 8px 6px 14px;
+		border-bottom: 1px solid var(--gcs-border-color);
+		background: var(--gcs-background);
+	}
+
+	&__title {
+		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+		font-size: 12px;
+		color: var(--gcs-font-secondary-color);
+	}
+
+	pre {
+		margin: 0;
+		padding: 14px 16px;
+		overflow: auto;
+		background: transparent;
+		color: var(--gcs-font-color);
+		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+		font-size: 12.5px;
+		line-height: 1.7;
+		tab-size: 4;
+		white-space: pre;
+	}
+
+	// WordPress gives every <code> a grey background and padding.
+	pre code {
+		display: block;
+		margin: 0;
+		padding: 0;
+		background: none;
+		color: inherit;
+		font: inherit;
+	}
+}
