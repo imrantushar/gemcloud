@@ -90,19 +90,6 @@ body:has(#gemcloudstorage-app) {
 	}
 }
 
-// The WP admin menu keeps WordPress's own box model.
-.toplevel_page_gemcloudstorage {
-	#adminmenuwrap,
-	#adminmenu,
-	#adminmenuback {
-		*, *::before, *::after {
-			box-sizing: content-box;
-			border: revert;
-			outline: revert;
-		}
-	}
-}
-
 @import './common/global';
 @import './common/components';
 @import './common/notification';

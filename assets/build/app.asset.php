@@ -3,8 +3,7 @@
 		'react',
 		'react-dom',
 		'react-jsx-runtime',
-		'wp-element',
 		'wp-i18n'
 	),
-	'version' => '6641c78469bf9fa81c01'
+	'version' => '9bf60c9d69443410285f'
 );
