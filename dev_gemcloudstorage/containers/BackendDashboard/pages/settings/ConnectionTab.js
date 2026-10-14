@@ -7,6 +7,7 @@ import GCSToggle from '@GCSComponents/GCSToggle';
 import GCSAlert from '@GCSComponents/GCSAlert';
 import { API, namespace, errorMessage, notify } from '@GCSUtils/helper';
 import { SectionTitle } from './common';
+import GCSSelect from '@GCSComponents/GCSSelect';
 
 const AWS_REGIONS = [
 	'us-east-1', 'us-east-2', 'us-west-1', 'us-west-2', 'ca-central-1', 'sa-east-1',
@@ -155,21 +156,28 @@ const ConnectionTab = ( { form, meta, setSetting, setCredential, isDirty, saving
 								<input className="gcs-input" value={ s.endpoint.account_id } disabled={ locked.account_id } onChange={ ( e ) => setSetting( [ 'endpoint', 'account_id' ], e.target.value.trim() ) } placeholder="9f2c4e1a…" />
 							</Field>
 							<Field label={ __( 'Jurisdiction', 'gemcloudstorage' ) } help={ __( 'Only for buckets created with a data-location jurisdiction.', 'gemcloudstorage' ) }>
-								<select className="gcs-select" value={ s.endpoint.jurisdiction } onChange={ ( e ) => setSetting( [ 'endpoint', 'jurisdiction' ], e.target.value ) }>
-									<option value="">{ __( 'Default', 'gemcloudstorage' ) }</option>
-									<option value="eu">{ __( 'European Union (EU)', 'gemcloudstorage' ) }</option>
-									<option value="fedramp">FedRAMP</option>
-								</select>
+								<GCSSelect
+									value={ s.endpoint.jurisdiction }
+									onChange={ ( v ) => setSetting( [ 'endpoint', 'jurisdiction' ], v ) }
+									options={ [
+										{ value: '', label: __( 'Default', 'gemcloudstorage' ) },
+										{ value: 'eu', label: __( 'European Union (EU)', 'gemcloudstorage' ) },
+										{ value: 'fedramp', label: 'FedRAMP' },
+									] }
+									aria-label={ __( 'Jurisdiction', 'gemcloudstorage' ) }
+								/>
 							</Field>
 						</>
 					) }
 					{ provider === 'aws' && (
 						<Field label={ __( 'Region', 'gemcloudstorage' ) } required>
-							<select className="gcs-select" value={ s.endpoint.region } onChange={ ( e ) => setSetting( [ 'endpoint', 'region' ], e.target.value ) }>
-								{ AWS_REGIONS.map( ( r ) => (
-									<option key={ r } value={ r }>{ r }</option>
-								) ) }
-							</select>
+							<GCSSelect
+								value={ s.endpoint.region }
+								onChange={ ( v ) => setSetting( [ 'endpoint', 'region' ], v ) }
+								options={ AWS_REGIONS.map( ( r ) => ( { value: r, label: r } ) ) }
+								isSearchable
+								aria-label={ __( 'Region', 'gemcloudstorage' ) }
+							/>
 						</Field>
 					) }
 					{ provider === 'custom' && (

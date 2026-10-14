@@ -220,3 +220,27 @@
 @keyframes gcs-spin {
 	to { transform: rotate(360deg); }
 }
+
+// Full text of a cut-short value (components/Tooltip), rendered on <body>.
+.gcs-tooltip {
+	position: fixed;
+	z-index: 100001;
+	max-width: min(420px, calc(100vw - 32px));
+	padding: 6px 10px;
+	border-radius: 6px;
+	background: var(--gcs-font-color);
+	color: var(--gcs-background);
+	font: 12px/1.45 var(--gcs-font);
+	word-break: break-all;
+	pointer-events: none;
+	box-shadow: var(--gcs-shadow-menu);
+}
+
+// A table cell value cut to one line with an ellipsis.
+.gcs-truncate {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	outline-offset: 2px;
+}

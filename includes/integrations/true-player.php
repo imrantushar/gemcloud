@@ -59,6 +59,10 @@ final class TruePlayer extends Integration {
 		return __( 'TruePlayer', 'gemcloudstorage' );
 	}
 
+	public function contexts(): array {
+		return [ self::KEY, self::FILES ];
+	}
+
 	public function detected(): bool {
 		return defined( 'TRUEPLAYER_VIDEO_POST_TYPE' ) && class_exists( '\TruePlayer\PrivateVideo' );
 	}

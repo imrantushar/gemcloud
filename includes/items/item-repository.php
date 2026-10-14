@@ -249,6 +249,20 @@ final class ItemRepository {
 			$where[]  = 'source_type = %s';
 			$params[] = $args['source_type'];
 		}
+		// A product: files stored under its own contexts, and media library
+		// files it made private.
+		if ( ! empty( $args['contexts'] ) || ! empty( $args['private_by'] ) ) {
+			$any = [];
+			foreach ( (array) ( $args['contexts'] ?? [] ) as $context ) {
+				$any[]    = 'source_type = %s';
+				$params[] = (string) $context;
+			}
+			if ( ! empty( $args['private_by'] ) ) {
+				$any[]    = "( source_type = 'attachment' AND source_id IN ( SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_gemcloudstorage_private_by' AND meta_value LIKE %s ) )";
+				$params[] = '%' . $wpdb->esc_like( '"' . $args['private_by'] . '"' ) . '%';
+			}
+			$where[] = '( ' . implode( ' OR ', $any ) . ' )';
+		}
 		if ( ! empty( $args['search'] ) ) {
 			$where[]  = 'object_key LIKE %s';
 			$params[] = '%' . $wpdb->esc_like( $args['search'] ) . '%';

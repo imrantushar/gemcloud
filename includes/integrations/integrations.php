@@ -83,6 +83,15 @@ final class Integrations {
 		}, $integrations ) );
 	}
 
+	/**
+	 * Every detected product, switched on or not.
+	 *
+	 * @return Integration[]
+	 */
+	public static function detected(): array {
+		return self::$all;
+	}
+
 	public static function get( string $key ): ?Integration {
 		return self::$all[ $key ] ?? null;
 	}

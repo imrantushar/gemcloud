@@ -52,13 +52,33 @@ export const formatBytes = ( bytes = 0 ) => {
 
 export const formatNumber = ( n = 0 ) => new Intl.NumberFormat().format( n || 0 );
 
-export const formatDateTime = ( value ) => {
+// Stored times are UTC; a value without a zone is read as UTC.
+const toDate = ( value ) => {
 	if ( ! value ) {
-		return '';
+		return null;
 	}
 	const iso = String( value ).replace( ' ', 'T' );
 	const date = new Date( /Z|[+-]\d\d:?\d\d$/.test( iso ) ? iso : iso + 'Z' );
-	if ( isNaN( date ) ) {
+	return isNaN( date ) ? null : date;
+};
+
+/**
+ * [ "Oct 14", "04:13 PM" ], for cells that show the date over the time.
+ */
+export const formatDateParts = ( value ) => {
+	const date = toDate( value );
+	if ( ! date ) {
+		return [ '', '' ];
+	}
+	return [
+		date.toLocaleDateString( undefined, { month: 'short', day: '2-digit' } ),
+		date.toLocaleTimeString( undefined, { hour: '2-digit', minute: '2-digit' } ),
+	];
+};
+
+export const formatDateTime = ( value ) => {
+	const date = toDate( value );
+	if ( ! date ) {
 		return '';
 	}
 	return date.toLocaleString( undefined, {

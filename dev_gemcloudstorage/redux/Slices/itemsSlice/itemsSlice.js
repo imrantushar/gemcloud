@@ -32,6 +32,7 @@ const itemsSlice = createSlice( {
 	initialState: {
 		data: [],
 		total: 0,
+		sources: [],
 		loading: false,
 	},
 	reducers: {},
@@ -44,6 +45,7 @@ const itemsSlice = createSlice( {
 				state.loading = false;
 				state.data = action.payload.items;
 				state.total = action.payload.total;
+				state.sources = action.payload.sources || [];
 			} )
 			.addCase( getItems.rejected, ( state ) => {
 				state.loading = false;
