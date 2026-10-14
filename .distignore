@@ -1,0 +1,43 @@
+# === Dev sources ===
+dev_gemcloudstorage
+assets/scss
+tests
+
+# === Build configs ===
+package.json
+package-lock.json
+bun.lock
+webpack.config.js
+postcss.config.js
+tailwind.config.js
+jsconfig.json
+composer.json
+composer.lock
+*.map
+*.log
+dist
+
+# === VCS / IDE / OS ===
+.git
+.github
+.gitattributes
+.gitignore
+.distignore
+.idea
+.vscode
+.DS_Store
+node_modules
+
+# === Private / AI workspace ===
+.claude
+.agents
+.codex
+openspec
+CLAUDE.md
+AGENTS.md
+SKILL.md
+
+# === Secrets ===
+.env
+.env.*
+auth.json

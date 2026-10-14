@@ -2,9 +2,9 @@
 Contributors: kodezen
 Tags: offload, s3, cloudflare r2, cdn, media
 Requires at least: 6.4
-Tested up to: 6.8
+Tested up to: 7.1.3
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.0.beta-01
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -71,5 +71,23 @@ The admin app source is in dev_gemcloudstorage/ (React) and assets/scss/. Build 
 
 == Changelog ==
 
-= 1.0.0 =
-* First release.
+= 1.0.0.beta-01 =
+
+* New: Offload media to Cloudflare R2, Amazon S3 or any S3-compatible service (Wasabi, Backblaze B2, DigitalOcean Spaces, MinIO), with no AWS SDK.
+* New: Separate public and private buckets. Public files load from your CDN domain; private files open only through short-lived signed links.
+* New: Copy first. Uploads are verified before any local file is removed. Optionally remove generated sizes or every local file, with automatic download-back when a file is needed on the server.
+* New: Offload existing media in the background, plus download everything back to the server.
+* New: Multipart uploads for files over 64 MB.
+* New: Background jobs through Action Scheduler, with retries and an automatic pause after repeated connection errors.
+* New: Secrets encrypted with libsodium, or kept in wp-config.php constants.
+* New: Academy LMS integration. Lesson videos, subtitles, attachments, assignments and student submissions are protected, following Academy's access rules.
+* New: StoreEngine integration. Downloadable product files are protected, and StoreEngine's download link redirects to a signed link.
+* New: TruePlayer integration. Self-hosted videos, audio, posters and captions play from the cloud; private videos follow TruePlayer's login, drip and access rules, and TruePlayer Pro's signed stream link keeps working.
+* New: Daily check that moves product files to the right bucket, also available as `wp gemcloudstorage reconcile`.
+* New: Scheduled database backups to the private bucket, daily or weekly, kept 7 to 90 days, with download from the admin and restore through WP-CLI.
+* New: Admin dashboard with storage status, queue health and warnings.
+* New: Files screen with search, source and visibility filters, an Access column, and a details modal to edit a file's title, alt text, caption, description and Private setting.
+* New: Setup guide for each provider, with separate saved settings per provider and a step-by-step connection test.
+* New: Tools to set up CORS, retry failed files, and pause or resume the queue.
+* New: WP-CLI commands: status, test, migrate, run, retry, verify, download-back, reconcile and backup.
+* New: PHP API for other plugins to store their own files: `GemCloudStorage\Manager::register_context()`, `upload()`, `url()`, `temporary_url()`, `stream()`, `delete()`, `status()`.

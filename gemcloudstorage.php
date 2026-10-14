@@ -3,7 +3,7 @@
  * Plugin Name:       GemCloudStorage - Offload Media to Amazon S3 & Cloudflare R2
  * Plugin URI:        https://kodezen.com/
  * Description:       Offload the media library and protected files to Amazon S3 or Cloudflare R2, serve public files from your CDN and private files through short-lived signed URLs.
- * Version:           1.0.0
+ * Version:           1.0.0.beta-01
  * Author:            kodezen
  * Author URI:        https://kodezen.com
  * License:           GPL-3.0-or-later
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GEMCLOUDSTORAGE_VERSION', '1.0.0' );
+define( 'GEMCLOUDSTORAGE_VERSION', '1.0.0.beta-01' );
 define( 'GEMCLOUDSTORAGE_DB_VERSION', '1.0.0' );
 define( 'GEMCLOUDSTORAGE_PLUGIN_SLUG', 'gemcloudstorage' );
 define( 'GEMCLOUDSTORAGE_PLUGIN_FILE', __FILE__ );

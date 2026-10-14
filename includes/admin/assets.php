@@ -19,7 +19,7 @@ class Assets {
 			return;
 		}
 
-		$asset_file = GEMCLOUDSTORAGE_ASSETS_DIR_PATH . 'build/app.asset.php';
+		$asset_file = GEMCLOUDSTORAGE_ASSETS_DIR_PATH . sprintf( 'build/app.%s.asset.php', GEMCLOUDSTORAGE_VERSION );
 		if ( ! is_readable( $asset_file ) ) {
 			return;
 		}
@@ -32,7 +32,7 @@ class Assets {
 		$asset = include $asset_file;
 
 		wp_enqueue_style( 'gemcloudstorage-app-style', GEMCLOUDSTORAGE_ASSETS_URI . 'build/app.css', [], $asset['version'] );
-		wp_enqueue_script( 'gemcloudstorage-app-scripts', GEMCLOUDSTORAGE_ASSETS_URI . 'build/app.js', $asset['dependencies'], $asset['version'], true );
+		wp_enqueue_script( 'gemcloudstorage-app-scripts', GEMCLOUDSTORAGE_ASSETS_URI . sprintf( 'build/app.%s.js', GEMCLOUDSTORAGE_VERSION ), $asset['dependencies'], $asset['version'], true );
 
 		wp_localize_script( 'gemcloudstorage-app-scripts', 'GemCloudStorageGlobal', [
 			'nonce'              => wp_create_nonce( 'wp_rest' ),
