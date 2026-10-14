@@ -98,10 +98,21 @@ final class RestController {
 		$body = (array) $request->get_json_params();
 
 		if ( isset( $body['credentials'] ) && is_array( $body['credentials'] ) ) {
+			$provider = (string) ( $body['settings']['provider'] ?? Settings::get()['provider'] );
+			$provider = in_array( $provider, Settings::PROVIDERS, true ) ? $provider : 'r2';
+
 			Credentials::save(
 				(string) ( $body['credentials']['access_key_id'] ?? '' ),
-				(string) ( $body['credentials']['secret_access_key'] ?? '' )
+				(string) ( $body['credentials']['secret_access_key'] ?? '' ),
+				$provider
 			);
+
+			// Keys typed for the other providers, kept for when they're chosen.
+			foreach ( (array) ( $body['credentials']['profiles'] ?? [] ) as $key => $keys ) {
+				if ( $key !== $provider && in_array( $key, Settings::PROVIDERS, true ) && is_array( $keys ) ) {
+					Credentials::save_profile( $key, (string) ( $keys['access_key_id'] ?? '' ), (string) ( $keys['secret_access_key'] ?? '' ) );
+				}
+			}
 		}
 
 		if ( isset( $body['settings'] ) && is_array( $body['settings'] ) ) {
@@ -622,7 +633,8 @@ final class RestController {
 		}
 
 		$access = Credentials::access_key_id();
-		$secret = (string) Credentials::secret();
+		// A masked secret means the stored one of the provider on screen.
+		$secret = defined( 'GEMCLOUDSTORAGE_SECRET_ACCESS_KEY' ) ? (string) Credentials::secret() : Credentials::secret_for( (string) $settings['provider'] );
 
 		if ( isset( $body['credentials'] ) && is_array( $body['credentials'] ) ) {
 			if ( ! defined( 'GEMCLOUDSTORAGE_ACCESS_KEY_ID' ) && isset( $body['credentials']['access_key_id'] ) ) {

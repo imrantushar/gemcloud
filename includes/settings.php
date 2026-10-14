@@ -38,6 +38,9 @@ class Settings {
 					'name' => '',
 				],
 			],
+			// Each provider's own endpoint and buckets, so switching provider
+			// on the Connection screen doesn't carry R2 values over to S3.
+			'profiles'         => [],
 			'path_prefix'      => 'wp-content/uploads',
 			'media'            => [
 				'offload'     => true,
@@ -100,26 +103,26 @@ class Settings {
 		$current = self::get();
 		$merged  = self::merge( $current, $data );
 
+		$provider = in_array( $merged['provider'], self::PROVIDERS, true ) ? $merged['provider'] : 'r2';
+
+		// Every provider keeps its own connection; the active one is also
+		// the top-level endpoint and buckets the rest of the plugin reads.
+		$profiles = [];
+		foreach ( self::PROVIDERS as $key ) {
+			if ( $key === $provider ) {
+				$profiles[ $key ] = self::sanitize_connection( $key, (array) $merged['endpoint'], (array) $merged['buckets'] );
+			} elseif ( isset( $merged['profiles'][ $key ] ) && is_array( $merged['profiles'][ $key ] ) ) {
+				$profiles[ $key ] = self::sanitize_connection( $key, (array) ( $merged['profiles'][ $key ]['endpoint'] ?? [] ), (array) ( $merged['profiles'][ $key ]['buckets'] ?? [] ) );
+			}
+		}
+
 		$clean = [
 			'schema_version'   => 1,
 			'enabled'          => ! empty( $merged['enabled'] ),
-			'provider'         => in_array( $merged['provider'], self::PROVIDERS, true ) ? $merged['provider'] : 'r2',
-			'endpoint'         => [
-				'account_id'   => preg_replace( '/[^a-f0-9]/i', '', (string) $merged['endpoint']['account_id'] ),
-				'jurisdiction' => in_array( $merged['endpoint']['jurisdiction'], [ '', 'eu', 'fedramp' ], true ) ? $merged['endpoint']['jurisdiction'] : '',
-				'region'       => preg_replace( '/[^a-z0-9-]/', '', strtolower( (string) $merged['endpoint']['region'] ) ),
-				'url'          => esc_url_raw( untrailingslashit( (string) $merged['endpoint']['url'] ), [ 'https', 'http' ] ),
-				'path_style'   => ! empty( $merged['endpoint']['path_style'] ),
-			],
-			'buckets'          => [
-				'public'  => [
-					'name'       => self::bucket_name( $merged['buckets']['public']['name'] ?? '' ),
-					'public_url' => esc_url_raw( untrailingslashit( (string) ( $merged['buckets']['public']['public_url'] ?? '' ) ), [ 'https', 'http' ] ),
-				],
-				'private' => [
-					'name' => self::bucket_name( $merged['buckets']['private']['name'] ?? '' ),
-				],
-			],
+			'provider'         => $provider,
+			'endpoint'         => $profiles[ $provider ]['endpoint'],
+			'buckets'          => $profiles[ $provider ]['buckets'],
+			'profiles'         => $profiles,
 			'path_prefix'      => trim( preg_replace( '#[^A-Za-z0-9/_.-]#', '', (string) $merged['path_prefix'] ), '/' ),
 			'media'            => [
 				'offload'     => ! empty( $merged['media']['offload'] ),
@@ -138,10 +141,6 @@ class Settings {
 			],
 		];
 
-		if ( '' === $clean['endpoint']['region'] ) {
-			$clean['endpoint']['region'] = 'r2' === $clean['provider'] ? 'auto' : 'us-east-1';
-		}
-
 		update_option( self::OPTION, $clean, true );
 
 		/**
@@ -153,6 +152,35 @@ class Settings {
 		do_action( 'gemcloudstorage/settings_saved', $clean, $current );
 
 		return self::get();
+	}
+
+	/**
+	 * One provider's endpoint and buckets, cleaned.
+	 *
+	 * @return array{endpoint:array,buckets:array}
+	 */
+	private static function sanitize_connection( string $provider, array $endpoint, array $buckets ): array {
+		$endpoint = self::merge( self::defaults()['endpoint'], $endpoint );
+		$region   = preg_replace( '/[^a-z0-9-]/', '', strtolower( (string) $endpoint['region'] ) );
+
+		return [
+			'endpoint' => [
+				'account_id'   => preg_replace( '/[^a-f0-9]/i', '', (string) $endpoint['account_id'] ),
+				'jurisdiction' => in_array( $endpoint['jurisdiction'], [ '', 'eu', 'fedramp' ], true ) ? $endpoint['jurisdiction'] : '',
+				'region'       => '' !== $region ? $region : ( 'r2' === $provider ? 'auto' : 'us-east-1' ),
+				'url'          => esc_url_raw( untrailingslashit( (string) $endpoint['url'] ), [ 'https', 'http' ] ),
+				'path_style'   => ! empty( $endpoint['path_style'] ),
+			],
+			'buckets'  => [
+				'public'  => [
+					'name'       => self::bucket_name( $buckets['public']['name'] ?? '' ),
+					'public_url' => esc_url_raw( untrailingslashit( (string) ( $buckets['public']['public_url'] ?? '' ) ), [ 'https', 'http' ] ),
+				],
+				'private' => [
+					'name' => self::bucket_name( $buckets['private']['name'] ?? '' ),
+				],
+			],
+		];
 	}
 
 	/**

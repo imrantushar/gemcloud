@@ -55,6 +55,18 @@ final class Credentials {
 	}
 
 	/**
+	 * The stored secret of one provider's keys ('' when none).
+	 */
+	public static function secret_for( string $provider ): string {
+		$stored = self::stored();
+		if ( $provider === self::owner( $stored ) ) {
+			return (string) self::secret();
+		}
+		$sealed = (string) ( self::profiles_of( $stored )[ $provider ]['secret_access_key'] ?? '' );
+		return '' !== $sealed ? (string) Vault::decrypt( $sealed ) : '';
+	}
+
+	/**
 	 * True when a secret is stored but the encryption key changed since.
 	 */
 	public static function needs_reentry(): bool {
@@ -69,30 +81,81 @@ final class Credentials {
 	}
 
 	/**
-	 * Saving the masked value back keeps the stored secret.
+	 * Keys for the active provider. Each provider also keeps its own pair,
+	 * so switching provider on the Connection screen never mixes keys.
+	 * Saving the masked value back keeps that provider's stored secret.
 	 */
-	public static function save( string $access_key_id, string $secret ): void {
-		$stored = self::stored();
+	public static function save( string $access_key_id, string $secret, string $provider = '' ): void {
+		$stored   = self::stored();
+		$provider = '' !== $provider ? $provider : self::owner( $stored );
+		$profiles = self::profiles_of( $stored );
+		$sealed   = self::seal( $secret, $profiles[ $provider ]['secret_access_key'] ?? '' );
+		$access   = preg_replace( '/[^A-Za-z0-9]/', '', $access_key_id );
 
-		$access_key_id = preg_replace( '/[^A-Za-z0-9]/', '', $access_key_id );
-		$secret        = trim( $secret );
-
-		$sealed = $stored['secret_access_key'] ?? '';
-		if ( '' !== $secret && ! self::is_mask( $secret ) ) {
-			$sealed = Vault::encrypt( $secret );
-		} elseif ( '' === $secret ) {
-			$sealed = '';
-		}
+		$profiles[ $provider ] = [
+			'access_key_id'     => $access,
+			'secret_access_key' => $sealed,
+		];
 
 		update_option(
 			self::OPTION,
 			[
-				'access_key_id'     => $access_key_id,
+				'access_key_id'     => $access,
 				'secret_access_key' => $sealed,
 				'key_fingerprint'   => Vault::fingerprint(),
+				'provider'          => $provider,
+				'profiles'          => $profiles,
 			],
 			false
 		);
+	}
+
+	/**
+	 * Keys for a provider that isn't the active one.
+	 */
+	public static function save_profile( string $provider, string $access_key_id, string $secret ): void {
+		$stored   = self::stored();
+		$profiles = self::profiles_of( $stored );
+
+		$profiles[ $provider ] = [
+			'access_key_id'     => preg_replace( '/[^A-Za-z0-9]/', '', $access_key_id ),
+			'secret_access_key' => self::seal( $secret, $profiles[ $provider ]['secret_access_key'] ?? '' ),
+		];
+
+		$stored['profiles']        = $profiles;
+		$stored['provider']        = self::owner( $stored );
+		$stored['key_fingerprint'] = Vault::fingerprint();
+		update_option( self::OPTION, $stored, false );
+	}
+
+	/** A new secret sealed, the mask keeps $previous, empty clears it. */
+	private static function seal( string $secret, string $previous ): string {
+		$secret = trim( $secret );
+		if ( '' === $secret ) {
+			return '';
+		}
+		return self::is_mask( $secret ) ? $previous : Vault::encrypt( $secret );
+	}
+
+	/** The provider the top-level keys belong to. */
+	private static function owner( array $stored ): string {
+		return (string) ( $stored['provider'] ?? \GemCloudStorage\Settings::get()['provider'] );
+	}
+
+	/**
+	 * Saved per-provider keys, with keys saved before profiles existed
+	 * filed under the provider they were used with.
+	 */
+	private static function profiles_of( array $stored ): array {
+		$profiles = isset( $stored['profiles'] ) && is_array( $stored['profiles'] ) ? $stored['profiles'] : [];
+		$owner    = self::owner( $stored );
+		if ( ! isset( $profiles[ $owner ] ) && ( ! empty( $stored['access_key_id'] ) || ! empty( $stored['secret_access_key'] ) ) ) {
+			$profiles[ $owner ] = [
+				'access_key_id'     => (string) ( $stored['access_key_id'] ?? '' ),
+				'secret_access_key' => (string) ( $stored['secret_access_key'] ?? '' ),
+			];
+		}
+		return $profiles;
 	}
 
 	/**
@@ -105,6 +168,7 @@ final class Credentials {
 			'secret_access_key' => $secret ? self::MASK . substr( $secret, -4 ) : '',
 			'has_secret'        => (bool) $secret,
 			'needs_reentry'     => self::needs_reentry(),
+			'profiles'          => self::profiles_for_display(),
 			'locked'            => [
 				'provider'          => defined( 'GEMCLOUDSTORAGE_PROVIDER' ),
 				'account_id'        => defined( 'GEMCLOUDSTORAGE_ACCOUNT_ID' ),
@@ -112,6 +176,24 @@ final class Credentials {
 				'secret_access_key' => defined( 'GEMCLOUDSTORAGE_SECRET_ACCESS_KEY' ),
 			],
 		];
+	}
+
+	/**
+	 * Every provider's keys, secrets masked.
+	 *
+	 * @return array<string,array{access_key_id:string,secret_access_key:string}>
+	 */
+	private static function profiles_for_display(): array {
+		$out = [];
+		foreach ( self::profiles_of( self::stored() ) as $provider => $keys ) {
+			$sealed = (string) ( $keys['secret_access_key'] ?? '' );
+			$secret = '' !== $sealed ? Vault::decrypt( $sealed ) : '';
+			$out[ $provider ] = [
+				'access_key_id'     => (string) ( $keys['access_key_id'] ?? '' ),
+				'secret_access_key' => $secret ? self::MASK . substr( $secret, -4 ) : '',
+			];
+		}
+		return $out;
 	}
 
 	public static function is_mask( string $value ): bool {
