@@ -220,9 +220,9 @@ final class Command {
 	public function reconcile(): void {
 		$this->require_available();
 
-		$active = \GemCloudStorage\Integrations\Integrations::active();
+		$active = \GemCloudStorage\Integrations\Integrations::switched_on();
 		if ( ! $active ) {
-			WP_CLI::warning( 'No product integration is active.' );
+			WP_CLI::warning( 'No product integration is switched on.' );
 			return;
 		}
 

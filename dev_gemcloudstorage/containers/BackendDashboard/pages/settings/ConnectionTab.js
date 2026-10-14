@@ -7,6 +7,8 @@ import GCSToggle from '@GCSComponents/GCSToggle';
 import GCSAlert from '@GCSComponents/GCSAlert';
 import { API, namespace, errorMessage, notify } from '@GCSUtils/helper';
 import { SectionTitle } from './common';
+import GCSSelect from '@GCSComponents/GCSSelect';
+import SetupGuide from './SetupGuide';
 
 const AWS_REGIONS = [
 	'us-east-1', 'us-east-2', 'us-west-1', 'us-west-2', 'ca-central-1', 'sa-east-1',
@@ -83,7 +85,7 @@ const TestResult = ( { result } ) => {
 	);
 };
 
-const ConnectionTab = ( { form, meta, setSetting, setCredential, isDirty, saving, onSave } ) => {
+const ConnectionTab = ( { form, meta, setSetting, setCredential, setProvider, isDirty, saving, onSave } ) => {
 	const dispatch = useDispatch();
 	const [ testing, setTesting ] = useState( false );
 	const [ results, setResults ] = useState( null );
@@ -132,8 +134,16 @@ const ConnectionTab = ( { form, meta, setSetting, setCredential, isDirty, saving
 				<SectionTitle title={ __( 'Provider', 'gemcloudstorage' ) } />
 				<div className="grid grid-cols-1 gap-3 md:grid-cols-3">
 					{ meta.providers.map( ( p ) => (
-						<ProviderCard key={ p.key } provider={ p } active={ provider === p.key } disabled={ locked.provider } onSelect={ ( key ) => setSetting( [ 'provider' ], key ) } />
+						<ProviderCard key={ p.key } provider={ p } active={ provider === p.key } disabled={ locked.provider } onSelect={ setProvider } />
 					) ) }
+				</div>
+				<div className="mt-4">
+					<SetupGuide
+						provider={ provider }
+						providerLabel={ meta.providers.find( ( p ) => p.key === provider )?.label || provider }
+						settings={ s }
+						credentials={ c }
+					/>
 				</div>
 			</div>
 
@@ -152,33 +162,42 @@ const ConnectionTab = ( { form, meta, setSetting, setCredential, isDirty, saving
 					{ provider === 'r2' && (
 						<>
 							<Field label={ __( 'Account ID', 'gemcloudstorage' ) } required locked={ locked.account_id } help={ __( 'Cloudflare dashboard → R2 → Account details.', 'gemcloudstorage' ) }>
-								<input className="gcs-input" value={ s.endpoint.account_id } disabled={ locked.account_id } onChange={ ( e ) => setSetting( [ 'endpoint', 'account_id' ], e.target.value.trim() ) } placeholder="9f2c4e1a…" />
+								<input id="gcs-f-account-id" className="gcs-input" value={ s.endpoint.account_id } disabled={ locked.account_id } onChange={ ( e ) => setSetting( [ 'endpoint', 'account_id' ], e.target.value.trim() ) } placeholder="9f2c4e1a…" />
 							</Field>
 							<Field label={ __( 'Jurisdiction', 'gemcloudstorage' ) } help={ __( 'Only for buckets created with a data-location jurisdiction.', 'gemcloudstorage' ) }>
-								<select className="gcs-select" value={ s.endpoint.jurisdiction } onChange={ ( e ) => setSetting( [ 'endpoint', 'jurisdiction' ], e.target.value ) }>
-									<option value="">{ __( 'Default', 'gemcloudstorage' ) }</option>
-									<option value="eu">{ __( 'European Union (EU)', 'gemcloudstorage' ) }</option>
-									<option value="fedramp">FedRAMP</option>
-								</select>
+								<GCSSelect
+									value={ s.endpoint.jurisdiction }
+									inputId="gcs-f-jurisdiction"
+									onChange={ ( v ) => setSetting( [ 'endpoint', 'jurisdiction' ], v ) }
+									options={ [
+										{ value: '', label: __( 'Default', 'gemcloudstorage' ) },
+										{ value: 'eu', label: __( 'European Union (EU)', 'gemcloudstorage' ) },
+										{ value: 'fedramp', label: 'FedRAMP' },
+									] }
+									aria-label={ __( 'Jurisdiction', 'gemcloudstorage' ) }
+								/>
 							</Field>
 						</>
 					) }
 					{ provider === 'aws' && (
 						<Field label={ __( 'Region', 'gemcloudstorage' ) } required>
-							<select className="gcs-select" value={ s.endpoint.region } onChange={ ( e ) => setSetting( [ 'endpoint', 'region' ], e.target.value ) }>
-								{ AWS_REGIONS.map( ( r ) => (
-									<option key={ r } value={ r }>{ r }</option>
-								) ) }
-							</select>
+							<GCSSelect
+								value={ s.endpoint.region }
+								inputId="gcs-f-region"
+								onChange={ ( v ) => setSetting( [ 'endpoint', 'region' ], v ) }
+								options={ AWS_REGIONS.map( ( r ) => ( { value: r, label: r } ) ) }
+								isSearchable
+								aria-label={ __( 'Region', 'gemcloudstorage' ) }
+							/>
 						</Field>
 					) }
 					{ provider === 'custom' && (
 						<>
 							<Field label={ __( 'Endpoint URL', 'gemcloudstorage' ) } required help={ __( 'For example https://s3.eu-central-1.wasabisys.com', 'gemcloudstorage' ) }>
-								<input className="gcs-input" value={ s.endpoint.url } onChange={ ( e ) => setSetting( [ 'endpoint', 'url' ], e.target.value.trim() ) } placeholder="https://" />
+								<input id="gcs-f-endpoint" className="gcs-input" value={ s.endpoint.url } onChange={ ( e ) => setSetting( [ 'endpoint', 'url' ], e.target.value.trim() ) } placeholder="https://" />
 							</Field>
 							<Field label={ __( 'Region', 'gemcloudstorage' ) }>
-								<input className="gcs-input" value={ s.endpoint.region } onChange={ ( e ) => setSetting( [ 'endpoint', 'region' ], e.target.value.trim() ) } placeholder="us-east-1" />
+								<input id="gcs-f-region" className="gcs-input" value={ s.endpoint.region } onChange={ ( e ) => setSetting( [ 'endpoint', 'region' ], e.target.value.trim() ) } placeholder="us-east-1" />
 							</Field>
 							<Field label={ __( 'Path-style addressing', 'gemcloudstorage' ) } help={ __( 'endpoint/bucket/key instead of bucket.endpoint/key. MinIO needs it.', 'gemcloudstorage' ) }>
 								<GCSToggle checked={ !! s.endpoint.path_style } onChange={ ( v ) => setSetting( [ 'endpoint', 'path_style' ], v ) } label={ __( 'Path-style addressing', 'gemcloudstorage' ) } />
@@ -194,12 +213,14 @@ const ConnectionTab = ( { form, meta, setSetting, setCredential, isDirty, saving
 					description={
 						provider === 'r2'
 							? __( 'Create an R2 API token with “Object Read & Write”, scoped to your buckets.', 'gemcloudstorage' )
-							: __( 'Use an IAM user limited to s3:GetObject, s3:PutObject, s3:DeleteObject and s3:ListBucket on your buckets.', 'gemcloudstorage' )
+							: provider === 'aws'
+								? __( 'Use an IAM user limited to s3:GetObject, s3:PutObject, s3:DeleteObject and s3:ListBucket on your buckets.', 'gemcloudstorage' )
+								: __( 'A key from your storage service that can read, write, list and delete objects in both buckets.', 'gemcloudstorage' )
 					}
 				/>
 				<div className="grid grid-cols-1 gap-5 md:grid-cols-2">
 					<Field label={ __( 'Access key ID', 'gemcloudstorage' ) } required locked={ locked.access_key_id }>
-						<input className="gcs-input" autoComplete="off" value={ c.access_key_id } disabled={ locked.access_key_id } onChange={ ( e ) => setCredential( 'access_key_id', e.target.value.trim() ) } />
+						<input id="gcs-f-access-key" className="gcs-input" autoComplete="off" value={ c.access_key_id } disabled={ locked.access_key_id } onChange={ ( e ) => setCredential( 'access_key_id', e.target.value.trim() ) } />
 					</Field>
 					<Field
 						label={ __( 'Secret access key', 'gemcloudstorage' ) }
@@ -209,6 +230,7 @@ const ConnectionTab = ( { form, meta, setSetting, setCredential, isDirty, saving
 					>
 						<div className="relative">
 							<input
+								id="gcs-f-secret-key"
 								className="gcs-input !pr-10"
 								type={ showSecret ? 'text' : 'password' }
 								autoComplete="new-password"
@@ -232,7 +254,7 @@ const ConnectionTab = ( { form, meta, setSetting, setCredential, isDirty, saving
 				/>
 				<div className="grid grid-cols-1 gap-5 md:grid-cols-2">
 					<Field label={ __( 'Public bucket', 'gemcloudstorage' ) } required>
-						<input className="gcs-input" value={ s.buckets.public.name } onChange={ ( e ) => setSetting( [ 'buckets', 'public', 'name' ], e.target.value.trim().toLowerCase() ) } placeholder="my-site-media" />
+						<input id="gcs-f-public-bucket" className="gcs-input" value={ s.buckets.public.name } onChange={ ( e ) => setSetting( [ 'buckets', 'public', 'name' ], e.target.value.trim().toLowerCase() ) } placeholder="my-site-media" />
 					</Field>
 					<Field
 						label={ __( 'Public URL', 'gemcloudstorage' ) }
@@ -243,13 +265,13 @@ const ConnectionTab = ( { form, meta, setSetting, setCredential, isDirty, saving
 								: __( 'Your CloudFront or CDN domain. Leave empty to use the bucket’s own address (needs a public-read bucket policy).', 'gemcloudstorage' )
 						}
 					>
-						<input className="gcs-input" value={ s.buckets.public.public_url } onChange={ ( e ) => setSetting( [ 'buckets', 'public', 'public_url' ], e.target.value.trim() ) } placeholder="https://media.example.com" />
+						<input id="gcs-f-public-url" className="gcs-input" value={ s.buckets.public.public_url } onChange={ ( e ) => setSetting( [ 'buckets', 'public', 'public_url' ], e.target.value.trim() ) } placeholder="https://media.example.com" />
 					</Field>
 					<Field
 						label={ __( 'Private bucket', 'gemcloudstorage' ) }
 						help={ __( 'Keep "Block public access" on. Leave empty to share the public bucket (not recommended).', 'gemcloudstorage' ) }
 					>
-						<input className="gcs-input" value={ s.buckets.private.name } onChange={ ( e ) => setSetting( [ 'buckets', 'private', 'name' ], e.target.value.trim().toLowerCase() ) } placeholder="my-site-protected" />
+						<input id="gcs-f-private-bucket" className="gcs-input" value={ s.buckets.private.name } onChange={ ( e ) => setSetting( [ 'buckets', 'private', 'name' ], e.target.value.trim().toLowerCase() ) } placeholder="my-site-protected" />
 					</Field>
 				</div>
 			</div>

@@ -67,6 +67,15 @@ abstract class Integration {
 	abstract public function all_attachment_ids(): array;
 
 	/**
+	 * Contexts this product stores its own files under (Files screen filter).
+	 *
+	 * @return string[]
+	 */
+	public function contexts(): array {
+		return [ $this->key() ];
+	}
+
+	/**
 	 * Products may also store files outside the media library. Called by
 	 * the daily check; default: nothing to do.
 	 */

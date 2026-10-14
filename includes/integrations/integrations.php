@@ -29,7 +29,7 @@ final class Integrations {
 		 *
 		 * @param Integration[] $integrations
 		 */
-		$candidates = (array) apply_filters( 'gemcloudstorage/integrations', [ new Academy(), new StoreEngine() ] );
+		$candidates = (array) apply_filters( 'gemcloudstorage/integrations', [ new Academy(), new StoreEngine(), new TruePlayer() ] );
 
 		foreach ( $candidates as $integration ) {
 			if ( $integration instanceof Integration && $integration->detected() ) {
@@ -52,6 +52,18 @@ final class Integrations {
 	}
 
 	/**
+	 * Detected and switched on, private bucket or not. Some products also
+	 * keep public files in the cloud, which needs no private bucket.
+	 *
+	 * @return Integration[]
+	 */
+	public static function switched_on(): array {
+		return array_filter( self::$all, function ( Integration $i ) {
+			return $i->switched_on();
+		} );
+	}
+
+	/**
 	 * Detected and switched on, but waiting for a private bucket.
 	 *
 	 * @return Integration[]
@@ -69,6 +81,15 @@ final class Integrations {
 		return implode( ', ', array_map( function ( Integration $i ) {
 			return $i->label();
 		}, $integrations ) );
+	}
+
+	/**
+	 * Every detected product, switched on or not.
+	 *
+	 * @return Integration[]
+	 */
+	public static function detected(): array {
+		return self::$all;
 	}
 
 	public static function get( string $key ): ?Integration {

@@ -1,0 +1,312 @@
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { useDispatch } from 'react-redux';
+import { __ } from '@wordpress/i18n';
+import { Check, Copy, Download, ExternalLink, FileText, Loader2, Lock, X } from 'lucide-react';
+import GCSToggle from '@GCSComponents/GCSToggle';
+import StatusPill from '@GCSComponents/StatusPill';
+import Tooltip from '@GCSComponents/Tooltip';
+import { API, errorMessage, formatDateTime, namespace, notify } from '@GCSUtils/helper';
+
+const FIELDS = [ 'title', 'alt', 'caption', 'description', 'private' ];
+
+const valuesOf = ( file ) => ( {
+	title: file.title,
+	alt: file.alt,
+	caption: file.caption,
+	description: file.description,
+	private: file.cloud.private,
+} );
+
+const Preview = ( { file } ) => {
+	const box = 'flex aspect-video w-full items-center justify-center overflow-hidden rounded-[6px] border border-[var(--gcs-border-color)] bg-[var(--gcs-secondary-color)]';
+	if ( file.kind === 'image' ) {
+		return (
+			<div className={ box }>
+				<img src={ file.preview } alt={ file.alt } className="max-h-full max-w-full object-contain" />
+			</div>
+		);
+	}
+	if ( file.kind === 'video' ) {
+		return (
+			<div className={ box }>
+				{ /* eslint-disable-next-line jsx-a11y/media-has-caption */ }
+				<video src={ file.preview } controls preload="metadata" className="max-h-full max-w-full" />
+			</div>
+		);
+	}
+	if ( file.kind === 'audio' ) {
+		return (
+			<div className={ `${ box } !aspect-auto px-4 py-8` }>
+				{ /* eslint-disable-next-line jsx-a11y/media-has-caption */ }
+				<audio src={ file.preview } controls preload="metadata" className="w-full" />
+			</div>
+		);
+	}
+	return (
+		<div className={ `${ box } flex-col gap-2 text-[var(--gcs-text-muted)]` }>
+			<FileText size={ 40 } />
+			<span className="text-[13px]">{ file.file_type }</span>
+		</div>
+	);
+};
+
+const Info = ( { label, children } ) =>
+	children ? (
+		<div className="flex justify-between gap-4 py-1.5 text-[13px]">
+			<span className="shrink-0 text-[var(--gcs-font-secondary-color)]">{ label }</span>
+			<span className="min-w-0 text-right font-medium [overflow-wrap:anywhere]">{ children }</span>
+		</div>
+	) : null;
+
+/**
+ * A media library file, edited without leaving the plugin: its details,
+ * where its copies are stored, and whether it is private.
+ */
+const FileDetailsModal = ( { attachmentId, onClose, onSaved } ) => {
+	const dispatch = useDispatch();
+	const [ file, setFile ] = useState( null );
+	const [ form, setForm ] = useState( null );
+	const [ error, setError ] = useState( '' );
+	const [ saving, setSaving ] = useState( false );
+	const [ copied, setCopied ] = useState( false );
+
+	useEffect( () => {
+		let live = true;
+		setFile( null );
+		setError( '' );
+		API.get( `${ namespace }attachment`, { params: { id: attachmentId } } )
+			.then( ( res ) => {
+				if ( live ) {
+					setFile( res.data );
+					setForm( valuesOf( res.data ) );
+				}
+			} )
+			.catch( ( e ) => live && setError( errorMessage( e ) ) );
+		return () => {
+			live = false;
+		};
+	}, [ attachmentId ] );
+
+	const dirty = !! file && FIELDS.some( ( key ) => form[ key ] !== valuesOf( file )[ key ] );
+
+	const close = () => {
+		// eslint-disable-next-line no-alert
+		if ( ! dirty || window.confirm( __( 'Discard your changes to this file?', 'gemcloudstorage' ) ) ) {
+			onClose();
+		}
+	};
+
+	useEffect( () => {
+		const onKey = ( e ) => e.key === 'Escape' && close();
+		document.addEventListener( 'keydown', onKey );
+		return () => document.removeEventListener( 'keydown', onKey );
+	} );
+
+	const set = ( key ) => ( e ) => setForm( { ...form, [ key ]: e.target.value } );
+
+	const save = async () => {
+		setSaving( true );
+		try {
+			const body = { id: attachmentId };
+			FIELDS.forEach( ( key ) => {
+				if ( form[ key ] !== valuesOf( file )[ key ] ) {
+					body[ key ] = form[ key ];
+				}
+			} );
+			const res = await API.post( `${ namespace }attachment/save`, body );
+			setFile( res.data );
+			setForm( valuesOf( res.data ) );
+			notify( dispatch, __( 'File updated.', 'gemcloudstorage' ) );
+			onSaved?.();
+		} catch ( e ) {
+			notify( dispatch, errorMessage( e ), 'error' );
+		} finally {
+			setSaving( false );
+		}
+	};
+
+	const copy = async () => {
+		try {
+			await navigator.clipboard.writeText( file.url );
+			setCopied( true );
+			setTimeout( () => setCopied( false ), 1500 );
+		} catch ( e ) {
+			notify( dispatch, __( 'Couldn\'t copy. Select the address and copy it instead.', 'gemcloudstorage' ), 'error' );
+		}
+	};
+
+	const cloud = file?.cloud;
+
+	return createPortal(
+		<div className="gemcloudstorage-scope">
+			<div
+				className="fixed inset-0 z-[100000] flex items-center justify-center p-4"
+				style={ { background: 'rgba(14,17,22,0.55)', fontFamily: 'var(--gcs-font)' } }
+				onMouseDown={ ( e ) => e.target === e.currentTarget && close() }
+			>
+				<div
+					role="dialog"
+					aria-modal="true"
+					aria-labelledby="gcs-file-details-title"
+					className="flex max-h-[calc(100vh-48px)] w-full max-w-[1040px] flex-col rounded-[8px] border border-[var(--gcs-border-color)] bg-[var(--gcs-background)]"
+					style={ { boxShadow: 'var(--gcs-shadow-menu)', color: 'var(--gcs-font-color)' } }
+				>
+					<div className="flex items-center justify-between gap-4 border-b border-[var(--gcs-border-color)] px-5 py-4">
+						<h3 id="gcs-file-details-title" className="m-0 min-w-0 text-[16px] font-semibold">
+							<Tooltip content={ file?.file_name } className="gcs-truncate">
+								{ file ? file.file_name : __( 'File details', 'gemcloudstorage' ) }
+							</Tooltip>
+						</h3>
+						<button type="button" onClick={ close } aria-label={ __( 'Close', 'gemcloudstorage' ) } className="flex border-0 bg-transparent p-1 text-[var(--gcs-text-muted)]">
+							<X size={ 18 } />
+						</button>
+					</div>
+
+					<div className="min-h-0 flex-1 overflow-y-auto">
+						{ ! file && ! error && (
+							<div className="flex items-center justify-center gap-2 py-24 text-[var(--gcs-text-muted)]">
+								<Loader2 size={ 18 } className="gcs-spin" />
+								{ __( 'Loading…', 'gemcloudstorage' ) }
+							</div>
+						) }
+						{ error && <div className="px-5 py-16 text-center text-[var(--gcs-danger)]">{ error }</div> }
+
+						{ file && (
+							<div className="grid gap-6 p-5 md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+								<div className="flex min-w-0 flex-col gap-5">
+									<Preview file={ file } />
+
+									<div>
+										<div className="gcs-label">{ __( 'File URL', 'gemcloudstorage' ) }</div>
+										<div className="flex gap-2">
+											<input className="gcs-input" readOnly value={ file.url } onFocus={ ( e ) => e.target.select() } aria-label={ __( 'File URL', 'gemcloudstorage' ) } />
+											<button type="button" className="gcs-btn gcs-btn--outline shrink-0" onClick={ copy }>
+												{ copied ? <Check size={ 15 } /> : <Copy size={ 15 } /> }
+												{ copied ? __( 'Copied', 'gemcloudstorage' ) : __( 'Copy', 'gemcloudstorage' ) }
+											</button>
+										</div>
+										{ cloud.private && <p className="gcs-help">{ __( 'A private link: it opens only for people allowed to see the file, through a short-lived signed address.', 'gemcloudstorage' ) }</p> }
+									</div>
+
+									<div className="rounded-[6px] border border-[var(--gcs-border-color)] px-4 py-2">
+										<Info label={ __( 'File type', 'gemcloudstorage' ) }>{ file.file_type || file.mime_type }</Info>
+										<Info label={ __( 'File size', 'gemcloudstorage' ) }>{ file.size_label }</Info>
+										<Info label={ __( 'Dimensions', 'gemcloudstorage' ) }>{ file.width ? `${ file.width } × ${ file.height }` : '' }</Info>
+										<Info label={ __( 'Length', 'gemcloudstorage' ) }>{ file.length }</Info>
+										<Info label={ __( 'Uploaded on', 'gemcloudstorage' ) }>{ formatDateTime( file.uploaded_on ) }</Info>
+										<Info label={ __( 'Uploaded by', 'gemcloudstorage' ) }>
+											{ file.author && ( file.author_url ? <a href={ file.author_url } className="text-[var(--gcs-primary)]">{ file.author }</a> : file.author ) }
+										</Info>
+									</div>
+								</div>
+
+								<div className="flex min-w-0 flex-col gap-5">
+									<div className="rounded-[6px] border border-[var(--gcs-border-color)] p-4">
+										<div className="flex items-start justify-between gap-4">
+											<div>
+												<div className="flex items-center gap-1.5 text-[14px] font-semibold">
+													{ form.private && <Lock size={ 14 } /> }
+													{ __( 'Private', 'gemcloudstorage' ) }
+												</div>
+												<p className="gcs-help !mt-1">
+													{ __( 'Kept in the private bucket and opened through a signed link after an access check.', 'gemcloudstorage' ) }
+												</p>
+											</div>
+											<GCSToggle
+												checked={ !! form.private }
+												disabled={ cloud.locked || ! cloud.available }
+												onChange={ ( v ) => setForm( { ...form, private: v } ) }
+												label={ __( 'Private', 'gemcloudstorage' ) }
+											/>
+										</div>
+										{ cloud.locked && (
+											<div className="mt-3 text-[12px] leading-[1.5] text-[var(--gcs-font-secondary-color)]">
+												{ __( 'Kept private because it is used by:', 'gemcloudstorage' ) }
+												<ul className="ml-4 mt-1 list-disc">
+													{ cloud.uses.map( ( u ) => (
+														<li key={ u }>{ u }</li>
+													) ) }
+												</ul>
+											</div>
+										) }
+										{ cloud.orphaned && (
+											<p className="gcs-help">{ __( 'Made private by a product that no longer uses it. It stays private until you switch this off.', 'gemcloudstorage' ) }</p>
+										) }
+
+										<div className="mt-4 border-t border-[var(--gcs-border-color)] pt-3">
+											<div className="mb-2 text-[12px] font-medium text-[var(--gcs-font-secondary-color)]">{ cloud.label }</div>
+											{ cloud.variants.length === 0 && <p className="gcs-help !mt-0">{ __( 'Not in the cloud yet. Only this server has the file.', 'gemcloudstorage' ) }</p> }
+											<div className="flex flex-col gap-2">
+												{ cloud.variants.map( ( v ) => (
+													<div key={ v.variant } className="flex items-center gap-3 text-[12px]">
+														<span className="w-[92px] shrink-0 text-[var(--gcs-font-secondary-color)]">{ v.variant }</span>
+														<Tooltip content={ `${ v.bucket }/${ v.object_key }` } className="gcs-code gcs-truncate min-w-0 flex-1">
+															{ v.object_key }
+														</Tooltip>
+														<span className="shrink-0">{ v.size_label }</span>
+														<StatusPill status={ v.status } />
+													</div>
+												) ) }
+											</div>
+										</div>
+									</div>
+
+									<div>
+										<label className="gcs-label" htmlFor="gcs-file-title">{ __( 'Title', 'gemcloudstorage' ) }</label>
+										<input id="gcs-file-title" className="gcs-input" value={ form.title } onChange={ set( 'title' ) } />
+									</div>
+									{ file.kind === 'image' && (
+										<div>
+											<label className="gcs-label" htmlFor="gcs-file-alt">{ __( 'Alternative text', 'gemcloudstorage' ) }</label>
+											<input id="gcs-file-alt" className="gcs-input" value={ form.alt } onChange={ set( 'alt' ) } />
+											<p className="gcs-help">{ __( 'Describe the image for people who can\'t see it. Leave empty if it is only decoration.', 'gemcloudstorage' ) }</p>
+										</div>
+									) }
+									<div>
+										<label className="gcs-label" htmlFor="gcs-file-caption">{ __( 'Caption', 'gemcloudstorage' ) }</label>
+										<textarea id="gcs-file-caption" className="gcs-input" rows={ 2 } value={ form.caption } onChange={ set( 'caption' ) } />
+									</div>
+									<div>
+										<label className="gcs-label" htmlFor="gcs-file-description">{ __( 'Description', 'gemcloudstorage' ) }</label>
+										<textarea id="gcs-file-description" className="gcs-input" rows={ 4 } value={ form.description } onChange={ set( 'description' ) } />
+										<p className="gcs-help">{ __( 'Shown on the file\'s attachment page.', 'gemcloudstorage' ) }</p>
+									</div>
+								</div>
+							</div>
+						) }
+					</div>
+
+					<div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--gcs-border-color)] px-5 py-3">
+						<div className="flex flex-wrap gap-2">
+							{ file && (
+								<>
+									<a className="gcs-btn gcs-btn--outline gcs-btn--sm" href={ file.url } target="_blank" rel="noreferrer" download={ file.file_name }>
+										<Download size={ 14 } />
+										{ __( 'Download', 'gemcloudstorage' ) }
+									</a>
+									<a className="gcs-btn gcs-btn--outline gcs-btn--sm" href={ file.edit_url } target="_blank" rel="noreferrer">
+										<ExternalLink size={ 14 } />
+										{ __( 'Open in WordPress', 'gemcloudstorage' ) }
+									</a>
+								</>
+							) }
+						</div>
+						<div className="flex gap-2">
+							<button type="button" className="gcs-btn gcs-btn--outline" onClick={ close }>
+								{ dirty ? __( 'Cancel', 'gemcloudstorage' ) : __( 'Close', 'gemcloudstorage' ) }
+							</button>
+							<button type="button" className="gcs-btn gcs-btn--primary" onClick={ save } disabled={ ! dirty || saving }>
+								{ saving && <Loader2 size={ 15 } className="gcs-spin" /> }
+								{ saving ? __( 'Saving…', 'gemcloudstorage' ) : __( 'Save changes', 'gemcloudstorage' ) }
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>,
+		document.body
+	);
+};
+
+export default FileDetailsModal;

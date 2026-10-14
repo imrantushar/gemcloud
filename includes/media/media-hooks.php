@@ -338,17 +338,23 @@ final class MediaHooks {
 			return $post;
 		}
 
-		$id = (int) $post['ID'];
+		self::set_private( (int) $post['ID'], ! empty( $attachment['gemcloudstorage_private'] ) );
 
-		// A disabled checkbox isn't submitted: a product still uses the file.
+		return $post;
+	}
+
+	/**
+	 * An admin ticks or unticks "Private". Ignored while a product uses the
+	 * file: the product decides then.
+	 *
+	 * @return bool Whether the choice was applied.
+	 */
+	public static function set_private( int $id, bool $want ): bool {
 		if ( Integrations::uses( $id ) ) {
-			return $post;
+			return false;
 		}
 
-		$want    = ! empty( $attachment['gemcloudstorage_private'] );
-		$current = self::is_private( $id );
-
-		if ( $want !== $current ) {
+		if ( $want !== self::is_private( $id ) ) {
 			if ( $want ) {
 				update_post_meta( $id, self::PRIVATE_META, 1 );
 			} else {
@@ -359,8 +365,7 @@ final class MediaHooks {
 				self::sync_attachment( $id );
 			}
 		}
-
-		return $post;
+		return true;
 	}
 
 	public static function columns( array $columns ): array {
@@ -388,7 +393,7 @@ final class MediaHooks {
 		);
 	}
 
-	private static function status_label( int $attachment_id ): string {
+	public static function status_label( int $attachment_id ): string {
 		$item = ItemRepository::find_variant( 'attachment', $attachment_id );
 		if ( ! $item ) {
 			return __( 'Local only', 'gemcloudstorage' );

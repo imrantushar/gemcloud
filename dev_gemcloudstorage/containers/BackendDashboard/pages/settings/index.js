@@ -25,21 +25,75 @@ const TABS = [
 ];
 
 // PHP sends an empty map as [], and an array drops string keys when saved.
+const asMap = ( value ) => ( value && ! Array.isArray( value ) ? value : {} );
+
 const normalize = ( settings ) => {
 	const copy = JSON.parse( JSON.stringify( settings ) );
-	if ( Array.isArray( copy.contexts ) ) {
-		copy.contexts = {};
-	}
+	copy.contexts = asMap( copy.contexts );
+	// The active provider's profile is the top-level endpoint and buckets.
+	copy.profiles = { ...asMap( copy.profiles ), [ copy.provider ]: { endpoint: copy.endpoint, buckets: copy.buckets } };
 	return copy;
 };
 
-const toForm = ( data ) => ( {
-	settings: normalize( data.settings ),
-	credentials: {
+const toForm = ( data ) => {
+	const settings = normalize( data.settings );
+	const active = {
 		access_key_id: data.credentials.access_key_id || '',
 		secret_access_key: data.credentials.secret_access_key || '',
-	},
+	};
+	return {
+		settings,
+		credentials: { ...active, profiles: { ...asMap( data.credentials.profiles ), [ settings.provider ]: active } },
+	};
+};
+
+// A provider chosen for the first time starts empty.
+const blankConnection = ( provider ) => ( {
+	endpoint: { account_id: '', jurisdiction: '', region: provider === 'r2' ? 'auto' : 'us-east-1', url: '', path_style: true },
+	buckets: { public: { name: '', public_url: '' }, private: { name: '' } },
 } );
+
+/**
+ * The form with the active provider's profile updated from the fields being
+ * edited, so typing then switching away and back compares as one change.
+ */
+const withActiveProfile = ( form ) => {
+	const { settings, credentials } = form;
+	return {
+		settings: { ...settings, profiles: { ...settings.profiles, [ settings.provider ]: { endpoint: settings.endpoint, buckets: settings.buckets } } },
+		credentials: {
+			...credentials,
+			profiles: {
+				...credentials.profiles,
+				[ settings.provider ]: { access_key_id: credentials.access_key_id, secret_access_key: credentials.secret_access_key },
+			},
+		},
+	};
+};
+
+/**
+ * Each provider keeps its own endpoint, buckets and keys: the current ones
+ * are put aside and the chosen provider's are brought back.
+ */
+const switchProvider = ( form, next ) => {
+	const { settings, credentials } = form;
+	const current = settings.provider;
+	if ( current === next ) {
+		return form;
+	}
+	const profiles = { ...settings.profiles, [ current ]: { endpoint: settings.endpoint, buckets: settings.buckets } };
+	const keys = {
+		...credentials.profiles,
+		[ current ]: { access_key_id: credentials.access_key_id, secret_access_key: credentials.secret_access_key },
+	};
+	const connection = profiles[ next ] || blankConnection( next );
+	const nextKeys = keys[ next ] || { access_key_id: '', secret_access_key: '' };
+
+	return {
+		settings: { ...settings, provider: next, endpoint: connection.endpoint, buckets: connection.buckets, profiles },
+		credentials: { ...nextKeys, profiles: keys },
+	};
+};
 
 const setIn = ( obj, path, value ) => {
 	const next = Array.isArray( obj ) ? [ ...obj ] : { ...obj };
@@ -92,10 +146,12 @@ export default function Settings() {
 	const setSetting = ( path, value ) => setForm( ( f ) => ( { ...f, settings: setIn( f.settings, path, value ) } ) );
 	const setCredential = ( key, value ) => setForm( ( f ) => ( { ...f, credentials: { ...f.credentials, [ key ]: value } } ) );
 
-	const isDirty = !! form && JSON.stringify( form ) !== saved.current;
+	const setProvider = ( next ) => setForm( ( f ) => switchProvider( f, next ) );
+
+	const isDirty = !! form && JSON.stringify( withActiveProfile( form ) ) !== JSON.stringify( withActiveProfile( JSON.parse( saved.current ) ) );
 
 	const handleSave = async () => {
-		const res = await dispatch( saveSettings( form ) );
+		const res = await dispatch( saveSettings( withActiveProfile( form ) ) );
 		if ( ! res.error ) {
 			dispatch( getStatus() );
 		}
@@ -108,7 +164,7 @@ export default function Settings() {
 		</button>
 	);
 
-	const tabProps = { form, meta: data, setSetting, setCredential, isDirty, saving, onSave: handleSave };
+	const tabProps = { form, meta: data, setSetting, setCredential, setProvider, isDirty, saving, onSave: handleSave };
 
 	return (
 		<PageLayout title={ __( 'Settings', 'gemcloudstorage' ) } actions={ saveButton }>

@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n';
 import GCSToggle from '@GCSComponents/GCSToggle';
 import StatusPill from '@GCSComponents/StatusPill';
 import { SectionTitle } from './common';
+import GCSSelect from '@GCSComponents/GCSSelect';
 
 /**
  * Each plugin registers the kinds of files it stores. The admin can switch a
@@ -51,10 +52,16 @@ const ContextsTab = ( { form, meta, setSetting } ) => {
 								{ context.locked?.includes( 'visibility' ) ? (
 									<StatusPill status={ visibility === 'private' ? 'warning' : 'ok' } label={ visibility === 'private' ? __( 'Private bucket', 'gemcloudstorage' ) : __( 'Public bucket', 'gemcloudstorage' ) } />
 								) : (
-									<select className="gcs-select !w-[150px]" value={ visibility } onChange={ ( e ) => setContext( context.key, { visibility: e.target.value } ) } aria-label={ __( 'Bucket', 'gemcloudstorage' ) }>
-										<option value="public">{ __( 'Public bucket', 'gemcloudstorage' ) }</option>
-										<option value="private">{ __( 'Private bucket', 'gemcloudstorage' ) }</option>
-									</select>
+									<GCSSelect
+										width={ 160 }
+										value={ visibility }
+										onChange={ ( v ) => setContext( context.key, { visibility: v } ) }
+										options={ [
+											{ value: 'public', label: __( 'Public bucket', 'gemcloudstorage' ) },
+											{ value: 'private', label: __( 'Private bucket', 'gemcloudstorage' ) },
+										] }
+										aria-label={ __( 'Bucket', 'gemcloudstorage' ) }
+									/>
 								) }
 								<GCSToggle checked={ !! enabled } onChange={ ( v ) => setContext( context.key, { enabled: v } ) } label={ context.label } />
 							</div>

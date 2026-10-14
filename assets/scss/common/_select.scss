@@ -1,0 +1,177 @@
+// react-select (components/GCSSelect), the same look as ZenCommunity's:
+// rounded control, a floating rounded menu with a soft shadow, rows with a
+// light hover tint, and the chosen row marked with bold text and a check,
+// so hovering and choosing never look alike. Not scoped: the menu is
+// rendered on <body>; colours come from html[data-theme].
+
+.gcs-rs {
+	font-family: var(--gcs-font);
+	font-size: 14px;
+
+	&__control {
+		height: var(--gcs-control-height) !important;
+		min-height: var(--gcs-control-height) !important;
+		border: 1px solid var(--gcs-border-color) !important;
+		border-radius: var(--gcs-control-radius) !important;
+		background: var(--gcs-background) !important;
+		box-shadow: none !important;
+		cursor: pointer !important;
+		transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+		&:hover {
+			border-color: color-mix(in srgb, var(--gcs-font-color) 30%, var(--gcs-border-color)) !important;
+		}
+
+		// The same focus ring as the text boxes.
+		&--is-focused {
+			border-color: var(--gcs-primary) !important;
+			box-shadow: var(--gcs-control-focus) !important;
+		}
+
+		&--is-disabled {
+			cursor: default !important;
+			opacity: 0.6;
+		}
+	}
+
+	// Text starts 12px in, like the text boxes (10px + the value's 2px).
+	&__value-container {
+		height: 100%;
+		padding: 0 10px !important;
+	}
+
+	&__indicators {
+		height: 100%;
+	}
+
+	&__input-container {
+		color: var(--gcs-font-color) !important;
+	}
+
+	// wp-admin's forms.css styles every input; keep react-select's bare.
+	&__input {
+		box-shadow: none !important;
+		min-height: 0 !important;
+	}
+
+	&__single-value {
+		color: var(--gcs-font-color) !important;
+	}
+
+	&__placeholder {
+		color: var(--gcs-font-color) !important;
+		opacity: 0.6;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	&__indicator-separator {
+		display: none;
+	}
+
+	&__dropdown-indicator,
+	&__clear-indicator {
+		padding: 0 8px !important;
+		color: var(--gcs-font-color) !important;
+		opacity: 0.7;
+		transition: opacity 0.15s ease, transform 0.15s ease !important;
+
+		&:hover {
+			opacity: 1;
+		}
+	}
+
+	&__control--menu-is-open &__dropdown-indicator {
+		transform: rotate(180deg);
+	}
+
+	&__menu {
+		min-width: 100%;
+		width: max-content !important;
+		max-width: 320px;
+		margin-top: 6px !important;
+		overflow: hidden;
+		border: 1px solid var(--gcs-border-color) !important;
+		border-radius: 10px !important;
+		background: var(--gcs-background) !important;
+		box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16), 0 2px 4px rgba(0, 0, 0, 0.08) !important;
+		animation: gcs-rs-menu-in 0.14s ease-out;
+		font-family: var(--gcs-font);
+	}
+
+	&__menu-list {
+		padding: 6px !important;
+		scrollbar-width: thin;
+	}
+
+	&__option {
+		position: relative;
+		padding: 8px 32px 8px 10px !important;
+		border-radius: 8px;
+		background: transparent !important;
+		color: var(--gcs-font-color) !important;
+		font-size: 14px !important;
+		line-height: 20px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		cursor: pointer !important;
+		transition: background-color 0.12s ease;
+
+		&--is-focused,
+		&:hover {
+			background: color-mix(in srgb, var(--gcs-font-color) 6%, var(--gcs-background)) !important;
+		}
+
+		&:active {
+			background: color-mix(in srgb, var(--gcs-font-color) 10%, var(--gcs-background)) !important;
+		}
+
+		&--is-selected {
+			font-weight: 600;
+
+			&::after {
+				content: '';
+				position: absolute;
+				top: 50%;
+				right: 10px;
+				width: 16px;
+				height: 16px;
+				transform: translateY(-50%);
+				background: var(--gcs-primary);
+				-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M232.49 80.49l-128 128a12 12 0 0 1-17 0l-56-56a12 12 0 1 1 17-17L96 183 215.51 63.51a12 12 0 0 1 17 17Z'/%3E%3C/svg%3E") center / contain no-repeat;
+				mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M232.49 80.49l-128 128a12 12 0 0 1-17 0l-56-56a12 12 0 1 1 17-17L96 183 215.51 63.51a12 12 0 0 1 17 17Z'/%3E%3C/svg%3E") center / contain no-repeat;
+			}
+		}
+
+		&--is-disabled {
+			cursor: not-allowed !important;
+			opacity: 0.5;
+		}
+	}
+
+	&__menu-notice {
+		padding: 10px !important;
+		font-size: 14px;
+		color: color-mix(in srgb, var(--gcs-font-color) 60%, transparent) !important;
+	}
+}
+
+@keyframes gcs-rs-menu-in {
+	from {
+		opacity: 0;
+		transform: translateY(-4px);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.gcs-rs__menu {
+		animation: none;
+	}
+}

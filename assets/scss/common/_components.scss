@@ -8,20 +8,33 @@
 	margin-bottom: 6px;
 }
 
-.gcs-help {
+// One size for every form control (text box, native select, react-select),
+// so fields side by side line up exactly.
+:root {
+	--gcs-control-height: 40px;
+	--gcs-control-radius: 6px;
+	--gcs-control-focus: 0 0 0 3px var(--gcs-info-bg);
+}
+
+// Also beats the scoped reset that zeroes every <p>'s margin.
+.gcs-help,
+.gemcloudstorage-scope p.gcs-help {
 	font-size: 12px;
 	color: var(--gcs-font-secondary-color);
-	margin-top: 6px;
+	margin: 6px 0 0;
 	line-height: 1.5;
 }
 
 .gcs-input,
 .gcs-select {
+	display: block;
 	width: 100%;
-	height: 38px;
-	padding: 8px 12px;
+	height: var(--gcs-control-height);
+	min-height: var(--gcs-control-height);
+	margin: 0;
+	padding: 9px 12px;
 	border: 1px solid var(--gcs-border-color) !important;
-	border-radius: 4px !important;
+	border-radius: var(--gcs-control-radius) !important;
 	background: var(--gcs-background) !important;
 	color: var(--gcs-font-color) !important;
 	font-size: 14px;
@@ -32,7 +45,7 @@
 
 	&:focus {
 		border-color: var(--gcs-primary) !important;
-		box-shadow: 0 0 0 3px var(--gcs-info-bg) !important;
+		box-shadow: var(--gcs-control-focus) !important;
 	}
 
 	&:disabled,
@@ -45,6 +58,13 @@
 	&::placeholder {
 		color: var(--gcs-placeholder);
 	}
+}
+
+// Multi-line text boxes grow with their rows instead.
+textarea.gcs-input {
+	height: auto;
+	min-height: calc(var(--gcs-control-height) * 2);
+	resize: vertical;
 }
 
 .gcs-select {
@@ -219,4 +239,194 @@
 
 @keyframes gcs-spin {
 	to { transform: rotate(360deg); }
+}
+
+// Full text of a cut-short value (components/Tooltip), rendered on <body>.
+.gcs-tooltip {
+	position: fixed;
+	z-index: 100001;
+	max-width: min(420px, calc(100vw - 32px));
+	padding: 6px 10px;
+	border-radius: 6px;
+	background: var(--gcs-font-color);
+	color: var(--gcs-background);
+	font: 12px/1.45 var(--gcs-font);
+	word-break: break-all;
+	pointer-events: none;
+	box-shadow: var(--gcs-shadow-menu);
+}
+
+// A table cell value cut to one line with an ellipsis.
+.gcs-truncate {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	outline-offset: 2px;
+}
+
+// On/off switch (components/GCSToggle), ZenCommunity's Toggle: 36×20 track,
+// 16px knob, inset ring so the off state keeps its edge on grey surfaces.
+// Every property is set here so WordPress's button styles can't leak in.
+.gcs-switch {
+	position: relative;
+	display: inline-flex;
+	flex-shrink: 0;
+	align-items: center;
+	width: 36px !important;
+	height: 20px !important;
+	min-height: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	border-radius: 999px !important;
+	background: var(--gcs-border-color) !important;
+	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1) !important;
+	cursor: pointer;
+	outline: none;
+	vertical-align: middle;
+	transition: background-color 0.15s ease;
+
+	&.is-on {
+		background: var(--gcs-primary) !important;
+	}
+
+	&:focus-visible {
+		box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1), 0 0 0 2px var(--gcs-background), 0 0 0 4px var(--gcs-primary) !important;
+	}
+
+	&:disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
+
+	&__knob {
+		display: block;
+		width: 16px;
+		height: 16px;
+		border-radius: 999px;
+		background: #fff;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+		transform: translateX(2px);
+		transition: transform 0.15s ease;
+	}
+
+	&.is-on &__knob {
+		transform: translateX(18px);
+	}
+
+	// Smaller, for switches nested inside a list (Contexts → kinds).
+	&--sm {
+		width: 28px !important;
+		height: 16px !important;
+
+		.gcs-switch__knob {
+			width: 12px;
+			height: 12px;
+		}
+
+		&.is-on .gcs-switch__knob {
+			transform: translateX(14px);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		&,
+		&__knob {
+			transition: none;
+		}
+	}
+}
+
+// A row of joined choice buttons, the same height and rounding as inputs.
+.gcs-segmented {
+	display: inline-flex;
+	max-width: 100%;
+	height: var(--gcs-control-height);
+	overflow-x: auto;
+	scrollbar-width: none;
+	border: 1px solid var(--gcs-border-color);
+	border-radius: var(--gcs-control-radius);
+	background: var(--gcs-background);
+
+	button {
+		height: 100%;
+		margin: 0;
+		padding: 0 14px;
+		border: 0;
+		border-left: 1px solid var(--gcs-border-color);
+		background: transparent;
+		color: var(--gcs-font-color);
+		font-size: 13px;
+		font-weight: 500;
+		white-space: nowrap;
+		cursor: pointer;
+		transition: background-color 0.15s ease, color 0.15s ease;
+
+		&:first-child {
+			border-left: 0;
+		}
+
+		&:hover {
+			background: var(--gcs-secondary-color);
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--gcs-primary);
+			outline-offset: -2px;
+		}
+
+		&.is-active {
+			background: var(--gcs-second-primary);
+			color: var(--gcs-primary);
+			font-weight: 600;
+		}
+	}
+}
+
+// Code to copy (components/CodeBlock).
+.gcs-codeblock {
+	overflow: hidden;
+	border: 1px solid var(--gcs-border-color);
+	border-radius: var(--gcs-control-radius);
+	background: var(--gcs-secondary-color);
+
+	&__bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		padding: 6px 8px 6px 14px;
+		border-bottom: 1px solid var(--gcs-border-color);
+		background: var(--gcs-background);
+	}
+
+	&__title {
+		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+		font-size: 12px;
+		color: var(--gcs-font-secondary-color);
+	}
+
+	pre {
+		margin: 0;
+		padding: 14px 16px;
+		overflow: auto;
+		background: transparent;
+		color: var(--gcs-font-color);
+		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+		font-size: 12.5px;
+		line-height: 1.7;
+		tab-size: 4;
+		white-space: pre;
+	}
+
+	// WordPress gives every <code> a grey background and padding.
+	pre code {
+		display: block;
+		margin: 0;
+		padding: 0;
+		background: none;
+		color: inherit;
+		font: inherit;
+	}
 }

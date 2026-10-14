@@ -10,6 +10,7 @@ import ConfirmModal from '@GCSComponents/ConfirmModal';
 import { getStatus, runTool } from '@GCSRedux/Slices/statusSlice/statusSlice';
 import { API, namespace, errorMessage, formatNumber, notify } from '@GCSUtils/helper';
 import { usePolling } from '../dashboard';
+import CodeBlock from '@GCSComponents/CodeBlock';
 
 const RUN_LABELS = {
 	running: __( 'Running', 'gemcloudstorage' ),
@@ -248,9 +249,7 @@ export default function Tools() {
 					description={ __( 'Academy LMS, StoreEngine, ZenCommunity or any plugin registers a context, hands files over, and asks for URLs. Every call falls back to local behaviour when storage is off.', 'gemcloudstorage' ) }
 					actions={ <Code2 size={ 18 } className="text-[var(--gcs-text-muted)]" /> }
 				>
-					<pre className="m-0 overflow-x-auto rounded-[6px] bg-[var(--gcs-secondary-color)] p-4 text-[12px] leading-[1.6] text-[var(--gcs-font-color)]">
-						<code>{ API_SNIPPET }</code>
-					</pre>
+					<CodeBlock title="PHP" code={ API_SNIPPET } />
 				</Section>
 			</div>
 

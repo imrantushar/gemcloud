@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { __ } from '@wordpress/i18n';
-import Field from '@GCSComponents/Field';
+import { RefreshCw } from 'lucide-react';
 import GCSAlert from '@GCSComponents/GCSAlert';
+import CodeBlock from '@GCSComponents/CodeBlock';
 import { ChoiceCard, SectionTitle } from './common';
 
 const TTL_PRESETS = [
@@ -12,8 +13,36 @@ const TTL_PRESETS = [
 	[ 86400, __( '1 day', 'gemcloudstorage' ) ],
 ];
 
+/** 32 random bytes, base64: a key for GEMCLOUDSTORAGE_KEY, made in the browser. */
+const randomKey = () => {
+	const bytes = new Uint8Array( 32 );
+	window.crypto.getRandomValues( bytes );
+	return window.btoa( String.fromCharCode( ...bytes ) );
+};
+
+/** define() lines with their comments lined up. */
+const defines = ( rows ) => {
+	const width = Math.max( ...rows.map( ( [ name, value ] ) => `define( '${ name }', '${ value }' );`.length ) ) + 2;
+	return rows
+		.map( ( [ name, value, comment ] ) => {
+			const line = `define( '${ name }', '${ value }' );`;
+			return comment ? `${ line.padEnd( width ) }// ${ comment }` : line;
+		} )
+		.join( '\n' );
+};
+
 const SecurityTab = ( { form, meta, setSetting } ) => {
 	const s = form.settings;
+	const [ key, setKey ] = useState( randomKey );
+
+	const keySnippet = `// Encryption key for secrets stored in the database. Keep it private.\n${ defines( [ [ 'GEMCLOUDSTORAGE_KEY', key ] ] ) }`;
+
+	const connectionSnippet = `// GemCloudStorage connection, kept out of the database.\n${ defines( [
+		[ 'GEMCLOUDSTORAGE_PROVIDER', s.provider, 'r2, aws or custom' ],
+		...( s.provider === 'r2' ? [ [ 'GEMCLOUDSTORAGE_ACCOUNT_ID', s.endpoint.account_id || 'your-account-id', 'Cloudflare R2 only' ] ] : [] ),
+		[ 'GEMCLOUDSTORAGE_ACCESS_KEY_ID', form.credentials.access_key_id || 'your-access-key-id' ],
+		[ 'GEMCLOUDSTORAGE_SECRET_ACCESS_KEY', 'your-secret-access-key', 'shown only once by your provider' ],
+	] ) }`;
 
 	return (
 		<div className="flex flex-col gap-8">
@@ -22,23 +51,29 @@ const SecurityTab = ( { form, meta, setSetting } ) => {
 					title={ __( 'Signed URL lifetime', 'gemcloudstorage' ) }
 					description={ __( 'A signed URL is created at the moment of the click, after the access check, and is never printed into a page. The signature is checked when the download starts, so a long download that starts in time still finishes.', 'gemcloudstorage' ) }
 				/>
-				<div className="flex flex-wrap items-end gap-3">
-					<Field label={ __( 'Seconds', 'gemcloudstorage' ) } help={ __( '1 to 604,800 (7 days). Default 300.', 'gemcloudstorage' ) } className="w-[180px]">
+				<label className="gcs-label" htmlFor="gcs-f-signed-ttl">{ __( 'Lifetime', 'gemcloudstorage' ) }</label>
+				<div className="flex flex-wrap items-center gap-3">
+					<div className="relative w-[180px]">
 						<input
-							className="gcs-input"
+							id="gcs-f-signed-ttl"
+							className="gcs-input !pr-[72px]"
 							type="number"
 							min="1"
 							max="604800"
 							value={ s.signed_url_ttl }
 							onChange={ ( e ) => setSetting( [ 'signed_url_ttl' ], Math.max( 1, Math.min( 604800, parseInt( e.target.value || '0', 10 ) || 1 ) ) ) }
 						/>
-					</Field>
-					<div className="flex flex-wrap gap-2 pb-[26px]">
+						<span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-[var(--gcs-text-muted)]">
+							{ __( 'seconds', 'gemcloudstorage' ) }
+						</span>
+					</div>
+					<div className="gcs-segmented" role="group" aria-label={ __( 'Common lifetimes', 'gemcloudstorage' ) }>
 						{ TTL_PRESETS.map( ( [ value, label ] ) => (
 							<button
 								key={ value }
 								type="button"
-								className={ `gcs-btn gcs-btn--sm ${ s.signed_url_ttl === value ? 'gcs-btn--soft' : 'gcs-btn--outline' }` }
+								aria-pressed={ s.signed_url_ttl === value }
+								className={ s.signed_url_ttl === value ? 'is-active' : '' }
 								onClick={ () => setSetting( [ 'signed_url_ttl' ], value ) }
 							>
 								{ label }
@@ -46,6 +81,7 @@ const SecurityTab = ( { form, meta, setSetting } ) => {
 						) ) }
 					</div>
 				</div>
+				<p className="gcs-help">{ __( '1 to 604,800 seconds (7 days). Default 300 (5 minutes). Video and audio links always last at least 4 hours, so a long lesson keeps playing.', 'gemcloudstorage' ) }</p>
 			</div>
 
 			<div>
@@ -72,20 +108,42 @@ const SecurityTab = ( { form, meta, setSetting } ) => {
 			</div>
 
 			<div className="flex flex-col gap-3">
-				<SectionTitle title={ __( 'How secrets are kept', 'gemcloudstorage' ) } />
-				<GCSAlert type={ meta.constants?.encryption_key ? 'success' : 'info' }>
-					{ meta.constants?.encryption_key
-						? __( 'The secret key is encrypted with GEMCLOUDSTORAGE_KEY from wp-config.php.', 'gemcloudstorage' )
-						: __( 'The secret key is encrypted with a key derived from your WordPress salts. Rotating the salts makes it unreadable; define GEMCLOUDSTORAGE_KEY in wp-config.php to avoid that.', 'gemcloudstorage' ) }
-				</GCSAlert>
-				<pre className="m-0 overflow-x-auto rounded-[6px] bg-[var(--gcs-secondary-color)] p-4 text-[12px] leading-[1.7] text-[var(--gcs-font-color)]">
-					<code>{ `// wp-config.php: keep credentials out of the database entirely.
-define( 'GEMCLOUDSTORAGE_PROVIDER', 'r2' );          // r2 | aws | custom
-define( 'GEMCLOUDSTORAGE_ACCOUNT_ID', '…' );         // R2 only
-define( 'GEMCLOUDSTORAGE_ACCESS_KEY_ID', '…' );
-define( 'GEMCLOUDSTORAGE_SECRET_ACCESS_KEY', '…' );
-define( 'GEMCLOUDSTORAGE_KEY', '…' );                // encryption key for stored secrets` }</code>
-				</pre>
+				<SectionTitle
+					title={ __( 'How secrets are kept', 'gemcloudstorage' ) }
+					description={ __( 'Add these lines to wp-config.php, above the line /* That\'s all, stop editing! */.', 'gemcloudstorage' ) }
+				/>
+				<div className="flex flex-col gap-5">
+					{ meta.constants?.encryption_key ? (
+						<GCSAlert type="success">{ __( 'The secret key is encrypted with GEMCLOUDSTORAGE_KEY from wp-config.php.', 'gemcloudstorage' ) }</GCSAlert>
+					) : (
+						<div className="flex flex-col gap-3">
+							<GCSAlert type="info">
+								{ __( 'The secret key is encrypted with a key made from your WordPress salts, so changing the salts makes it unreadable. Your own key in wp-config.php avoids that. One was generated for you below, in this browser; it is never sent anywhere.', 'gemcloudstorage' ) }
+							</GCSAlert>
+							<CodeBlock
+								title="wp-config.php"
+								code={ keySnippet }
+								actions={
+									<button type="button" className="gcs-btn gcs-btn--outline gcs-btn--sm" onClick={ () => setKey( randomKey() ) }>
+										<RefreshCw size={ 13 } />
+										{ __( 'New key', 'gemcloudstorage' ) }
+									</button>
+								}
+							/>
+							<GCSAlert type="warning">
+								{ __( 'After adding the key, enter each provider\'s secret access key again under Connection and save: secrets stored before were encrypted with the old key.', 'gemcloudstorage' ) }
+							</GCSAlert>
+						</div>
+					) }
+
+					<div className="flex flex-col gap-2">
+						<div className="text-[13px] font-semibold">{ __( 'Keep the connection out of the database (optional)', 'gemcloudstorage' ) }</div>
+						<p className="gcs-help !mt-0">
+							{ __( 'Filled in from your current connection; paste your secret access key in place of the placeholder. These values then win over the Connection tab, which shows them locked.', 'gemcloudstorage' ) }
+						</p>
+						<CodeBlock title="wp-config.php" code={ connectionSnippet } />
+					</div>
+				</div>
 			</div>
 		</div>
 	);

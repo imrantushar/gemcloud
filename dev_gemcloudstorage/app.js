@@ -1,4 +1,3 @@
-import { createPortal } from '@wordpress/element';
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
 import { Provider } from 'react-redux';
@@ -20,22 +19,13 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	// Stamp the theme mode before the first paint, so there is no flash.
 	initThemeMode();
 
-	// The WP sidebar entry is re-rendered by React so switching pages
-	// highlights the right submenu item without a reload.
-	const menuPage = document.getElementById( 'toplevel_page_gemcloudstorage' );
-	if ( menuPage ) {
-		menuPage.innerHTML = '';
-	}
-	const MenuPortal = ( { children } ) => ( menuPage ? createPortal( children, menuPage ) : null );
-
 	const root = createRoot( container );
 	flushSync( () => {
 		root.render(
 			<Provider store={ store }>
 				<Router>
-					<MenuPortal>
-						<AdminMenu />
-					</MenuPortal>
+					{ /* WordPress's own sidebar entry, kept in step with the router. */ }
+					<AdminMenu />
 					<BackendDashboard />
 				</Router>
 			</Provider>

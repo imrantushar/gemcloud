@@ -8,6 +8,7 @@ use GemCloudStorage\Items\Item;
 use GemCloudStorage\Integrations\Integrations;
 use GemCloudStorage\Items\ItemRepository;
 use GemCloudStorage\Jobs\DownloadBackJob;
+use GemCloudStorage\Media\MediaHooks;
 use GemCloudStorage\Jobs\MigrateJob;
 use GemCloudStorage\Jobs\Queue;
 use GemCloudStorage\Manager;
@@ -59,6 +60,8 @@ final class RestController {
 			'/status'              => [ 'GET', 'status' ],
 			'/items'               => [ 'GET', 'items' ],
 			'/items/retry'         => [ 'POST', 'retry_items' ],
+			'/attachment'          => [ 'GET', 'attachment' ],
+			'/attachment/save'     => [ 'POST', 'attachment_save' ],
 			'/migration/start'     => [ 'POST', 'migration_start' ],
 			'/migration/stop'      => [ 'POST', 'migration_stop' ],
 			'/download-back/start' => [ 'POST', 'download_back_start' ],
@@ -95,10 +98,21 @@ final class RestController {
 		$body = (array) $request->get_json_params();
 
 		if ( isset( $body['credentials'] ) && is_array( $body['credentials'] ) ) {
+			$provider = (string) ( $body['settings']['provider'] ?? Settings::get()['provider'] );
+			$provider = in_array( $provider, Settings::PROVIDERS, true ) ? $provider : 'r2';
+
 			Credentials::save(
 				(string) ( $body['credentials']['access_key_id'] ?? '' ),
-				(string) ( $body['credentials']['secret_access_key'] ?? '' )
+				(string) ( $body['credentials']['secret_access_key'] ?? '' ),
+				$provider
 			);
+
+			// Keys typed for the other providers, kept for when they're chosen.
+			foreach ( (array) ( $body['credentials']['profiles'] ?? [] ) as $key => $keys ) {
+				if ( $key !== $provider && in_array( $key, Settings::PROVIDERS, true ) && is_array( $keys ) ) {
+					Credentials::save_profile( $key, (string) ( $keys['access_key_id'] ?? '' ), (string) ( $keys['secret_access_key'] ?? '' ) );
+				}
+			}
 		}
 
 		if ( isset( $body['settings'] ) && is_array( $body['settings'] ) ) {
@@ -284,14 +298,27 @@ final class RestController {
 	}
 
 	public static function items( WP_REST_Request $request ): WP_REST_Response {
-		$result = ItemRepository::paginate( [
+		$args = [
 			'status'      => sanitize_key( (string) $request->get_param( 'status' ) ),
 			'visibility'  => sanitize_key( (string) $request->get_param( 'visibility' ) ),
 			'source_type' => sanitize_text_field( (string) $request->get_param( 'source_type' ) ),
 			'search'      => sanitize_text_field( (string) $request->get_param( 'search' ) ),
 			'page'        => (int) $request->get_param( 'page' ),
 			'per_page'    => (int) $request->get_param( 'per_page' ),
-		] );
+		];
+
+		$source = sanitize_text_field( (string) $request->get_param( 'source' ) );
+		if ( 'media' === $source ) {
+			$args['source_type'] = 'attachment';
+		} elseif ( Backups::CONTEXT === $source ) {
+			$args['source_type'] = Backups::CONTEXT;
+		} elseif ( '' !== $source ) {
+			$integration        = Integrations::get( $source );
+			$args['contexts']   = $integration ? $integration->contexts() : [ $source ];
+			$args['private_by'] = $source;
+		}
+
+		$result = ItemRepository::paginate( $args );
 
 		$attachment_ids = [];
 		foreach ( $result['items'] as $item ) {
@@ -308,6 +335,9 @@ final class RestController {
 
 			$row['size_label'] = $item->size_bytes ? Helper::format_bytes( $item->size_bytes ) : '';
 			$row['url']        = $item->is_synced() ? ( $item->is_private() ? null : Manager::public_url( $item ) ) : null;
+			// Also private while a newly private file is still moving out of the public bucket.
+			$row['private']    = $item->is_private() || ( 'attachment' === $item->source_type && MediaHooks::is_private( $item->source_id ) );
+			$row['moving']     = $row['private'] && ! $item->is_private();
 
 			if ( 'attachment' === $item->source_type ) {
 				$row['title']    = get_the_title( $item->source_id );
@@ -318,9 +348,16 @@ final class RestController {
 			return $row;
 		}, $result['items'] );
 
+		$sources = [ [ 'value' => 'media', 'label' => __( 'Media library', 'gemcloudstorage' ) ] ];
+		foreach ( Integrations::detected() as $key => $integration ) {
+			$sources[] = [ 'value' => $key, 'label' => $integration->label() ];
+		}
+		$sources[] = [ 'value' => Backups::CONTEXT, 'label' => __( 'Database backups', 'gemcloudstorage' ) ];
+
 		return new WP_REST_Response( [
-			'items' => $rows,
-			'total' => $result['total'],
+			'items'   => $rows,
+			'total'   => $result['total'],
+			'sources' => $sources,
 		] );
 	}
 
@@ -340,6 +377,130 @@ final class RestController {
 		}
 
 		return new WP_REST_Response( [ 'queued' => count( $ids ) ] );
+	}
+
+	// ── File details ────────────────────────────────────────────────────────
+
+	/**
+	 * Everything the file details modal shows for one media library file.
+	 */
+	public static function attachment( WP_REST_Request $request ) {
+		$id = (int) $request->get_param( 'id' );
+		if ( 'attachment' !== get_post_type( $id ) || ! current_user_can( 'edit_post', $id ) ) {
+			return new WP_Error( 'gemcloudstorage_not_found', __( 'That file is no longer in the media library.', 'gemcloudstorage' ), [ 'status' => 404 ] );
+		}
+		return new WP_REST_Response( self::attachment_payload( $id ) );
+	}
+
+	/**
+	 * Save the modal: title, alt text, caption, description and "Private".
+	 */
+	public static function attachment_save( WP_REST_Request $request ) {
+		$id = (int) $request->get_param( 'id' );
+		if ( 'attachment' !== get_post_type( $id ) || ! current_user_can( 'edit_post', $id ) ) {
+			return new WP_Error( 'gemcloudstorage_not_found', __( 'That file is no longer in the media library.', 'gemcloudstorage' ), [ 'status' => 404 ] );
+		}
+
+		$post = [ 'ID' => $id ];
+		if ( null !== $request->get_param( 'title' ) ) {
+			$post['post_title'] = sanitize_text_field( (string) $request->get_param( 'title' ) );
+		}
+		if ( null !== $request->get_param( 'caption' ) ) {
+			$post['post_excerpt'] = wp_kses_post( (string) $request->get_param( 'caption' ) );
+		}
+		if ( null !== $request->get_param( 'description' ) ) {
+			$post['post_content'] = wp_kses_post( (string) $request->get_param( 'description' ) );
+		}
+		if ( count( $post ) > 1 ) {
+			$result = wp_update_post( wp_slash( $post ), true );
+			if ( is_wp_error( $result ) ) {
+				return $result;
+			}
+		}
+
+		if ( null !== $request->get_param( 'alt' ) && wp_attachment_is_image( $id ) ) {
+			update_post_meta( $id, '_wp_attachment_image_alt', sanitize_text_field( (string) $request->get_param( 'alt' ) ) );
+		}
+
+		if ( null !== $request->get_param( 'private' ) ) {
+			MediaHooks::set_private( $id, (bool) $request->get_param( 'private' ) );
+		}
+
+		Integrations::forget( $id );
+		ItemRepository::forget( 'attachment', $id );
+		return new WP_REST_Response( self::attachment_payload( $id ) );
+	}
+
+	private static function attachment_payload( int $id ): array {
+		$post     = get_post( $id );
+		$meta     = wp_get_attachment_metadata( $id );
+		$meta     = is_array( $meta ) ? $meta : [];
+		$mime     = (string) get_post_mime_type( $id );
+		$kind     = strtok( $mime, '/' );
+		$file     = (string) get_attached_file( $id, true );
+		$author   = get_userdata( (int) $post->post_author );
+		$url      = (string) wp_get_attachment_url( $id );
+		$original = ItemRepository::find_variant( 'attachment', $id );
+		$size     = (int) ( $meta['filesize'] ?? 0 );
+		if ( ! $size && $original ) {
+			$size = (int) $original->size_bytes;
+		}
+		if ( ! $size && $file && file_exists( $file ) ) {
+			$size = (int) filesize( $file );
+		}
+
+		$uses = [];
+		foreach ( Integrations::uses( $id ) as $key => $reasons ) {
+			$integration = Integrations::get( $key );
+			foreach ( $reasons as $reason ) {
+				$uses[] = ( $integration ? $integration->label() . ': ' : '' ) . $reason;
+			}
+		}
+
+		$variants = [];
+		foreach ( ItemRepository::for_source( 'attachment', $id, true ) as $variant => $item ) {
+			$variants[] = [
+				'variant'     => $variant,
+				'bucket'      => $item->bucket,
+				'object_key'  => $item->object_key,
+				'status'      => $item->status,
+				'local_state' => $item->local_state,
+				'size_label'  => $item->size_bytes ? Helper::format_bytes( $item->size_bytes ) : '',
+				'url'         => $item->is_synced() && ! $item->is_private() ? Manager::public_url( $item ) : null,
+			];
+		}
+
+		return [
+			'id'          => $id,
+			'title'       => $post->post_title,
+			'alt'         => (string) get_post_meta( $id, '_wp_attachment_image_alt', true ),
+			'caption'     => $post->post_excerpt,
+			'description' => $post->post_content,
+			'mime_type'   => $mime,
+			'kind'        => in_array( $kind, [ 'image', 'video', 'audio' ], true ) ? $kind : 'file',
+			'file_name'   => wp_basename( $file ? $file : (string) get_post_meta( $id, '_wp_attached_file', true ) ),
+			'file_type'   => strtoupper( (string) pathinfo( $file, PATHINFO_EXTENSION ) ),
+			'size_label'  => $size ? Helper::format_bytes( $size ) : '',
+			'width'       => (int) ( $meta['width'] ?? 0 ),
+			'height'      => (int) ( $meta['height'] ?? 0 ),
+			'length'      => (string) ( $meta['length_formatted'] ?? '' ),
+			'uploaded_on' => get_post_time( 'c', true, $post ),
+			'author'      => $author ? $author->display_name : '',
+			'author_url'  => $author ? get_edit_user_link( $author->ID ) : '',
+			'url'         => $url,
+			'preview'     => 'image' === $kind ? (string) ( wp_get_attachment_image_url( $id, 'large' ) ?: $url ) : $url,
+			'permalink'   => (string) get_permalink( $id ),
+			'edit_url'    => (string) get_edit_post_link( $id, 'raw' ),
+			'cloud'       => [
+				'available' => Manager::available(),
+				'label'     => MediaHooks::status_label( $id ),
+				'private'   => MediaHooks::is_private( $id ),
+				'locked'    => (bool) $uses,
+				'uses'      => $uses,
+				'orphaned'  => ! $uses && (bool) MediaHooks::private_by( $id ),
+				'variants'  => $variants,
+			],
+		];
 	}
 
 	// ── Tools ───────────────────────────────────────────────────────────────
@@ -472,7 +633,8 @@ final class RestController {
 		}
 
 		$access = Credentials::access_key_id();
-		$secret = (string) Credentials::secret();
+		// A masked secret means the stored one of the provider on screen.
+		$secret = defined( 'GEMCLOUDSTORAGE_SECRET_ACCESS_KEY' ) ? (string) Credentials::secret() : Credentials::secret_for( (string) $settings['provider'] );
 
 		if ( isset( $body['credentials'] ) && is_array( $body['credentials'] ) ) {
 			if ( ! defined( 'GEMCLOUDSTORAGE_ACCESS_KEY_ID' ) && isset( $body['credentials']['access_key_id'] ) ) {

@@ -1,13 +1,16 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { __, sprintf } from '@wordpress/i18n';
-import { ExternalLink, FileText, Lock, RotateCcw, Search, Pencil } from 'lucide-react';
+import { AlertTriangle, ExternalLink, FileText, Globe, Lock, RotateCcw, Search, Pencil } from 'lucide-react';
 import PageLayout from '@GCSComponents/PageLayout';
 import StatusPill from '@GCSComponents/StatusPill';
 import Pagination from '@GCSComponents/Pagination';
 import ConfirmModal from '@GCSComponents/ConfirmModal';
+import Tooltip from '@GCSComponents/Tooltip';
+import FileDetailsModal from './FileDetailsModal';
 import { getItems, retryItems } from '@GCSRedux/Slices/itemsSlice/itemsSlice';
-import { formatDateTime, useQuery } from '@GCSUtils/helper';
+import { formatDateParts, useQuery } from '@GCSUtils/helper';
+import GCSSelect from '@GCSComponents/GCSSelect';
 
 const STATUS_TABS = [
 	{ value: '', label: __( 'All', 'gemcloudstorage' ) },
@@ -28,18 +31,41 @@ const Thumb = ( { row } ) =>
 		</span>
 	);
 
+const AccessPill = ( { row } ) => {
+	const priv = row.private ?? row.visibility === 'private';
+	const pill = (
+		<span
+			className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-[12px] font-medium"
+			style={ priv
+				? { color: 'var(--gcs-warning)', background: 'var(--gcs-warning-bg)' }
+				: { color: 'var(--gcs-info)', background: 'var(--gcs-info-bg)' } }
+		>
+			{ priv ? <Lock size={ 12 } /> : <Globe size={ 12 } /> }
+			{ priv ? __( 'Private', 'gemcloudstorage' ) : __( 'Public', 'gemcloudstorage' ) }
+		</span>
+	);
+	const tip = row.moving
+		? __( 'Private. Moving to the private bucket; already served only through signed links.', 'gemcloudstorage' )
+		: priv
+			? __( 'In the private bucket. Opens only through a short-lived signed link after an access check.', 'gemcloudstorage' )
+			: __( 'In the public bucket. Anyone with the address can open it.', 'gemcloudstorage' );
+	return <Tooltip content={ tip }>{ pill }</Tooltip>;
+};
+
 export default function Files() {
 	const dispatch = useDispatch();
 	const query = useQuery();
-	const { data, total, loading } = useSelector( ( state ) => state.items );
+	const { data, total, sources, loading } = useSelector( ( state ) => state.items );
 
 	const [ status, setStatus ] = useState( query.get( 'status' ) || '' );
 	const [ visibility, setVisibility ] = useState( '' );
+	const [ source, setSource ] = useState( query.get( 'source' ) || '' );
 	const [ search, setSearch ] = useState( '' );
 	const [ term, setTerm ] = useState( '' );
 	const [ page, setPage ] = useState( 1 );
 	const [ selected, setSelected ] = useState( [] );
 	const [ confirmAll, setConfirmAll ] = useState( false );
+	const [ editing, setEditing ] = useState( 0 );
 
 	// Debounce the search box.
 	useEffect( () => {
@@ -50,7 +76,7 @@ export default function Files() {
 		return () => clearTimeout( id );
 	}, [ search ] );
 
-	const params = useMemo( () => ( { status, visibility, search: term, page, per_page: PER_PAGE } ), [ status, visibility, term, page ] );
+	const params = useMemo( () => ( { status, visibility, source, search: term, page, per_page: PER_PAGE } ), [ status, visibility, source, term, page ] );
 
 	const load = () => dispatch( getItems( params ) );
 
@@ -99,11 +125,24 @@ export default function Files() {
 						) ) }
 					</div>
 					<div className="flex flex-wrap items-center gap-2">
-						<select className="gcs-select !w-[150px]" value={ visibility } onChange={ ( e ) => { setVisibility( e.target.value ); setPage( 1 ); } } aria-label={ __( 'Visibility', 'gemcloudstorage' ) }>
-							<option value="">{ __( 'Public and private', 'gemcloudstorage' ) }</option>
-							<option value="public">{ __( 'Public', 'gemcloudstorage' ) }</option>
-							<option value="private">{ __( 'Private', 'gemcloudstorage' ) }</option>
-						</select>
+						<GCSSelect
+							width={ 170 }
+							value={ source }
+							onChange={ ( v ) => { setSource( v ); setPage( 1 ); } }
+							options={ [ { value: '', label: __( 'All sources', 'gemcloudstorage' ) }, ...sources ] }
+							aria-label={ __( 'Source', 'gemcloudstorage' ) }
+						/>
+						<GCSSelect
+							width={ 170 }
+							value={ visibility }
+							onChange={ ( v ) => { setVisibility( v ); setPage( 1 ); } }
+							options={ [
+								{ value: '', label: __( 'Public and private', 'gemcloudstorage' ) },
+								{ value: 'public', label: __( 'Public', 'gemcloudstorage' ) },
+								{ value: 'private', label: __( 'Private', 'gemcloudstorage' ) },
+							] }
+							aria-label={ __( 'Visibility', 'gemcloudstorage' ) }
+						/>
 						<div className="relative">
 							<Search size={ 15 } className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--gcs-text-muted)]" />
 							<input
@@ -146,6 +185,7 @@ export default function Files() {
 									/>
 								</th>
 								<th>{ __( 'File', 'gemcloudstorage' ) }</th>
+								<th>{ __( 'Access', 'gemcloudstorage' ) }</th>
 								<th>{ __( 'Object key', 'gemcloudstorage' ) }</th>
 								<th>{ __( 'Size', 'gemcloudstorage' ) }</th>
 								<th>{ __( 'Status', 'gemcloudstorage' ) }</th>
@@ -157,7 +197,7 @@ export default function Files() {
 							{ loading && ! data.length &&
 								[ ...Array( 6 ) ].map( ( _, i ) => (
 									<tr key={ i }>
-										<td colSpan={ 7 }>
+										<td colSpan={ 8 }>
 											<div className="gcs-skeleton h-8 w-full" />
 										</td>
 									</tr>
@@ -165,7 +205,7 @@ export default function Files() {
 
 							{ ! loading && ! data.length && (
 								<tr>
-									<td colSpan={ 7 } className="py-12 text-center text-[var(--gcs-font-secondary-color)]">
+									<td colSpan={ 8 } className="py-12 text-center text-[var(--gcs-font-secondary-color)]">
 										{ __( 'No files found.', 'gemcloudstorage' ) }
 									</td>
 								</tr>
@@ -182,12 +222,13 @@ export default function Files() {
 										/>
 									</td>
 									<td>
-										<div className="flex min-w-[220px] items-center gap-3">
+										<div className="flex w-[240px] max-w-[240px] items-center gap-3">
 											<Thumb row={ row } />
-											<div className="min-w-0">
-												<div className="truncate font-medium">{ row.title || row.filename }</div>
+											<div className="min-w-0 flex-1">
+												<Tooltip content={ row.title || row.filename } className="gcs-truncate font-medium">
+													{ row.title || row.filename }
+												</Tooltip>
 												<div className="mt-0.5 flex items-center gap-1.5 text-[12px] text-[var(--gcs-font-secondary-color)]">
-													{ row.visibility === 'private' && <Lock size={ 11 } /> }
 													<span>{ row.source_type === 'attachment' ? __( 'Media', 'gemcloudstorage' ) : row.source_type }</span>
 													<span>·</span>
 													<span>{ row.variant }</span>
@@ -196,16 +237,27 @@ export default function Files() {
 										</div>
 									</td>
 									<td>
-										<code className="gcs-code inline-block max-w-[320px]" title={ `${ row.bucket }/${ row.object_key }` }>
+										<AccessPill row={ row } />
+									</td>
+									<td>
+										<Tooltip content={ `${ row.bucket }/${ row.object_key }` } className="gcs-code gcs-truncate max-w-[240px]">
 											{ row.object_key }
-										</code>
+										</Tooltip>
 									</td>
 									<td className="whitespace-nowrap">{ row.size_label || '—' }</td>
 									<td>
 										<div className="flex flex-col items-start gap-1">
 											<StatusPill status={ row.status } />
 											{ row.local_state === 'removed' && (
-												<span className="text-[11px] text-[var(--gcs-text-muted)]">{ __( 'not on this server', 'gemcloudstorage' ) }</span>
+												<Tooltip content={ __( 'The cloud has the only copy. Deleting it from the bucket loses the file for good.', 'gemcloudstorage' ) }>
+													<span
+														className="inline-flex items-center gap-1 whitespace-nowrap rounded-[4px] px-1.5 py-0.5 text-[11px] font-medium"
+														style={ { color: 'var(--gcs-warning)', background: 'var(--gcs-warning-bg)' } }
+													>
+														<AlertTriangle size={ 11 } />
+														{ __( 'Not on this server', 'gemcloudstorage' ) }
+													</span>
+												</Tooltip>
 											) }
 											{ row.last_error && row.status !== 'synced' && (
 												<span className="max-w-[260px] text-[11px] leading-[1.4] text-[var(--gcs-danger)]" title={ row.last_error }>
@@ -214,7 +266,11 @@ export default function Files() {
 											) }
 										</div>
 									</td>
-									<td className="whitespace-nowrap text-[var(--gcs-font-secondary-color)]">{ formatDateTime( row.updated_at ) }</td>
+									<td className="whitespace-nowrap text-[12px] leading-[1.45] text-[var(--gcs-font-secondary-color)]">
+										{ formatDateParts( row.updated_at ).map( ( part, i ) => (
+											<div key={ i }>{ part }</div>
+										) ) }
+									</td>
 									<td>
 										<div className="flex justify-end gap-1">
 											{ row.url && (
@@ -222,10 +278,10 @@ export default function Files() {
 													<ExternalLink size={ 14 } />
 												</a>
 											) }
-											{ row.edit_url && (
-												<a className="gcs-btn gcs-btn--outline gcs-btn--sm" href={ row.edit_url } title={ __( 'Edit attachment', 'gemcloudstorage' ) }>
+											{ row.source_type === 'attachment' && (
+												<button type="button" className="gcs-btn gcs-btn--outline gcs-btn--sm" onClick={ () => setEditing( row.source_id ) } title={ __( 'File details', 'gemcloudstorage' ) } aria-label={ __( 'File details', 'gemcloudstorage' ) }>
 													<Pencil size={ 14 } />
-												</a>
+												</button>
 											) }
 											{ ( row.status === 'failed' || row.status === 'pending' ) && (
 												<button type="button" className="gcs-btn gcs-btn--outline gcs-btn--sm" onClick={ () => retry( { ids: [ row.id ] } ) } title={ __( 'Upload again', 'gemcloudstorage' ) }>
@@ -242,6 +298,8 @@ export default function Files() {
 
 				{ total > 0 && <Pagination page={ page } perPage={ PER_PAGE } total={ total } onChange={ setPage } /> }
 			</div>
+
+			{ editing > 0 && <FileDetailsModal attachmentId={ editing } onClose={ () => setEditing( 0 ) } onSaved={ load } /> }
 
 			<ConfirmModal
 				open={ confirmAll }
