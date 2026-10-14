@@ -1,0 +1,60 @@
+.gemcloudstorage-notification {
+	position: fixed;
+	left: 50%;
+	bottom: 50px;
+	transform: translateX(-50%);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px;
+	padding: 10px 16px;
+	box-shadow: var(--gcs-notification-shadow);
+	border-radius: 4px;
+	min-width: 400px;
+	max-width: calc(100vw - 32px);
+	z-index: 99999;
+	font-family: var(--gcs-font);
+	font-size: 14px;
+	color: var(--gcs-white);
+	background: var(--gcs-success);
+	animation: gcs-toast-in 0.2s ease;
+
+	&--error {
+		background: #FF4D4D;
+	}
+
+	&--warning {
+		background: #D97706;
+	}
+
+	&--info {
+		background: #006BFF;
+	}
+
+	&__message {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	&__close {
+		background: transparent;
+		border: 0;
+		color: inherit;
+		cursor: pointer;
+		display: flex;
+		padding: 2px;
+	}
+}
+
+@keyframes gcs-toast-in {
+	from { opacity: 0; transform: translate(-50%, 8px); }
+	to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@media (max-width: 600px) {
+	.gemcloudstorage-notification {
+		min-width: 0;
+		width: calc(100vw - 32px);
+	}
+}

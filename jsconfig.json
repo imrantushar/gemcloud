@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"baseUrl": "dev_gemcloudstorage",
+		"paths": {
+			"@GCSComponents/*": [ "components/*" ],
+			"@GCSContainers/*": [ "containers/*" ],
+			"@GCSPages/*": [ "containers/BackendDashboard/pages/*" ],
+			"@GCSRedux/*": [ "redux/*" ],
+			"@GCSUtils/*": [ "utils/*" ]
+		}
+	},
+	"include": [ "dev_gemcloudstorage" ]
+}

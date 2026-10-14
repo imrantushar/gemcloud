@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#gemcloudstorage-app.gemcloudstorage-scope {
+	background: var(--gcs-body-background);
+	color: var(--gcs-font-color);
+	min-height: calc(100vh - 32px);
+}
+
+html:has(#gemcloudstorage-app),
+body:has(#gemcloudstorage-app) {
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		width: 0;
+	}
+}
+
+.gemcloudstorage-route {
+	animation: gcs-route-in 0.28s ease;
+}
+
+@keyframes gcs-route-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.gemcloudstorage-route { animation: none; }
+}
+
+// Scoped reset (Tailwind preflight is off so WP admin stays untouched).
+.gemcloudstorage-scope {
+	font-family: var(--gcs-font);
+	line-height: 1.5;
+
+	*, *::before, *::after {
+		box-sizing: border-box;
+		border-width: 0;
+		border-style: solid;
+		border-color: currentColor;
+	}
+
+	h1, h2, h3, h4, h5, h6, p {
+		margin: 0;
+		font-size: inherit;
+		font-weight: inherit;
+		color: inherit;
+	}
+
+	button, select, textarea {
+		font-family: inherit;
+		font-size: 100%;
+		line-height: inherit;
+		color: inherit;
+		margin: 0;
+	}
+
+	button, [type='button'], [type='submit'] {
+		-webkit-appearance: button;
+		background-color: transparent;
+		background-image: none;
+		cursor: pointer;
+	}
+
+	a {
+		color: inherit;
+		text-decoration: inherit;
+	}
+
+	img, svg {
+		display: block;
+		vertical-align: middle;
+	}
+
+	img {
+		max-width: 100%;
+		height: auto;
+	}
+
+	ol, ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	input[type='checkbox'] {
+		border: 1px solid var(--gcs-border-color);
+	}
+}
+
+// The WP admin menu keeps WordPress's own box model.
+.toplevel_page_gemcloudstorage {
+	#adminmenuwrap,
+	#adminmenu,
+	#adminmenuback {
+		*, *::before, *::after {
+			box-sizing: content-box;
+			border: revert;
+			outline: revert;
+		}
+	}
+}
+
+@import './common/global';
+@import './common/components';
+@import './common/notification';

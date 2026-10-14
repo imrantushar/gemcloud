@@ -1,0 +1,222 @@
+// Shared component classes, mirroring Zaplane's form and table styling.
+
+.gcs-label {
+	display: block;
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--gcs-font-color);
+	margin-bottom: 6px;
+}
+
+.gcs-help {
+	font-size: 12px;
+	color: var(--gcs-font-secondary-color);
+	margin-top: 6px;
+	line-height: 1.5;
+}
+
+.gcs-input,
+.gcs-select {
+	width: 100%;
+	height: 38px;
+	padding: 8px 12px;
+	border: 1px solid var(--gcs-border-color) !important;
+	border-radius: 4px !important;
+	background: var(--gcs-background) !important;
+	color: var(--gcs-font-color) !important;
+	font-size: 14px;
+	line-height: 20px;
+	box-shadow: none !important;
+	outline: none;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+	&:focus {
+		border-color: var(--gcs-primary) !important;
+		box-shadow: 0 0 0 3px var(--gcs-info-bg) !important;
+	}
+
+	&:disabled,
+	&[readonly] {
+		background: var(--gcs-secondary-color) !important;
+		color: var(--gcs-text-muted) !important;
+		cursor: not-allowed;
+	}
+
+	&::placeholder {
+		color: var(--gcs-placeholder);
+	}
+}
+
+.gcs-select {
+	padding-right: 32px;
+	appearance: none;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23738496' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+	background-repeat: no-repeat !important;
+	background-position: right 12px center !important;
+	max-width: none;
+}
+
+.gcs-card {
+	background: var(--gcs-background);
+	border: 1px solid var(--gcs-border-color);
+	border-radius: 8px;
+}
+
+.gcs-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	height: 36px;
+	padding: 2px 14px;
+	border-radius: 4px;
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 1.2;
+	white-space: nowrap;
+	cursor: pointer;
+	flex-shrink: 0;
+	transition: opacity 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+	border: 1px solid transparent;
+
+	&:disabled {
+		opacity: 0.55;
+		cursor: not-allowed;
+	}
+
+	&--primary {
+		background: var(--gcs-primary) !important;
+		color: var(--gcs-white) !important;
+
+		&:hover:not(:disabled) {
+			opacity: 0.9;
+		}
+	}
+
+	&--soft {
+		background: var(--gcs-second-primary) !important;
+		color: var(--gcs-primary) !important;
+	}
+
+	&--outline {
+		background: transparent !important;
+		color: var(--gcs-font-color) !important;
+		border-color: var(--gcs-border-color) !important;
+
+		&:hover:not(:disabled) {
+			background: var(--gcs-secondary-color) !important;
+		}
+	}
+
+	&--danger {
+		background: transparent !important;
+		color: var(--gcs-danger) !important;
+		border-color: var(--gcs-danger) !important;
+	}
+
+	&--sm {
+		height: 30px;
+		padding: 2px 10px;
+		font-size: 13px;
+	}
+}
+
+.gcs-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13px;
+
+	th {
+		text-align: left;
+		font-weight: 500;
+		color: var(--gcs-font-secondary-color);
+		padding: 12px 16px;
+		border-bottom: 1px solid var(--gcs-border-color);
+		background: var(--gcs-secondary-color);
+		white-space: nowrap;
+	}
+
+	td {
+		padding: 12px 16px;
+		border-bottom: 1px solid var(--gcs-border-color);
+		color: var(--gcs-font-color);
+		vertical-align: middle;
+	}
+
+	tr:last-child td {
+		border-bottom: 0;
+	}
+
+	tbody tr:hover td {
+		background: var(--gcs-secondary-color);
+	}
+}
+
+.gcs-tabs {
+	display: flex;
+	gap: 4px;
+	flex-wrap: wrap;
+
+	.tab {
+		padding: 6px 12px;
+		border-radius: 999px;
+		font-size: 13px;
+		font-weight: 500;
+		color: var(--gcs-font-secondary-color);
+		cursor: pointer;
+		border: 1px solid transparent;
+
+		&:hover {
+			background: var(--gcs-secondary-color);
+		}
+
+		&.is-active {
+			background: var(--gcs-second-primary);
+			border-color: var(--gcs-primary);
+			color: var(--gcs-primary);
+		}
+	}
+}
+
+.gcs-code {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	font-size: 12px;
+	padding: 2px 6px;
+	border-radius: 4px;
+	background: var(--gcs-secondary-color);
+	color: var(--gcs-font-color);
+	word-break: break-all;
+}
+
+.gcs-progress {
+	height: 8px;
+	border-radius: 999px;
+	background: var(--gcs-secondary-color);
+	overflow: hidden;
+
+	&__bar {
+		height: 100%;
+		border-radius: 999px;
+		background: var(--gcs-primary);
+		transition: width 0.4s ease;
+	}
+}
+
+.gcs-skeleton {
+	background: var(--gcs-secondary-color);
+	border-radius: 4px;
+	animation: gcs-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes gcs-pulse {
+	0%, 100% { opacity: 1; }
+	50% { opacity: 0.5; }
+}
+
+.gcs-spin {
+	animation: gcs-spin 0.9s linear infinite;
+}
+
+@keyframes gcs-spin {
+	to { transform: rotate(360deg); }
+}

@@ -1,0 +1,38 @@
+# OS and editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Node (assets/build/ is committed: the plugin loads it at runtime)
+node_modules/
+npm-debug.log*
+**/*.map
+*.zip
+
+# Composer: vendor/ is committed (Action Scheduler is loaded from it).
+# Dev-only packages must never be committed; run "composer install --no-dev".
+composer.phar
+
+# Local secrets and environment
+.env
+.env.*
+auth.json
+
+# Test and tool output
+.phpunit.result.cache
+test-results/
+playwright-report/
+coverage/
+.build-cache/
+/dist/
+
+# AI agent and spec files
+openspec/
+.agents/
+.claude/
+.codex
+CLAUDE.md
+AGENTS.md
+SKILL.md

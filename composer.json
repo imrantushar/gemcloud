@@ -1,0 +1,15 @@
+{
+    "name": "kodezen/gemcloudstorage",
+    "description": "Offload WordPress media and protected files to Amazon S3 and Cloudflare R2.",
+    "license": "GPL-3.0-or-later",
+    "require": {
+        "php": ">=7.4",
+        "woocommerce/action-scheduler": "^3.9"
+    },
+    "config": {
+        "platform": {
+            "php": "7.4.33"
+        },
+        "optimize-autoloader": true
+    }
+}
