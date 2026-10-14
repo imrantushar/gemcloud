@@ -44,7 +44,8 @@ final class ReconcileJob {
 		if ( count( $ids ) > $offset + self::BATCH ) {
 			Queue::enqueue( Queue::RECONCILE, [ $offset + self::BATCH ] );
 		} else {
-			foreach ( $active as $integration ) {
+			// Each product checks for itself whether it needs the private bucket.
+			foreach ( Integrations::switched_on() as $integration ) {
 				$integration->reconcile_own_files();
 			}
 		}

@@ -189,24 +189,37 @@ final class UrlRewriter {
 	 * stored data never depends on the plugin. Other URLs are returned as is.
 	 */
 	public static function canonical_url( string $url ): string {
-		$query = (string) wp_parse_url( $url, PHP_URL_QUERY );
-		$item  = null;
-
-		if ( $query ) {
-			parse_str( $query, $args );
-			if ( ! empty( $args[ PrivateDelivery::QUERY_VAR ] ) ) {
-				$item = ItemRepository::find( absint( $args[ PrivateDelivery::QUERY_VAR ] ) );
-			}
-		}
+		$item = self::item_for_url( $url );
 		if ( ! $item ) {
-			$item = self::item_for_public_url( $url );
-		}
-		if ( ! $item || 'attachment' !== $item->source_type ) {
 			return $url;
 		}
 
-		$local = self::local_url( $item->source_id, wp_basename( $item->local_path ) );
-		return $local ? $local : $url;
+		if ( 'attachment' === $item->source_type ) {
+			$local = self::local_url( $item->source_id, wp_basename( $item->local_path ) );
+			return $local ? $local : $url;
+		}
+
+		// A file a product keeps outside the media library, inside uploads.
+		$relative = \GemCloudStorage\Keys::relative_to_uploads( $item->local_path );
+		if ( '' === $relative ) {
+			return $url;
+		}
+		return trailingslashit( wp_get_upload_dir()['baseurl'] ) . implode( '/', array_map( 'rawurlencode', explode( '/', $relative ) ) );
+	}
+
+	/**
+	 * The stored object a cloud URL (public address or /?gcs_file= link)
+	 * points at, or null for any other URL.
+	 */
+	public static function item_for_url( string $url ): ?Item {
+		$query = (string) wp_parse_url( $url, PHP_URL_QUERY );
+		if ( $query ) {
+			parse_str( $query, $args );
+			if ( ! empty( $args[ PrivateDelivery::QUERY_VAR ] ) ) {
+				return ItemRepository::find( absint( $args[ PrivateDelivery::QUERY_VAR ] ) );
+			}
+		}
+		return self::item_for_public_url( $url );
 	}
 
 	private static function item_for_public_url( string $url ): ?Item {

@@ -29,7 +29,7 @@ final class Integrations {
 		 *
 		 * @param Integration[] $integrations
 		 */
-		$candidates = (array) apply_filters( 'gemcloudstorage/integrations', [ new Academy(), new StoreEngine() ] );
+		$candidates = (array) apply_filters( 'gemcloudstorage/integrations', [ new Academy(), new StoreEngine(), new TruePlayer() ] );
 
 		foreach ( $candidates as $integration ) {
 			if ( $integration instanceof Integration && $integration->detected() ) {
@@ -48,6 +48,18 @@ final class Integrations {
 	public static function active(): array {
 		return array_filter( self::$all, function ( Integration $i ) {
 			return $i->enabled();
+		} );
+	}
+
+	/**
+	 * Detected and switched on, private bucket or not. Some products also
+	 * keep public files in the cloud, which needs no private bucket.
+	 *
+	 * @return Integration[]
+	 */
+	public static function switched_on(): array {
+		return array_filter( self::$all, function ( Integration $i ) {
+			return $i->switched_on();
 		} );
 	}
 

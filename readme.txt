@@ -31,6 +31,17 @@ Both are detected automatically. Their files are protected once a private bucket
 * Video and audio links last at least 4 hours so a long lesson keeps playing; subtitles are streamed through the site.
 * `wp gemcloudstorage reconcile` checks every product file now; it also runs daily.
 
+== TruePlayer ==
+
+Detected automatically; switched off under Settings → Contexts → TruePlayer videos.
+
+* Self-hosted videos, audio, posters and captions play from the cloud. The video's saved settings keep the local URL; the cloud URL is swapped in when the player is shown.
+* A video switched to "Private" in TruePlayer (Protection tab) has its file and captions moved to the private bucket. They open only for viewers TruePlayer lets play the video: its login, drip and access rules (for example Academy enrolment through TruePlayer Pro), so a copied link doesn't work for anyone else. Needs a private bucket; until one is added, private files stay on the server.
+* TruePlayer Pro's signed stream link keeps working: once the file is in the cloud it sends the viewer to a signed link (at least 4 hours) instead of streaming from the server.
+* Files picked by URL from outside the media library (ZenCommunity uploads, for example) are copied up; the server keeps its copy.
+* Posters always stay public. YouTube, Vimeo, Bunny, Gumlet and Mux videos are left alone.
+* Captions or posters loaded from the public bucket need CORS: Tools → Set up CORS.
+
 == Database backups ==
 
 Settings → Backups. A compressed SQL copy of the site's tables (orders, products, license keys, customers, posts, settings), daily or weekly, kept 7 to 90 days, in the private bucket only. Large databases are written in 20-second slices in the background; the local file is deleted once the upload is verified.
