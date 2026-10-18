@@ -42,7 +42,7 @@ final class DownloadBackJob {
 			'processed'   => 0,
 			'failed'      => 0,
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom table count.
-			'total'       => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table} WHERE local_state = 'removed' AND status = 'synced'" ),
+			'total'       => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table} WHERE local_state = 'removed' AND source_type = 'attachment' AND status = 'synced'" ),
 			'started_at'  => gmdate( 'c' ),
 			'finished_at' => null,
 		];
