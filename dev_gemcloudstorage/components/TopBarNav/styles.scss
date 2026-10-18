@@ -11,7 +11,7 @@
 		padding: 0 14px;
 		height: 36px;
 		border: 1px solid transparent;
-		border-radius: 999px;
+		border-radius: 6px;
 		font-size: 13px;
 		font-weight: 500;
 		color: var(--gcs-font-color);
@@ -36,8 +36,9 @@
 	&__link.gemcloudstorage-topbar-nav__link--active,
 	&__link.gemcloudstorage-topbar-nav__link--active:hover {
 		background: var(--gcs-second-primary);
-		border-color: var(--gcs-primary);
+		border-color: transparent;
 		color: var(--gcs-primary);
+		font-weight: 600;
 	}
 }
 

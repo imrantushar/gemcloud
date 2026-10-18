@@ -1,27 +1,27 @@
-// Theme tokens. Same palette as Zaplane: html[data-theme] selects the mode,
+// Theme tokens: GemCRM palette (shared across the plugin family). Like Zaplane, html[data-theme] selects the mode,
 // so portaled UI outside the app root inherits it too.
 :root,
 html[data-theme="light"] {
 	--gcs-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 	--gcs-primary: #006BFF;
-	--gcs-second-primary: #DAEAFF;
-	--gcs-secondary: #F5F5F5;
+	--gcs-second-primary: #E3E7FF;
+	--gcs-secondary: #F6F7F8;
 	--gcs-secondary-color: #F6F7F8;
 	--gcs-background: #FFFFFF;
 	--gcs-body-background: #F6F7F8;
-	--gcs-border-color: #CBD1D7;
-	--gcs-font-color: #141A24;
-	--gcs-font-secondary-color: #737373;
-	--gcs-text-muted: #738496;
+	--gcs-border-color: #DFE1E5;
+	--gcs-font-color: #131D2B;
+	--gcs-font-secondary-color: #575E6C;
+	--gcs-text-muted: #575E6C;
 	--gcs-placeholder: #A2ADB9;
-	--gcs-success: #16A34A;
-	--gcs-success-bg: rgba(22, 163, 74, 0.1);
-	--gcs-warning: #D97706;
-	--gcs-warning-bg: rgba(234, 179, 8, 0.12);
-	--gcs-danger: #E44A3F;
-	--gcs-danger-bg: rgba(220, 38, 38, 0.1);
+	--gcs-success: #00AD6B;
+	--gcs-success-bg: rgba(0, 173, 107, 0.1);
+	--gcs-warning: #B54708;
+	--gcs-warning-bg: rgba(253, 176, 34, 0.12);
+	--gcs-danger: #E2483D;
+	--gcs-danger-bg: rgba(226, 72, 61, 0.1);
 	--gcs-info: #006BFF;
-	--gcs-info-bg: rgba(0, 107, 255, 0.08);
+	--gcs-info-bg: #E3E7FF;
 	--gcs-white: #fff;
 	--gcs-shadow-menu: 0 0 1px 0 rgba(20, 26, 36, 0.30), 0 8px 16px 0 rgba(20, 26, 36, 0.10);
 	--gcs-notification-shadow: 0px 12px 72px -8px rgba(16, 24, 40, 0.25);
@@ -29,24 +29,24 @@ html[data-theme="light"] {
 
 html[data-theme="dark"] {
 	--gcs-primary: #4C8DFF;
-	--gcs-second-primary: #16263C;
-	--gcs-secondary: #212732;
-	--gcs-secondary-color: #1A1F27;
-	--gcs-background: #161A21;
-	--gcs-body-background: #0E1116;
-	--gcs-border-color: #303845;
-	--gcs-font-color: #DCE3EC;
-	--gcs-font-secondary-color: #A7B3C2;
-	--gcs-text-muted: #8794A6;
-	--gcs-placeholder: #7C8899;
-	--gcs-success: #3DD68C;
-	--gcs-success-bg: rgba(61, 214, 140, 0.12);
-	--gcs-warning: #F5B544;
-	--gcs-warning-bg: rgba(245, 181, 68, 0.12);
-	--gcs-danger: #FB7185;
-	--gcs-danger-bg: rgba(251, 113, 133, 0.12);
+	--gcs-second-primary: #172A45;
+	--gcs-secondary: #1E242C;
+	--gcs-secondary-color: #1E242C;
+	--gcs-background: #171C24;
+	--gcs-body-background: #0F141A;
+	--gcs-border-color: #2C333F;
+	--gcs-font-color: #E6E9EF;
+	--gcs-font-secondary-color: #9AA4B2;
+	--gcs-text-muted: #9AA4B2;
+	--gcs-placeholder: #6B7280;
+	--gcs-success: #34D399;
+	--gcs-success-bg: rgba(52, 211, 153, 0.16);
+	--gcs-warning: #FBBF24;
+	--gcs-warning-bg: rgba(251, 191, 36, 0.16);
+	--gcs-danger: #F87171;
+	--gcs-danger-bg: rgba(248, 113, 113, 0.16);
 	--gcs-info: #4C8DFF;
-	--gcs-info-bg: rgba(76, 141, 255, 0.12);
+	--gcs-info-bg: #172A45;
 	--gcs-shadow-menu: 0 0 1px 0 rgba(0, 0, 0, 0.6), 0 8px 16px 0 rgba(0, 0, 0, 0.4);
 }
 

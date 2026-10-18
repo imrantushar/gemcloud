@@ -39,7 +39,8 @@ body:has(#gemcloudstorage-app) {
 		box-sizing: border-box;
 		border-width: 0;
 		border-style: solid;
-		border-color: currentColor;
+		/* Token, not currentColor: a bare `border` should be a hairline, not ink. */
+		border-color: var(--gcs-border-color);
 	}
 
 	h1, h2, h3, h4, h5, h6, p {
@@ -57,7 +58,10 @@ body:has(#gemcloudstorage-app) {
 		margin: 0;
 	}
 
-	button, [type='button'], [type='submit'] {
+	/* :where() keeps this at the scope's (0,1,0): with `[type=button]` it
+	   tied Tailwind's scoped utilities and, coming later, wiped every
+	   bg-* on a button (e.g. the active settings tab). */
+	:where(button, [type='button'], [type='submit']) {
 		-webkit-appearance: button;
 		background-color: transparent;
 		background-image: none;

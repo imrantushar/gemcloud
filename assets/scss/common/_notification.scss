@@ -20,15 +20,15 @@
 	animation: gcs-toast-in 0.2s ease;
 
 	&--error {
-		background: #FF4D4D;
+		background: var(--gcs-danger);
 	}
 
 	&--warning {
-		background: #D97706;
+		background: #B54708;
 	}
 
 	&--info {
-		background: #006BFF;
+		background: var(--gcs-primary);
 	}
 
 	&__message {

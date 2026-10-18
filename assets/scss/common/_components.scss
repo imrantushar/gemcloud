@@ -179,7 +179,7 @@ textarea.gcs-input {
 
 	.tab {
 		padding: 6px 12px;
-		border-radius: 999px;
+		border-radius: 6px;
 		font-size: 13px;
 		font-weight: 500;
 		color: var(--gcs-font-secondary-color);
@@ -192,8 +192,8 @@ textarea.gcs-input {
 
 		&.is-active {
 			background: var(--gcs-second-primary);
-			border-color: var(--gcs-primary);
 			color: var(--gcs-primary);
+			font-weight: 600;
 		}
 	}
 }
