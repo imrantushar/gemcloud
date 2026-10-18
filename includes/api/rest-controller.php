@@ -574,6 +574,7 @@ final class RestController {
 
 		return new WP_REST_Response( [
 			'blocker'  => Backups::blocker(),
+			'handled_by' => Backups::handled_by(),
 			'running'  => $progress,
 			'last'     => $last,
 			'backups'  => $list,

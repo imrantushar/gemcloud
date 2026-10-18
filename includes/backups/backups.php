@@ -85,6 +85,14 @@ final class Backups {
 	 * Why a backup can't run right now, or '' when it can.
 	 */
 	public static function blocker(): string {
+		$owner = self::handled_by();
+		if ( '' !== $owner ) {
+			return sprintf(
+				/* translators: %s: backup plugin name */
+				__( '%s already backs up this database to your bucket on a schedule, so backups here are paused to avoid a second copy. Earlier backups below stay downloadable.', 'gemcloudstorage' ),
+				$owner
+			);
+		}
 		if ( ! Manager::available() ) {
 			return __( 'Connect a bucket and switch cloud storage on first.', 'gemcloudstorage' );
 		}
@@ -95,6 +103,20 @@ final class Backups {
 			return __( 'This server\'s PHP has no zlib extension, which backups need for compression.', 'gemcloudstorage' );
 		}
 		return '';
+	}
+
+	/**
+	 * The plugin that already backs up the database into this bucket, or ''.
+	 */
+	public static function handled_by(): string {
+		/**
+		 * Filters which plugin owns database backups. A backup plugin that
+		 * writes scheduled database backups to this bucket returns its name,
+		 * and the backups here pause.
+		 *
+		 * @param string $owner Plugin name, or '' when backups run here.
+		 */
+		return (string) apply_filters( 'gemcloudstorage/backups/handled_by', '' );
 	}
 
 	// ── Running ─────────────────────────────────────────────────────────────
