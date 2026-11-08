@@ -45,7 +45,7 @@ const Tooltip = ( { content, children, className = '' } ) => {
 					<div
 						id={ id }
 						role="tooltip"
-						className="gcs-tooltip"
+						className="gemcloud-tooltip"
 						style={ {
 							left: Math.min( Math.max( pos.left, 16 ), window.innerWidth - 16 ),
 							top: below ? pos.bottom + 8 : pos.top - 8,

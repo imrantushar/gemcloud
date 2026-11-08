@@ -45,13 +45,11 @@ class Installer {
 			}
 			delete_option( 'gemcloudstorage_' . $name );
 		}
-		$old_table = $wpdb->prefix . 'gemcloudstorage_items';
-		$new_table = self::table();
+		// The beta's db_version option above means its table was created too.
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- one-time rename of this plugin's own table.
-		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $old_table ) ) === $old_table
-			&& $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $new_table ) ) !== $new_table ) {
-			$wpdb->query( $wpdb->prepare( 'RENAME TABLE %i TO %i', $old_table, $new_table ) );
-		}
+		$suppress = $wpdb->suppress_errors( true );
+		$wpdb->query( $wpdb->prepare( 'RENAME TABLE %i TO %i', $wpdb->prefix . 'gemcloudstorage_items', self::table() ) );
+		$wpdb->suppress_errors( $suppress );
 		$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_key = REPLACE(meta_key, '_gemcloudstorage_', '_gemcloud_') WHERE meta_key LIKE '\\_gemcloudstorage\\_%'" );
 		// phpcs:enable
 		delete_option( 'gemcloudstorage_db_version' );

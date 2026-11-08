@@ -294,7 +294,7 @@ final class Backups {
 	 * resort, in a folder the web server is told not to serve.
 	 */
 	private static function temp_file(): string {
-		$name = 'gcs-backup-' . wp_generate_password( 24, false ) . '.sql.gz';
+		$name = 'gemcloud-backup-' . wp_generate_password( 24, false ) . '.sql.gz';
 		$dir  = untrailingslashit( get_temp_dir() );
 
 		if ( ! wp_is_writable( $dir ) ) {

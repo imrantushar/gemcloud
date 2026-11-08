@@ -13,7 +13,7 @@
  *    library and one from storeengine_uploads, and a paid order for the
  *    student that grants both downloads.
  *
- * Everything created is recorded in the gcs_fixture option; cleanup.php
+ * Everything created is recorded in the gemcloud_fixture option; cleanup.php
  * removes exactly that. Not shipped with the plugin.
  *
  * phpcs:ignoreFile -- developer fixture.
@@ -23,7 +23,7 @@ if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
 	exit;
 }
 
-if ( get_option( 'gcs_fixture' ) ) {
+if ( get_option( 'gemcloud_fixture' ) ) {
 	WP_CLI::error( 'Test content already exists. Run cleanup.php first.' );
 }
 if ( ! defined( 'ACADEMY_VERSION' ) || ! defined( 'STOREENGINE_VERSION' ) ) {
@@ -54,7 +54,7 @@ $attach = function ( string $name, string $bytes, string $title ) use ( &$fx ) {
 	if ( is_wp_error( $id ) ) {
 		WP_CLI::error( "Could not add $name: " . $id->get_error_message() );
 	}
-	update_post_meta( $id, '_gcs_fixture', 1 );
+	update_post_meta( $id, '_gemcloud_fixture', 1 );
 	$fx['attachments'][] = (int) $id;
 	return (int) $id;
 };
@@ -108,18 +108,18 @@ if ( ! $video_source ) {
 }
 
 $f = [];
-$f['video']    = $attach( 'gcs-test-lesson-video.mp4', file_get_contents( $video_source ), 'GCS test: lesson video' );
-$f['subtitle'] = $attach( 'gcs-test-lesson-video.vtt', "WEBVTT\n\n00:00:00.000 --> 00:00:04.000\nGemCloud test subtitles.\n\n00:00:04.000 --> 00:00:09.000\nThese captions are streamed through the site.\n", 'GCS test: subtitles' );
-$f['notes']    = $attach( 'gcs-test-lesson-notes.pdf', $pdf( 'Lesson notes', 'GemCloud test: only enrolled students should open this.' ), 'GCS test: lesson notes' );
-$f['preview']  = $attach( 'gcs-test-preview-handout.pdf', $pdf( 'Preview handout', 'GemCloud test: anyone may open this, the lesson is a free preview.' ), 'GCS test: preview handout' );
-$f['thumb']    = $attach( 'gcs-test-course-thumbnail.png', file_get_contents( ABSPATH . 'wp-admin/images/w-logo-blue.png' ), 'GCS test: course thumbnail' );
-$f['ebook']    = $attach( 'gcs-test-ebook.zip', $zip( wp_tempnam( 'gcs-ebook' ), [ 'GCS Test eBook.pdf' => $pdf( 'GCS Test eBook', 'A purchased download, stored in the media library.' ), 'readme.txt' => "GemCloud StoreEngine test download (media library).\n" ] ), 'GCS test: ebook download' );
+$f['video']    = $attach( 'gemcloud-test-lesson-video.mp4', file_get_contents( $video_source ), 'GCS test: lesson video' );
+$f['subtitle'] = $attach( 'gemcloud-test-lesson-video.vtt', "WEBVTT\n\n00:00:00.000 --> 00:00:04.000\nGemCloud test subtitles.\n\n00:00:04.000 --> 00:00:09.000\nThese captions are streamed through the site.\n", 'GCS test: subtitles' );
+$f['notes']    = $attach( 'gemcloud-test-lesson-notes.pdf', $pdf( 'Lesson notes', 'GemCloud test: only enrolled students should open this.' ), 'GCS test: lesson notes' );
+$f['preview']  = $attach( 'gemcloud-test-preview-handout.pdf', $pdf( 'Preview handout', 'GemCloud test: anyone may open this, the lesson is a free preview.' ), 'GCS test: preview handout' );
+$f['thumb']    = $attach( 'gemcloud-test-course-thumbnail.png', file_get_contents( ABSPATH . 'wp-admin/images/w-logo-blue.png' ), 'GCS test: course thumbnail' );
+$f['ebook']    = $attach( 'gemcloud-test-ebook.zip', $zip( wp_tempnam( 'gemcloud-ebook' ), [ 'GCS Test eBook.pdf' => $pdf( 'GCS Test eBook', 'A purchased download, stored in the media library.' ), 'readme.txt' => "GemCloud StoreEngine test download (media library).\n" ] ), 'GCS test: ebook download' );
 
 // A download kept outside the media library, the way StoreEngine's protected folder is used.
 $se_dir = wp_upload_dir()['basedir'] . '/storeengine_uploads';
 wp_mkdir_p( $se_dir );
-$software_path = $se_dir . '/gcs-test-software.zip';
-$zip( $software_path, [ 'readme.txt' => "GemCloud StoreEngine test download (outside the media library).\n", 'app/config.json' => '{"name":"gcs-test"}' ] );
+$software_path = $se_dir . '/gemcloud-test-software.zip';
+$zip( $software_path, [ 'readme.txt' => "GemCloud StoreEngine test download (outside the media library).\n", 'app/config.json' => '{"name":"gemcloud-test"}' ] );
 $fx['files'][] = $software_path;
 
 // ── Academy LMS ─────────────────────────────────────────────────────────────
@@ -165,7 +165,7 @@ $course = wp_insert_post( [
 	'post_author'  => $admin,
 ] );
 $fx['posts'][] = $course;
-update_post_meta( $course, '_gcs_fixture', 1 );
+update_post_meta( $course, '_gemcloud_fixture', 1 );
 update_post_meta( $course, 'academy_course_type', 'free' );
 set_post_thumbnail( $course, $f['thumb'] );
 update_post_meta( $course, 'academy_course_curriculum', [
@@ -187,12 +187,12 @@ $user = function ( string $login, string $name ) use ( &$fx ) {
 		WP_CLI::error( "User $login already exists; remove it or run cleanup.php." );
 	}
 	$id = wp_insert_user( [ 'user_login' => $login, 'user_pass' => GCS_FIXTURE_PASSWORD, 'user_email' => $login . '@example.test', 'display_name' => $name, 'first_name' => $name, 'role' => 'subscriber' ] );
-	update_user_meta( $id, '_gcs_fixture', 1 );
+	update_user_meta( $id, '_gemcloud_fixture', 1 );
 	$fx['users'][] = (int) $id;
 	return (int) $id;
 };
-$student  = $user( 'gcs_student', 'GCS Student' );
-$outsider = $user( 'gcs_outsider', 'GCS Outsider' );
+$student  = $user( 'gemcloud_student', 'GCS Student' );
+$outsider = $user( 'gemcloud_outsider', 'GCS Outsider' );
 \Academy\Helper::do_enroll( $course, $student );
 
 // ── StoreEngine ─────────────────────────────────────────────────────────────
@@ -204,13 +204,13 @@ $product->set_type( 'simple' );
 $product->set_shipping_type( 'digital' );
 $product->set_digital_auto_complete( true );
 $product->set_downloadable_files( [
-	'gcs-ebook'    => [ 'id' => 'gcs-ebook', 'name' => 'GCS Test eBook (media library)', 'file' => wp_get_attachment_url( $f['ebook'] ), 'enabled' => true ],
-	'gcs-software' => [ 'id' => 'gcs-software', 'name' => 'GCS Test Software (storeengine_uploads)', 'file' => wp_upload_dir()['baseurl'] . '/storeengine_uploads/gcs-test-software.zip', 'enabled' => true ],
+	'gemcloud-ebook'    => [ 'id' => 'gemcloud-ebook', 'name' => 'GCS Test eBook (media library)', 'file' => wp_get_attachment_url( $f['ebook'] ), 'enabled' => true ],
+	'gemcloud-software' => [ 'id' => 'gemcloud-software', 'name' => 'GCS Test Software (storeengine_uploads)', 'file' => wp_upload_dir()['baseurl'] . '/storeengine_uploads/gemcloud-test-software.zip', 'enabled' => true ],
 ] );
 $product->save();
 $product_id    = (int) $product->get_id();
 $fx['posts'][] = $product_id;
-update_post_meta( $product_id, '_gcs_fixture', 1 );
+update_post_meta( $product_id, '_gemcloud_fixture', 1 );
 
 $price = new \StoreEngine\Classes\Price();
 $price->set_price_name( 'Standard' );
@@ -222,13 +222,13 @@ $fx['prices'][] = (int) $price->get_id();
 
 $order = new \StoreEngine\Classes\Order();
 $order->set_customer_id( $student );
-$order->set_billing_email( 'gcs_student@example.test' );
+$order->set_billing_email( 'gemcloud_student@example.test' );
 $order->set_billing_first_name( 'GCS' );
 $order->set_currency( 'USD' );
 $order->set_payment_method( 'cod' );
 $order->add_product( (int) $price->get_id(), 1 );
 $order->calculate_totals();
-$order->set_paid_status( 'paid', 'gcs-fixture' );
+$order->set_paid_status( 'paid', 'gemcloud-fixture' );
 $order->set_status( 'completed' );
 $order->save();
 $fx['orders'][] = (int) $order->get_id();
@@ -236,7 +236,7 @@ $fx['orders'][] = (int) $order->get_id();
 // Grant the downloads the way a paid checkout does, in case the status hook didn't.
 \StoreEngine\Hooks\DownloadPermissionHooks::init()->grant_product_to_order( $order, $product_id );
 
-update_option( 'gcs_fixture', $fx, false );
+update_option( 'gemcloud_fixture', $fx, false );
 
 // ── Report ──────────────────────────────────────────────────────────────────
 
@@ -248,7 +248,7 @@ foreach ( $wpdb->get_results( $wpdb->prepare( "SELECT download_id FROM {$wpdb->p
 	$downloads[] = add_query_arg( [
 		'download_file' => $product_id,
 		'order'         => $order->get_order_key(),
-		'uid'           => hash( 'sha256', 'gcs_student@example.test' ),
+		'uid'           => hash( 'sha256', 'gemcloud_student@example.test' ),
 		'key'           => $row->download_id,
 	], home_url( '/' ) );
 }
@@ -256,8 +256,8 @@ foreach ( $wpdb->get_results( $wpdb->prepare( "SELECT download_id FROM {$wpdb->p
 WP_CLI::success( 'Test content created.' );
 WP_CLI::log( '' );
 WP_CLI::log( 'Logins (password for both: ' . GCS_FIXTURE_PASSWORD . ')' );
-WP_CLI::log( '  gcs_student   enrolled in the course, bought the product' );
-WP_CLI::log( '  gcs_outsider  not enrolled, bought nothing' );
+WP_CLI::log( '  gemcloud_student   enrolled in the course, bought the product' );
+WP_CLI::log( '  gemcloud_outsider  not enrolled, bought nothing' );
 WP_CLI::log( '' );
 WP_CLI::log( 'Academy LMS' );
 WP_CLI::log( '  Course:        ' . get_permalink( $course ) );
@@ -267,7 +267,7 @@ WP_CLI::log( '  Attachments:   video #' . $f['video'] . ', subtitles #' . $f['su
 WP_CLI::log( '' );
 WP_CLI::log( 'StoreEngine' );
 WP_CLI::log( '  Product:       ' . get_permalink( $product_id ) . " (#$product_id, \$9)" );
-WP_CLI::log( '  Order:         #' . $order->get_id() . ' for gcs_student, paid' );
+WP_CLI::log( '  Order:         #' . $order->get_id() . ' for gemcloud_student, paid' );
 foreach ( $downloads as $i => $url ) {
 	WP_CLI::log( '  Download ' . ( $i + 1 ) . ':    ' . $url );
 }

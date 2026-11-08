@@ -51,23 +51,23 @@ const SecurityTab = ( { form, meta, setSetting } ) => {
 					title={ __( 'Signed URL lifetime', 'gemcloud' ) }
 					description={ __( 'A signed URL is created at the moment of the click, after the access check, and is never printed into a page. The signature is checked when the download starts, so a long download that starts in time still finishes.', 'gemcloud' ) }
 				/>
-				<label className="gcs-label" htmlFor="gcs-f-signed-ttl">{ __( 'Lifetime', 'gemcloud' ) }</label>
+				<label className="gemcloud-label" htmlFor="gemcloud-f-signed-ttl">{ __( 'Lifetime', 'gemcloud' ) }</label>
 				<div className="flex flex-wrap items-center gap-3">
 					<div className="relative w-[180px]">
 						<input
-							id="gcs-f-signed-ttl"
-							className="gcs-input !pr-[72px]"
+							id="gemcloud-f-signed-ttl"
+							className="gemcloud-input !pr-[72px]"
 							type="number"
 							min="1"
 							max="604800"
 							value={ s.signed_url_ttl }
 							onChange={ ( e ) => setSetting( [ 'signed_url_ttl' ], Math.max( 1, Math.min( 604800, parseInt( e.target.value || '0', 10 ) || 1 ) ) ) }
 						/>
-						<span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-[var(--gcs-text-muted)]">
+						<span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-[var(--gemcloud-text-muted)]">
 							{ __( 'seconds', 'gemcloud' ) }
 						</span>
 					</div>
-					<div className="gcs-segmented" role="group" aria-label={ __( 'Common lifetimes', 'gemcloud' ) }>
+					<div className="gemcloud-segmented" role="group" aria-label={ __( 'Common lifetimes', 'gemcloud' ) }>
 						{ TTL_PRESETS.map( ( [ value, label ] ) => (
 							<button
 								key={ value }
@@ -81,7 +81,7 @@ const SecurityTab = ( { form, meta, setSetting } ) => {
 						) ) }
 					</div>
 				</div>
-				<p className="gcs-help">{ __( '1 to 604,800 seconds (7 days). Default 300 (5 minutes). Video and audio links always last at least 4 hours, so a long lesson keeps playing.', 'gemcloud' ) }</p>
+				<p className="gemcloud-help">{ __( '1 to 604,800 seconds (7 days). Default 300 (5 minutes). Video and audio links always last at least 4 hours, so a long lesson keeps playing.', 'gemcloud' ) }</p>
 			</div>
 
 			<div>
@@ -124,7 +124,7 @@ const SecurityTab = ( { form, meta, setSetting } ) => {
 								title="wp-config.php"
 								code={ keySnippet }
 								actions={
-									<button type="button" className="gcs-btn gcs-btn--outline gcs-btn--sm" onClick={ () => setKey( randomKey() ) }>
+									<button type="button" className="gemcloud-btn gemcloud-btn--outline gemcloud-btn--sm" onClick={ () => setKey( randomKey() ) }>
 										<RefreshCw size={ 13 } />
 										{ __( 'New key', 'gemcloud' ) }
 									</button>
@@ -138,7 +138,7 @@ const SecurityTab = ( { form, meta, setSetting } ) => {
 
 					<div className="flex flex-col gap-2">
 						<div className="text-[13px] font-semibold">{ __( 'Keep the connection out of the database (optional)', 'gemcloud' ) }</div>
-						<p className="gcs-help !mt-0">
+						<p className="gemcloud-help !mt-0">
 							{ __( 'Filled in from your current connection; paste your secret access key in place of the placeholder. These values then win over the Connection tab, which shows them locked.', 'gemcloud' ) }
 						</p>
 						<CodeBlock title="wp-config.php" code={ connectionSnippet } />

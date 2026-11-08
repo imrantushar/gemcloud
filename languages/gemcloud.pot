@@ -9,14 +9,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-08T04:48:29+00:00\n"
+"POT-Creation-Date: 2026-11-08T05:47:04+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: gemcloud\n"
 
 #. Plugin Name of the plugin
 #: gemcloud.php
-#: includes/admin/menu.php:35
+#: includes/admin/menu.php:34
 #: includes/admin/notices.php:32
 #: assets/build/app.1.0.0.js:1
 #: assets/build/app.1.0.0.js:7
@@ -43,7 +43,7 @@ msgstr ""
 msgid "https://kodezen.com/"
 msgstr ""
 
-#: includes/admin/menu.php:49
+#: includes/admin/menu.php:46
 #: assets/build/app.1.0.0.js:2
 #: assets/build/app.1.0.0.js:7
 msgid "Loading…"
@@ -403,13 +403,13 @@ msgid "You don't have access to this video."
 msgstr ""
 
 #. translators: %s: video title
-#: includes/integrations/true-player.php:410
+#: includes/integrations/true-player.php:411
 #, php-format
 msgid "Subtitles of private video \"%s\""
 msgstr ""
 
 #. translators: %s: video title
-#: includes/integrations/true-player.php:412
+#: includes/integrations/true-player.php:413
 #, php-format
 msgid "Private video \"%s\""
 msgstr ""

@@ -2,15 +2,15 @@ import React from 'react';
 import { __ } from '@wordpress/i18n';
 
 const STYLES = {
-	synced: { color: 'var(--gcs-success)', background: 'var(--gcs-success-bg)' },
-	pending: { color: 'var(--gcs-warning)', background: 'var(--gcs-warning-bg)' },
-	uploading: { color: 'var(--gcs-info)', background: 'var(--gcs-info-bg)' },
-	failed: { color: 'var(--gcs-danger)', background: 'var(--gcs-danger-bg)' },
-	deleting: { color: 'var(--gcs-text-muted)', background: 'var(--gcs-secondary-color)' },
-	ok: { color: 'var(--gcs-success)', background: 'var(--gcs-success-bg)' },
-	off: { color: 'var(--gcs-text-muted)', background: 'var(--gcs-secondary-color)' },
-	warning: { color: 'var(--gcs-warning)', background: 'var(--gcs-warning-bg)' },
-	error: { color: 'var(--gcs-danger)', background: 'var(--gcs-danger-bg)' },
+	synced: { color: 'var(--gemcloud-success)', background: 'var(--gemcloud-success-bg)' },
+	pending: { color: 'var(--gemcloud-warning)', background: 'var(--gemcloud-warning-bg)' },
+	uploading: { color: 'var(--gemcloud-info)', background: 'var(--gemcloud-info-bg)' },
+	failed: { color: 'var(--gemcloud-danger)', background: 'var(--gemcloud-danger-bg)' },
+	deleting: { color: 'var(--gemcloud-text-muted)', background: 'var(--gemcloud-secondary-color)' },
+	ok: { color: 'var(--gemcloud-success)', background: 'var(--gemcloud-success-bg)' },
+	off: { color: 'var(--gemcloud-text-muted)', background: 'var(--gemcloud-secondary-color)' },
+	warning: { color: 'var(--gemcloud-warning)', background: 'var(--gemcloud-warning-bg)' },
+	error: { color: 'var(--gemcloud-danger)', background: 'var(--gemcloud-danger-bg)' },
 };
 
 export const STATUS_LABELS = {

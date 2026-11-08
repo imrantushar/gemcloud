@@ -22,29 +22,29 @@ const ConfirmModal = ( { open, title, children, confirmLabel, onConfirm, onClose
 	return createPortal(
 		<div className="gemcloud-scope"><div
 			className="fixed inset-0 z-[100000] flex items-center justify-center p-4"
-			style={ { background: 'rgba(14,17,22,0.45)', fontFamily: 'var(--gcs-font)' } }
+			style={ { background: 'rgba(14,17,22,0.45)', fontFamily: 'var(--gemcloud-font)' } }
 			onMouseDown={ ( e ) => e.target === e.currentTarget && onClose() }
 		>
 			<div
 				role="dialog"
 				aria-modal="true"
-				className="w-full max-w-[460px] rounded-[8px] border border-[var(--gcs-border-color)] bg-[var(--gcs-background)]"
-				style={ { boxShadow: 'var(--gcs-shadow-menu)', color: 'var(--gcs-font-color)' } }
+				className="w-full max-w-[460px] rounded-[8px] border border-[var(--gemcloud-border-color)] bg-[var(--gemcloud-background)]"
+				style={ { boxShadow: 'var(--gemcloud-shadow-menu)', color: 'var(--gemcloud-font-color)' } }
 			>
-				<div className="flex items-center justify-between border-b border-[var(--gcs-border-color)] px-5 py-4">
+				<div className="flex items-center justify-between border-b border-[var(--gemcloud-border-color)] px-5 py-4">
 					<h3 className="m-0 text-[16px] font-semibold">{ title }</h3>
-					<button type="button" onClick={ onClose } aria-label={ __( 'Close', 'gemcloud' ) } className="flex border-0 bg-transparent p-1 text-[var(--gcs-text-muted)]">
+					<button type="button" onClick={ onClose } aria-label={ __( 'Close', 'gemcloud' ) } className="flex border-0 bg-transparent p-1 text-[var(--gemcloud-text-muted)]">
 						<X size={ 18 } />
 					</button>
 				</div>
-				<div className="px-5 py-4 text-[14px] leading-[1.6] text-[var(--gcs-font-secondary-color)]">{ children }</div>
-				<div className="flex justify-end gap-2 border-t border-[var(--gcs-border-color)] px-5 py-3">
-					<button type="button" className="gcs-btn gcs-btn--outline" onClick={ onClose }>
+				<div className="px-5 py-4 text-[14px] leading-[1.6] text-[var(--gemcloud-font-secondary-color)]">{ children }</div>
+				<div className="flex justify-end gap-2 border-t border-[var(--gemcloud-border-color)] px-5 py-3">
+					<button type="button" className="gemcloud-btn gemcloud-btn--outline" onClick={ onClose }>
 						{ __( 'Cancel', 'gemcloud' ) }
 					</button>
 					<button
 						type="button"
-						className={ `gcs-btn ${ danger ? 'gcs-btn--danger' : 'gcs-btn--primary' }` }
+						className={ `gemcloud-btn ${ danger ? 'gemcloud-btn--danger' : 'gemcloud-btn--primary' }` }
 						onClick={ () => {
 							onConfirm();
 							onClose();

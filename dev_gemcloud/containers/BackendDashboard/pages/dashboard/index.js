@@ -25,8 +25,8 @@ const LOCAL_FILES = {
 
 const Row = ( { label, children } ) => (
 	<div className="flex items-start justify-between gap-4 py-2.5 text-[13px]">
-		<span className="shrink-0 text-[var(--gcs-font-secondary-color)]">{ label }</span>
-		<span className="min-w-0 text-right font-medium text-[var(--gcs-font-color)]" style={ { overflowWrap: 'anywhere' } }>{ children }</span>
+		<span className="shrink-0 text-[var(--gemcloud-font-secondary-color)]">{ label }</span>
+		<span className="min-w-0 text-right font-medium text-[var(--gemcloud-font-color)]" style={ { overflowWrap: 'anywhere' } }>{ children }</span>
 	</div>
 );
 
@@ -59,7 +59,7 @@ export default function Dashboard() {
 	const actions = data?.available ? (
 		<button
 			type="button"
-			className="gcs-btn gcs-btn--primary"
+			className="gemcloud-btn gemcloud-btn--primary"
 			disabled={ migration?.status === 'running' }
 			onClick={ () => dispatch( runTool( { path: 'migration/start' } ) ) }
 		>
@@ -67,7 +67,7 @@ export default function Dashboard() {
 			{ migration?.status === 'running' ? __( 'Offloading…', 'gemcloud' ) : __( 'Offload existing media', 'gemcloud' ) }
 		</button>
 	) : (
-		<Link className="gcs-btn gcs-btn--primary" to={ adminPage( 'gemcloud-settings' ) }>
+		<Link className="gemcloud-btn gemcloud-btn--primary" to={ adminPage( 'gemcloud-settings' ) }>
 			{ __( 'Connect storage', 'gemcloud' ) }
 		</Link>
 	);
@@ -83,7 +83,7 @@ export default function Dashboard() {
 					<GCSAlert
 						type="info"
 						title={ __( 'Connect a bucket to get started', 'gemcloud' ) }
-						action={ <Link className="gcs-btn gcs-btn--soft gcs-btn--sm" to={ adminPage( 'gemcloud-settings' ) }>{ __( 'Open settings', 'gemcloud' ) }</Link> }
+						action={ <Link className="gemcloud-btn gemcloud-btn--soft gemcloud-btn--sm" to={ adminPage( 'gemcloud-settings' ) }>{ __( 'Open settings', 'gemcloud' ) }</Link> }
 					>
 						{ __( 'Choose Cloudflare R2 or Amazon S3, enter an access key and a bucket, and test the connection. Files keep being served from this server until each upload is confirmed.', 'gemcloud' ) }
 					</GCSAlert>
@@ -99,7 +99,7 @@ export default function Dashboard() {
 					<GCSAlert
 						type="error"
 						title={ data.queue.reason === 'clock' ? __( 'Uploads paused: server clock is wrong', 'gemcloud' ) : __( 'Uploads paused', 'gemcloud' ) }
-						action={ <button type="button" className="gcs-btn gcs-btn--outline gcs-btn--sm" onClick={ () => dispatch( runTool( { path: 'queue/resume' } ) ) }>{ __( 'Resume', 'gemcloud' ) }</button> }
+						action={ <button type="button" className="gemcloud-btn gemcloud-btn--outline gemcloud-btn--sm" onClick={ () => dispatch( runTool( { path: 'queue/resume' } ) ) }>{ __( 'Resume', 'gemcloud' ) }</button> }
 					>
 						{ data.queue.message || __( 'Uploads stopped after repeated errors. Fix the connection, test it, then resume.', 'gemcloud' ) }
 					</GCSAlert>
@@ -150,7 +150,7 @@ export default function Dashboard() {
 								/>
 							)
 						}
-						bodyClassName="px-6 py-3 divide-y divide-[var(--gcs-border-color)]"
+						bodyClassName="px-6 py-3 divide-y divide-[var(--gemcloud-border-color)]"
 					>
 						<Row label={ __( 'Provider', 'gemcloud' ) }>{ PROVIDERS[ data?.provider ] || '—' }</Row>
 						<Row label={ __( 'Public bucket', 'gemcloud' ) }>{ data?.buckets?.public?.name || '—' }</Row>
@@ -166,18 +166,18 @@ export default function Dashboard() {
 					>
 						<div className="flex flex-col gap-4">
 							<div className="flex items-baseline justify-between text-[13px]">
-								<span className="text-[var(--gcs-font-secondary-color)]">{ __( 'Existing media checked', 'gemcloud' ) }</span>
+								<span className="text-[var(--gemcloud-font-secondary-color)]">{ __( 'Existing media checked', 'gemcloud' ) }</span>
 								<span className="font-medium">
 									{ /* translators: 1: processed, 2: total */ }
 									{ sprintf( __( '%1$s of %2$s attachments', 'gemcloud' ), formatNumber( migration?.processed ), formatNumber( migration?.total || data?.attachments ) ) }
 								</span>
 							</div>
-							<div className="gcs-progress">
-								<div className="gcs-progress__bar" style={ { width: `${ migrationPct }%` } } />
+							<div className="gemcloud-progress">
+								<div className="gemcloud-progress__bar" style={ { width: `${ migrationPct }%` } } />
 							</div>
 							<div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
 								{ [ 'synced', 'pending', 'uploading', 'failed' ].map( ( s ) => (
-									<Link key={ s } to={ adminPage( 'gemcloud-files', { status: s } ) } className="rounded-[6px] border border-[var(--gcs-border-color)] p-3 transition-colors hover:bg-[var(--gcs-secondary-color)]">
+									<Link key={ s } to={ adminPage( 'gemcloud-files', { status: s } ) } className="rounded-[6px] border border-[var(--gemcloud-border-color)] p-3 transition-colors hover:bg-[var(--gemcloud-secondary-color)]">
 										<StatusPill status={ s } />
 										<div className="mt-2 text-[20px] font-semibold">{ formatNumber( stats?.by_status?.[ s ] ) }</div>
 									</Link>
@@ -189,7 +189,7 @@ export default function Dashboard() {
 
 				<Section title={ __( 'Storage by context', 'gemcloud' ) } description={ __( 'Each plugin that stores files registers a context: the media library, paid downloads, course materials, chat attachments.', 'gemcloud' ) } bodyClassName="">
 					{ stats?.by_context?.filter( ( c ) => ! c.source_type.startsWith( '~' ) ).length ? (
-						<table className="gcs-table">
+						<table className="gemcloud-table">
 							<thead>
 								<tr>
 									<th>{ __( 'Context', 'gemcloud' ) }</th>
@@ -204,8 +204,8 @@ export default function Dashboard() {
 										<tr key={ c.source_type }>
 											<td>
 												<span className="inline-flex items-center gap-2">
-													<HardDrive size={ 14 } className="text-[var(--gcs-text-muted)]" />
-													<code className="gcs-code">{ c.source_type === 'attachment' ? 'media' : c.source_type }</code>
+													<HardDrive size={ 14 } className="text-[var(--gemcloud-text-muted)]" />
+													<code className="gemcloud-code">{ c.source_type === 'attachment' ? 'media' : c.source_type }</code>
 												</span>
 											</td>
 											<td>{ formatNumber( c.objects ) }</td>
@@ -215,7 +215,7 @@ export default function Dashboard() {
 							</tbody>
 						</table>
 					) : (
-						<p className="px-6 py-8 text-center text-[13px] text-[var(--gcs-font-secondary-color)]">
+						<p className="px-6 py-8 text-center text-[13px] text-[var(--gemcloud-font-secondary-color)]">
 							{ __( 'Nothing stored yet. New uploads go to the cloud once storage is on; use “Offload existing media” for the files already here.', 'gemcloud' ) }
 						</p>
 					) }

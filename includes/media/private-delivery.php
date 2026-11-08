@@ -12,14 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Private files are never linked directly. Pages show /?gcs_file=<id>; the
+ * Private files are never linked directly. Pages show /?gemcloud_file=<id>; the
  * click lands here, the access check runs, and only then is a short-lived
  * signed URL created and the browser redirected to it. A signed URL printed
  * into HTML would survive in caches, crawlers and screenshots.
  */
 final class PrivateDelivery {
 
-	const QUERY_VAR = 'gcs_file';
+	const QUERY_VAR = 'gemcloud_file';
 
 	/** Minimum signed-link lifetime for video and audio: 4 hours. */
 	const MEDIA_TTL = 4 * HOUR_IN_SECONDS;

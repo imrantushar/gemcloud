@@ -8,12 +8,12 @@ import { __ } from '@wordpress/i18n';
 const Field = ( { label, help, required, locked, children, className = '' } ) => (
 	<div className={ className }>
 		{ label && (
-			<span className="gcs-label flex items-center gap-1.5">
+			<span className="gemcloud-label flex items-center gap-1.5">
 				{ label }
-				{ required && <span className="text-[var(--gcs-danger)]">*</span> }
+				{ required && <span className="text-[var(--gemcloud-danger)]">*</span> }
 				{ locked && (
 					<span
-						className="inline-flex items-center gap-1 rounded-full bg-[var(--gcs-secondary-color)] px-2 py-0.5 text-[11px] font-medium text-[var(--gcs-font-secondary-color)]"
+						className="inline-flex items-center gap-1 rounded-full bg-[var(--gemcloud-secondary-color)] px-2 py-0.5 text-[11px] font-medium text-[var(--gemcloud-font-secondary-color)]"
 						title={ __( 'Set by a constant in wp-config.php', 'gemcloud' ) }
 					>
 						<Lock size={ 11 } />
@@ -23,7 +23,7 @@ const Field = ( { label, help, required, locked, children, className = '' } ) =>
 			</span>
 		) }
 		{ children }
-		{ help && <p className="gcs-help">{ help }</p> }
+		{ help && <p className="gemcloud-help">{ help }</p> }
 	</div>
 );
 

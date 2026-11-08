@@ -29,30 +29,30 @@ const ProviderCard = ( { provider, active, onSelect, disabled } ) => (
 		disabled={ disabled }
 		onClick={ () => onSelect( provider.key ) }
 		className={ `flex flex-col items-start gap-1 rounded-[8px] border p-4 text-left transition-colors ${
-			active ? 'border-[var(--gcs-primary)] bg-[var(--gcs-second-primary)]' : 'border-[var(--gcs-border-color)] hover:bg-[var(--gcs-secondary-color)]'
+			active ? 'border-[var(--gemcloud-primary)] bg-[var(--gemcloud-second-primary)]' : 'border-[var(--gemcloud-border-color)] hover:bg-[var(--gemcloud-secondary-color)]'
 		}` }
 		style={ { borderWidth: active ? 2 : 1 } }
 	>
-		<span className={ `text-[14px] font-semibold ${ active ? 'text-[var(--gcs-primary)]' : 'text-[var(--gcs-font-color)]' }` }>{ provider.label }</span>
-		<span className="text-[12px] leading-[1.45] text-[var(--gcs-font-secondary-color)]">{ provider.description }</span>
+		<span className={ `text-[14px] font-semibold ${ active ? 'text-[var(--gemcloud-primary)]' : 'text-[var(--gemcloud-font-color)]' }` }>{ provider.label }</span>
+		<span className="text-[12px] leading-[1.45] text-[var(--gemcloud-font-secondary-color)]">{ provider.description }</span>
 	</button>
 );
 
 const TestResult = ( { result } ) => {
 	const { role, report } = result;
 	return (
-		<div className="rounded-[8px] border border-[var(--gcs-border-color)] p-4">
+		<div className="rounded-[8px] border border-[var(--gemcloud-border-color)] p-4">
 			<div className="mb-3 flex items-center justify-between gap-3">
 				<div className="text-[13px] font-semibold">
 					{ role === 'private' ? __( 'Private bucket', 'gemcloud' ) : __( 'Public bucket', 'gemcloud' ) }
-					<code className="gcs-code ml-2">{ report.bucket }</code>
+					<code className="gemcloud-code ml-2">{ report.bucket }</code>
 				</div>
 				{ report.ok ? (
-					<span className="inline-flex items-center gap-1 text-[13px] font-medium text-[var(--gcs-success)]">
+					<span className="inline-flex items-center gap-1 text-[13px] font-medium text-[var(--gemcloud-success)]">
 						<CheckCircle2 size={ 16 } /> { __( 'Works', 'gemcloud' ) }
 					</span>
 				) : (
-					<span className="inline-flex items-center gap-1 text-[13px] font-medium text-[var(--gcs-danger)]">
+					<span className="inline-flex items-center gap-1 text-[13px] font-medium text-[var(--gemcloud-danger)]">
 						<XCircle size={ 16 } /> { __( 'Failed', 'gemcloud' ) }
 					</span>
 				) }
@@ -61,10 +61,10 @@ const TestResult = ( { result } ) => {
 				{ report.steps.map( ( step ) => (
 					<li key={ step.name } className="flex items-center justify-between text-[13px]">
 						<span className="flex items-center gap-2">
-							{ step.ok ? <CheckCircle2 size={ 14 } className="text-[var(--gcs-success)]" /> : <XCircle size={ 14 } className="text-[var(--gcs-danger)]" /> }
+							{ step.ok ? <CheckCircle2 size={ 14 } className="text-[var(--gemcloud-success)]" /> : <XCircle size={ 14 } className="text-[var(--gemcloud-danger)]" /> }
 							{ STEP_LABELS[ step.name ] || step.name }
 						</span>
-						<span className="text-[12px] text-[var(--gcs-text-muted)]">{ step.ms } ms</span>
+						<span className="text-[12px] text-[var(--gemcloud-text-muted)]">{ step.ms } ms</span>
 					</li>
 				) ) }
 			</ul>
@@ -114,10 +114,10 @@ const ConnectionTab = ( { form, meta, setSetting, setCredential, setProvider, is
 
 	return (
 		<div className="flex flex-col gap-8">
-			<div className="flex items-start justify-between gap-6 rounded-[8px] border border-[var(--gcs-border-color)] p-4">
+			<div className="flex items-start justify-between gap-6 rounded-[8px] border border-[var(--gemcloud-border-color)] p-4">
 				<div>
 					<div className="text-[14px] font-semibold">{ __( 'Cloud storage', 'gemcloud' ) }</div>
-					<p className="mt-1 text-[13px] text-[var(--gcs-font-secondary-color)]">
+					<p className="mt-1 text-[13px] text-[var(--gemcloud-font-secondary-color)]">
 						{ __( 'When off, nothing uploads and every URL points at this server again. Stored objects are kept.', 'gemcloud' ) }
 					</p>
 				</div>
@@ -162,12 +162,12 @@ const ConnectionTab = ( { form, meta, setSetting, setCredential, setProvider, is
 					{ provider === 'r2' && (
 						<>
 							<Field label={ __( 'Account ID', 'gemcloud' ) } required locked={ locked.account_id } help={ __( 'Cloudflare dashboard → R2 → Account details.', 'gemcloud' ) }>
-								<input id="gcs-f-account-id" className="gcs-input" value={ s.endpoint.account_id } disabled={ locked.account_id } onChange={ ( e ) => setSetting( [ 'endpoint', 'account_id' ], e.target.value.trim() ) } placeholder="9f2c4e1a…" />
+								<input id="gemcloud-f-account-id" className="gemcloud-input" value={ s.endpoint.account_id } disabled={ locked.account_id } onChange={ ( e ) => setSetting( [ 'endpoint', 'account_id' ], e.target.value.trim() ) } placeholder="9f2c4e1a…" />
 							</Field>
 							<Field label={ __( 'Jurisdiction', 'gemcloud' ) } help={ __( 'Only for buckets created with a data-location jurisdiction.', 'gemcloud' ) }>
 								<GCSSelect
 									value={ s.endpoint.jurisdiction }
-									inputId="gcs-f-jurisdiction"
+									inputId="gemcloud-f-jurisdiction"
 									onChange={ ( v ) => setSetting( [ 'endpoint', 'jurisdiction' ], v ) }
 									options={ [
 										{ value: '', label: __( 'Default', 'gemcloud' ) },
@@ -183,7 +183,7 @@ const ConnectionTab = ( { form, meta, setSetting, setCredential, setProvider, is
 						<Field label={ __( 'Region', 'gemcloud' ) } required>
 							<GCSSelect
 								value={ s.endpoint.region }
-								inputId="gcs-f-region"
+								inputId="gemcloud-f-region"
 								onChange={ ( v ) => setSetting( [ 'endpoint', 'region' ], v ) }
 								options={ AWS_REGIONS.map( ( r ) => ( { value: r, label: r } ) ) }
 								isSearchable
@@ -194,10 +194,10 @@ const ConnectionTab = ( { form, meta, setSetting, setCredential, setProvider, is
 					{ provider === 'custom' && (
 						<>
 							<Field label={ __( 'Endpoint URL', 'gemcloud' ) } required help={ __( 'For example https://s3.eu-central-1.wasabisys.com', 'gemcloud' ) }>
-								<input id="gcs-f-endpoint" className="gcs-input" value={ s.endpoint.url } onChange={ ( e ) => setSetting( [ 'endpoint', 'url' ], e.target.value.trim() ) } placeholder="https://" />
+								<input id="gemcloud-f-endpoint" className="gemcloud-input" value={ s.endpoint.url } onChange={ ( e ) => setSetting( [ 'endpoint', 'url' ], e.target.value.trim() ) } placeholder="https://" />
 							</Field>
 							<Field label={ __( 'Region', 'gemcloud' ) }>
-								<input id="gcs-f-region" className="gcs-input" value={ s.endpoint.region } onChange={ ( e ) => setSetting( [ 'endpoint', 'region' ], e.target.value.trim() ) } placeholder="us-east-1" />
+								<input id="gemcloud-f-region" className="gemcloud-input" value={ s.endpoint.region } onChange={ ( e ) => setSetting( [ 'endpoint', 'region' ], e.target.value.trim() ) } placeholder="us-east-1" />
 							</Field>
 							<Field label={ __( 'Path-style addressing', 'gemcloud' ) } help={ __( 'endpoint/bucket/key instead of bucket.endpoint/key. MinIO needs it.', 'gemcloud' ) }>
 								<GCSToggle checked={ !! s.endpoint.path_style } onChange={ ( v ) => setSetting( [ 'endpoint', 'path_style' ], v ) } label={ __( 'Path-style addressing', 'gemcloud' ) } />
@@ -220,7 +220,7 @@ const ConnectionTab = ( { form, meta, setSetting, setCredential, setProvider, is
 				/>
 				<div className="grid grid-cols-1 gap-5 md:grid-cols-2">
 					<Field label={ __( 'Access key ID', 'gemcloud' ) } required locked={ locked.access_key_id }>
-						<input id="gcs-f-access-key" className="gcs-input" autoComplete="off" value={ c.access_key_id } disabled={ locked.access_key_id } onChange={ ( e ) => setCredential( 'access_key_id', e.target.value.trim() ) } />
+						<input id="gemcloud-f-access-key" className="gemcloud-input" autoComplete="off" value={ c.access_key_id } disabled={ locked.access_key_id } onChange={ ( e ) => setCredential( 'access_key_id', e.target.value.trim() ) } />
 					</Field>
 					<Field
 						label={ __( 'Secret access key', 'gemcloud' ) }
@@ -230,8 +230,8 @@ const ConnectionTab = ( { form, meta, setSetting, setCredential, setProvider, is
 					>
 						<div className="relative">
 							<input
-								id="gcs-f-secret-key"
-								className="gcs-input !pr-10"
+								id="gemcloud-f-secret-key"
+								className="gemcloud-input !pr-10"
 								type={ showSecret ? 'text' : 'password' }
 								autoComplete="new-password"
 								value={ c.secret_access_key }
@@ -239,7 +239,7 @@ const ConnectionTab = ( { form, meta, setSetting, setCredential, setProvider, is
 								onFocus={ ( e ) => c.secret_access_key.startsWith( '••••' ) && e.target.select() }
 								onChange={ ( e ) => setCredential( 'secret_access_key', e.target.value ) }
 							/>
-							<button type="button" className="absolute right-2 top-1/2 flex -translate-y-1/2 p-1 text-[var(--gcs-text-muted)]" onClick={ () => setShowSecret( ( v ) => ! v ) } aria-label={ __( 'Show or hide the secret', 'gemcloud' ) }>
+							<button type="button" className="absolute right-2 top-1/2 flex -translate-y-1/2 p-1 text-[var(--gemcloud-text-muted)]" onClick={ () => setShowSecret( ( v ) => ! v ) } aria-label={ __( 'Show or hide the secret', 'gemcloud' ) }>
 								{ showSecret ? <EyeOff size={ 16 } /> : <Eye size={ 16 } /> }
 							</button>
 						</div>
@@ -254,7 +254,7 @@ const ConnectionTab = ( { form, meta, setSetting, setCredential, setProvider, is
 				/>
 				<div className="grid grid-cols-1 gap-5 md:grid-cols-2">
 					<Field label={ __( 'Public bucket', 'gemcloud' ) } required>
-						<input id="gcs-f-public-bucket" className="gcs-input" value={ s.buckets.public.name } onChange={ ( e ) => setSetting( [ 'buckets', 'public', 'name' ], e.target.value.trim().toLowerCase() ) } placeholder="my-site-media" />
+						<input id="gemcloud-f-public-bucket" className="gemcloud-input" value={ s.buckets.public.name } onChange={ ( e ) => setSetting( [ 'buckets', 'public', 'name' ], e.target.value.trim().toLowerCase() ) } placeholder="my-site-media" />
 					</Field>
 					<Field
 						label={ __( 'Public URL', 'gemcloud' ) }
@@ -265,27 +265,27 @@ const ConnectionTab = ( { form, meta, setSetting, setCredential, setProvider, is
 								: __( 'Your CloudFront or CDN domain. Leave empty to use the bucket’s own address (needs a public-read bucket policy).', 'gemcloud' )
 						}
 					>
-						<input id="gcs-f-public-url" className="gcs-input" value={ s.buckets.public.public_url } onChange={ ( e ) => setSetting( [ 'buckets', 'public', 'public_url' ], e.target.value.trim() ) } placeholder="https://media.example.com" />
+						<input id="gemcloud-f-public-url" className="gemcloud-input" value={ s.buckets.public.public_url } onChange={ ( e ) => setSetting( [ 'buckets', 'public', 'public_url' ], e.target.value.trim() ) } placeholder="https://media.example.com" />
 					</Field>
 					<Field
 						label={ __( 'Private bucket', 'gemcloud' ) }
 						help={ __( 'Keep "Block public access" on. Leave empty to share the public bucket (not recommended).', 'gemcloud' ) }
 					>
-						<input id="gcs-f-private-bucket" className="gcs-input" value={ s.buckets.private.name } onChange={ ( e ) => setSetting( [ 'buckets', 'private', 'name' ], e.target.value.trim().toLowerCase() ) } placeholder="my-site-protected" />
+						<input id="gemcloud-f-private-bucket" className="gemcloud-input" value={ s.buckets.private.name } onChange={ ( e ) => setSetting( [ 'buckets', 'private', 'name' ], e.target.value.trim().toLowerCase() ) } placeholder="my-site-protected" />
 					</Field>
 				</div>
 			</div>
 
-			<div className="flex flex-col gap-4 border-t border-[var(--gcs-border-color)] pt-6">
+			<div className="flex flex-col gap-4 border-t border-[var(--gemcloud-border-color)] pt-6">
 				<div className="flex flex-wrap items-center gap-3">
-					<button type="button" className="gcs-btn gcs-btn--soft" onClick={ test } disabled={ testing }>
-						{ testing ? <Loader2 size={ 16 } className="gcs-spin" /> : <PlugZap size={ 16 } /> }
+					<button type="button" className="gemcloud-btn gemcloud-btn--soft" onClick={ test } disabled={ testing }>
+						{ testing ? <Loader2 size={ 16 } className="gemcloud-spin" /> : <PlugZap size={ 16 } /> }
 						{ testing ? __( 'Testing…', 'gemcloud' ) : __( 'Test connection', 'gemcloud' ) }
 					</button>
-					<button type="button" className="gcs-btn gcs-btn--primary" onClick={ onSave } disabled={ ! isDirty || saving }>
+					<button type="button" className="gemcloud-btn gemcloud-btn--primary" onClick={ onSave } disabled={ ! isDirty || saving }>
 						{ saving ? __( 'Saving…', 'gemcloud' ) : __( 'Save changes', 'gemcloud' ) }
 					</button>
-					<span className="text-[12px] text-[var(--gcs-text-muted)]">
+					<span className="text-[12px] text-[var(--gemcloud-text-muted)]">
 						{ isDirty
 							? __( 'Testing doesn\'t save. Save to keep these values.', 'gemcloud' )
 							: __( 'Tests the values above, saved or not: uploads, reads and deletes a small probe file.', 'gemcloud' ) }

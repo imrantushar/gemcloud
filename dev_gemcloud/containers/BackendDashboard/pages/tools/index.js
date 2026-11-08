@@ -27,13 +27,13 @@ const Progress = ( { done, total } ) => {
 	const pct = total ? Math.min( 100, Math.round( ( done / total ) * 100 ) ) : 0;
 	return (
 		<div className="flex flex-col gap-2">
-			<div className="flex justify-between text-[13px] text-[var(--gcs-font-secondary-color)]">
+			<div className="flex justify-between text-[13px] text-[var(--gemcloud-font-secondary-color)]">
 				{ /* translators: 1: done, 2: total */ }
 				<span>{ sprintf( __( '%1$s of %2$s', 'gemcloud' ), formatNumber( done ), formatNumber( total ) ) }</span>
 				<span>{ pct }%</span>
 			</div>
-			<div className="gcs-progress">
-				<div className="gcs-progress__bar" style={ { width: `${ pct }%` } } />
+			<div className="gemcloud-progress">
+				<div className="gemcloud-progress__bar" style={ { width: `${ pct }%` } } />
 			</div>
 		</div>
 	);
@@ -121,18 +121,18 @@ export default function Tools() {
 							<Progress done={ migration.processed || 0 } total={ migration.total || data?.attachments || 0 } />
 							<div className="flex flex-wrap gap-2">
 								{ migration.status === 'running' ? (
-									<button type="button" className="gcs-btn gcs-btn--outline" disabled={ !! busy } onClick={ () => run( 'migration/stop' ) }>
+									<button type="button" className="gemcloud-btn gemcloud-btn--outline" disabled={ !! busy } onClick={ () => run( 'migration/stop' ) }>
 										<Square size={ 14 } />
 										{ __( 'Stop', 'gemcloud' ) }
 									</button>
 								) : (
-									<button type="button" className="gcs-btn gcs-btn--primary" disabled={ unavailable || !! busy } onClick={ () => run( 'migration/start' ) }>
+									<button type="button" className="gemcloud-btn gemcloud-btn--primary" disabled={ unavailable || !! busy } onClick={ () => run( 'migration/start' ) }>
 										<CloudUpload size={ 15 } />
 										{ migration.status === 'stopped' ? __( 'Resume', 'gemcloud' ) : __( 'Start offloading', 'gemcloud' ) }
 									</button>
 								) }
 								{ ( migration.status === 'done' || migration.status === 'stopped' ) && (
-									<button type="button" className="gcs-btn gcs-btn--outline" disabled={ unavailable || !! busy } onClick={ () => run( 'migration/start', { restart: true } ) }>
+									<button type="button" className="gemcloud-btn gemcloud-btn--outline" disabled={ unavailable || !! busy } onClick={ () => run( 'migration/start', { restart: true } ) }>
 										<RotateCcw size={ 14 } />
 										{ __( 'Start over', 'gemcloud' ) }
 									</button>
@@ -153,8 +153,8 @@ export default function Tools() {
 									[ __( 'Running', 'gemcloud' ), queue.running ],
 									[ __( 'Failed jobs', 'gemcloud' ), queue.failed ],
 								].map( ( [ label, value ] ) => (
-									<div key={ label } className="rounded-[6px] border border-[var(--gcs-border-color)] p-3">
-										<div className="text-[12px] text-[var(--gcs-font-secondary-color)]">{ label }</div>
+									<div key={ label } className="rounded-[6px] border border-[var(--gemcloud-border-color)] p-3">
+										<div className="text-[12px] text-[var(--gemcloud-font-secondary-color)]">{ label }</div>
 										<div className="mt-1 text-[20px] font-semibold">{ value === null || value === undefined ? '—' : formatNumber( value ) }</div>
 									</div>
 								) ) }
@@ -162,17 +162,17 @@ export default function Tools() {
 							{ queue.paused && queue.message && <GCSAlert type="error">{ queue.message }</GCSAlert> }
 							<div className="flex flex-wrap gap-2">
 								{ queue.paused ? (
-									<button type="button" className="gcs-btn gcs-btn--primary" disabled={ !! busy } onClick={ () => run( 'queue/resume' ) }>
+									<button type="button" className="gemcloud-btn gemcloud-btn--primary" disabled={ !! busy } onClick={ () => run( 'queue/resume' ) }>
 										<Play size={ 14 } />
 										{ __( 'Resume uploads', 'gemcloud' ) }
 									</button>
 								) : (
-									<button type="button" className="gcs-btn gcs-btn--outline" disabled={ !! busy } onClick={ () => run( 'queue/pause' ) }>
+									<button type="button" className="gemcloud-btn gemcloud-btn--outline" disabled={ !! busy } onClick={ () => run( 'queue/pause' ) }>
 										<Pause size={ 14 } />
 										{ __( 'Pause uploads', 'gemcloud' ) }
 									</button>
 								) }
-								<span className="self-center text-[12px] text-[var(--gcs-text-muted)]">
+								<span className="self-center text-[12px] text-[var(--gemcloud-text-muted)]">
 									{ /* translators: %s: queue engine name */ }
 									{ sprintf( __( 'Engine: %s', 'gemcloud' ), queue.engine === 'action-scheduler' ? 'Action Scheduler' : 'WP-Cron' ) }
 								</span>
@@ -186,21 +186,21 @@ export default function Tools() {
 						actions={ runPill( back.status ) }
 					>
 						<div className="flex flex-col gap-5">
-							<div className="text-[13px] text-[var(--gcs-font-secondary-color)]">
+							<div className="text-[13px] text-[var(--gemcloud-font-secondary-color)]">
 								{ /* translators: %s: number of files */ }
 								{ sprintf( __( '%s files are only in the cloud right now.', 'gemcloud' ), formatNumber( data?.stats?.local_removed ) ) }
 							</div>
 							{ back.status !== 'idle' && back.total > 0 && <Progress done={ back.processed + back.failed } total={ back.total } /> }
 							<div className="flex flex-wrap gap-2">
 								{ back.status === 'running' ? (
-									<button type="button" className="gcs-btn gcs-btn--outline" disabled={ !! busy } onClick={ () => run( 'download-back/stop' ) }>
+									<button type="button" className="gemcloud-btn gemcloud-btn--outline" disabled={ !! busy } onClick={ () => run( 'download-back/stop' ) }>
 										<Square size={ 14 } />
 										{ __( 'Stop', 'gemcloud' ) }
 									</button>
 								) : (
 									<button
 										type="button"
-										className="gcs-btn gcs-btn--outline"
+										className="gemcloud-btn gemcloud-btn--outline"
 										disabled={ unavailable || !! busy || ! data?.stats?.local_removed }
 										onClick={ () => setConfirm( 'download-back' ) }
 									>
@@ -217,7 +217,7 @@ export default function Tools() {
 						description={ __( 'Lets this site read files across origins: video subtitles, web fonts and direct browser uploads need it. Writes one rule allowing GET, HEAD and PUT from this site.', 'gemcloud' ) }
 					>
 						<div className="flex flex-col gap-4">
-							<button type="button" className="gcs-btn gcs-btn--outline self-start" disabled={ unavailable || corsBusy } onClick={ configureCors }>
+							<button type="button" className="gemcloud-btn gemcloud-btn--outline self-start" disabled={ unavailable || corsBusy } onClick={ configureCors }>
 								<Globe size={ 15 } />
 								{ corsBusy ? __( 'Writing…', 'gemcloud' ) : __( 'Configure CORS', 'gemcloud' ) }
 							</button>
@@ -231,13 +231,13 @@ export default function Tools() {
 					</Section>
 				</div>
 
-				<Section title={ __( 'WP-CLI', 'gemcloud' ) } description={ __( 'For large libraries, or hosts where WP-Cron is disabled.', 'gemcloud' ) } actions={ <Terminal size={ 18 } className="text-[var(--gcs-text-muted)]" /> } bodyClassName="">
-					<table className="gcs-table">
+				<Section title={ __( 'WP-CLI', 'gemcloud' ) } description={ __( 'For large libraries, or hosts where WP-Cron is disabled.', 'gemcloud' ) } actions={ <Terminal size={ 18 } className="text-[var(--gemcloud-text-muted)]" /> } bodyClassName="">
+					<table className="gemcloud-table">
 						<tbody>
 							{ CLI.map( ( [ cmd, desc ] ) => (
 								<tr key={ cmd }>
-									<td className="w-[340px]"><code className="gcs-code">{ cmd }</code></td>
-									<td className="text-[var(--gcs-font-secondary-color)]">{ desc }</td>
+									<td className="w-[340px]"><code className="gemcloud-code">{ cmd }</code></td>
+									<td className="text-[var(--gemcloud-font-secondary-color)]">{ desc }</td>
 								</tr>
 							) ) }
 						</tbody>
@@ -247,7 +247,7 @@ export default function Tools() {
 				<Section
 					title={ __( 'Developer API', 'gemcloud' ) }
 					description={ __( 'Academy LMS, StoreEngine, ZenCommunity or any plugin registers a context, hands files over, and asks for URLs. Every call falls back to local behaviour when storage is off.', 'gemcloud' ) }
-					actions={ <Code2 size={ 18 } className="text-[var(--gcs-text-muted)]" /> }
+					actions={ <Code2 size={ 18 } className="text-[var(--gemcloud-text-muted)]" /> }
 				>
 					<CodeBlock title="PHP" code={ API_SNIPPET } />
 				</Section>

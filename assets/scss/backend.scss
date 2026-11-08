@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 #gemcloud-app.gemcloud-scope {
-	background: var(--gcs-body-background);
-	color: var(--gcs-font-color);
+	background: var(--gemcloud-body-background);
+	color: var(--gemcloud-font-color);
 	min-height: calc(100vh - 32px);
 }
 
@@ -18,10 +18,10 @@ body:has(#gemcloud-app) {
 }
 
 .gemcloud-route {
-	animation: gcs-route-in 0.28s ease;
+	animation: gemcloud-route-in 0.28s ease;
 }
 
-@keyframes gcs-route-in {
+@keyframes gemcloud-route-in {
 	from { opacity: 0; }
 	to { opacity: 1; }
 }
@@ -32,7 +32,7 @@ body:has(#gemcloud-app) {
 
 // Scoped reset (Tailwind preflight is off so WP admin stays untouched).
 .gemcloud-scope {
-	font-family: var(--gcs-font);
+	font-family: var(--gemcloud-font);
 	line-height: 1.5;
 
 	*, *::before, *::after {
@@ -40,7 +40,7 @@ body:has(#gemcloud-app) {
 		border-width: 0;
 		border-style: solid;
 		/* Token, not currentColor: a bare `border` should be a hairline, not ink. */
-		border-color: var(--gcs-border-color);
+		border-color: var(--gemcloud-border-color);
 	}
 
 	h1, h2, h3, h4, h5, h6, p {
@@ -90,7 +90,7 @@ body:has(#gemcloud-app) {
 	}
 
 	input[type='checkbox'] {
-		border: 1px solid var(--gcs-border-color);
+		border: 1px solid var(--gemcloud-border-color);
 	}
 }
 

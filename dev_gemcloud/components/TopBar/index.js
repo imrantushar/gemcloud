@@ -13,7 +13,7 @@ const ThemeToggle = () => {
 			onClick={ toggle }
 			title={ label }
 			aria-label={ label }
-			className="flex h-9 w-9 items-center justify-center rounded-[6px] border border-[var(--gcs-border-color)] bg-[var(--gcs-body-background)] text-[var(--gcs-font-color)] transition-colors"
+			className="flex h-9 w-9 items-center justify-center rounded-[6px] border border-[var(--gemcloud-border-color)] bg-[var(--gemcloud-body-background)] text-[var(--gemcloud-font-color)] transition-colors"
 		>
 			{ isDark ? <Sun size={ 16 } /> : <Moon size={ 16 } /> }
 		</button>
@@ -27,7 +27,7 @@ const TopBar = ( { leftContent = () => null, middleContent = () => null } ) => (
 		<div className="gemcloud-topbar__right">
 			<ThemeToggle />
 			<a
-				className="gcs-btn gcs-btn--outline gemcloud-help-button"
+				className="gemcloud-btn gemcloud-btn--outline gemcloud-help-button"
 				href="https://kodezen.com/docs/"
 				target="_blank"
 				rel="noreferrer"

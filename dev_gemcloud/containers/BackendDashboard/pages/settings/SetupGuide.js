@@ -37,7 +37,7 @@ const r2Steps = ( s, c, origin ) => [
 	{
 		title: __( 'Copy your Account ID', 'gemcloud' ),
 		body: [ __( 'On the R2 Overview page, the Account ID is in the Account Details panel on the right. Copy it into Account ID.', 'gemcloud' ) ],
-		fills: [ fill( 'gcs-f-account-id', __( 'Account ID', 'gemcloud' ), s.endpoint.account_id ) ],
+		fills: [ fill( 'gemcloud-f-account-id', __( 'Account ID', 'gemcloud' ), s.endpoint.account_id ) ],
 	},
 	{
 		title: __( 'Create the public bucket', 'gemcloud' ),
@@ -45,7 +45,7 @@ const r2Steps = ( s, c, origin ) => [
 			__( 'Select Create bucket and give it a name such as mysite-media (lowercase letters, numbers and hyphens). Leave Location on Automatic and the storage class on Standard, then create it.', 'gemcloud' ),
 			__( 'If you choose a jurisdiction (EU or FedRAMP) here, choose the same under Jurisdiction below. Otherwise leave it on Default.', 'gemcloud' ),
 		],
-		fills: [ fill( 'gcs-f-public-bucket', __( 'Public bucket', 'gemcloud' ), s.buckets.public.name ) ],
+		fills: [ fill( 'gemcloud-f-public-bucket', __( 'Public bucket', 'gemcloud' ), s.buckets.public.name ) ],
 	},
 	{
 		title: __( 'Give the public bucket an address', 'gemcloud' ),
@@ -54,12 +54,12 @@ const r2Steps = ( s, c, origin ) => [
 			__( 'To try things out first, select Allow under R2.dev subdomain instead. That address is rate-limited, so switch to a custom domain before going live.', 'gemcloud' ),
 			__( 'Copy the address it shows (https://media.example.com or https://pub-….r2.dev) into Public URL.', 'gemcloud' ),
 		],
-		fills: [ fill( 'gcs-f-public-url', __( 'Public URL', 'gemcloud' ), s.buckets.public.public_url ) ],
+		fills: [ fill( 'gemcloud-f-public-url', __( 'Public URL', 'gemcloud' ), s.buckets.public.public_url ) ],
 	},
 	{
 		title: __( 'Create the private bucket', 'gemcloud' ),
 		body: [ __( 'Create a second bucket, such as mysite-private, for course videos, downloads and backups. Leave its public access exactly as it is: no custom domain and the R2.dev subdomain off.', 'gemcloud' ) ],
-		fills: [ fill( 'gcs-f-private-bucket', __( 'Private bucket', 'gemcloud' ), s.buckets.private.name ) ],
+		fills: [ fill( 'gemcloud-f-private-bucket', __( 'Private bucket', 'gemcloud' ), s.buckets.private.name ) ],
 	},
 	{
 		title: __( 'Create an API token', 'gemcloud' ),
@@ -70,8 +70,8 @@ const r2Steps = ( s, c, origin ) => [
 		],
 		links: [ { label: __( 'Open API tokens', 'gemcloud' ), url: 'https://dash.cloudflare.com/?to=/:account/r2/api-tokens' } ],
 		fills: [
-			fill( 'gcs-f-access-key', __( 'Access key ID', 'gemcloud' ), c.access_key_id ),
-			fill( 'gcs-f-secret-key', __( 'Secret access key', 'gemcloud' ), c.secret_access_key ),
+			fill( 'gemcloud-f-access-key', __( 'Access key ID', 'gemcloud' ), c.access_key_id ),
+			fill( 'gemcloud-f-secret-key', __( 'Secret access key', 'gemcloud' ), c.secret_access_key ),
 		],
 	},
 	{
@@ -97,7 +97,7 @@ const awsSteps = ( s, c ) => {
 			title: __( 'Open S3 and choose a region', 'gemcloud' ),
 			body: [ __( 'Sign in to the AWS console and open S3. Pick the region closest to your visitors in the region menu at the top right, and choose the same region under Region below. Both buckets must be in this region.', 'gemcloud' ) ],
 			links: [ { label: __( 'Open S3', 'gemcloud' ), url: 'https://s3.console.aws.amazon.com/s3/home' } ],
-			fills: [ fill( 'gcs-f-region', __( 'Region', 'gemcloud' ), s.endpoint.region ) ],
+			fills: [ fill( 'gemcloud-f-region', __( 'Region', 'gemcloud' ), s.endpoint.region ) ],
 		},
 		{
 			title: __( 'Create the public bucket', 'gemcloud' ),
@@ -105,7 +105,7 @@ const awsSteps = ( s, c ) => {
 				__( 'Select Create bucket. Bucket type: General purpose. Give it a name such as mysite-media. Object Ownership: ACLs disabled.', 'gemcloud' ),
 				__( 'Under Block Public Access settings, clear Block all public access and tick the acknowledgement. Leave everything else as it is and create the bucket.', 'gemcloud' ),
 			],
-			fills: [ fill( 'gcs-f-public-bucket', __( 'Public bucket', 'gemcloud' ), s.buckets.public.name ) ],
+			fills: [ fill( 'gemcloud-f-public-bucket', __( 'Public bucket', 'gemcloud' ), s.buckets.public.name ) ],
 		},
 		{
 			title: __( 'Allow anyone to read the public bucket', 'gemcloud' ),
@@ -117,12 +117,12 @@ const awsSteps = ( s, c ) => {
 				label: __( 'Bucket policy', 'gemcloud' ),
 				text: json( { Version: '2012-10-17', Statement: [ { Sid: 'PublicRead', Effect: 'Allow', Principal: '*', Action: 's3:GetObject', Resource: `arn:aws:s3:::${ pub }/*` } ] } ),
 			},
-			fills: [ fill( 'gcs-f-public-url', __( 'Public URL (optional)', 'gemcloud' ), s.buckets.public.public_url, true ) ],
+			fills: [ fill( 'gemcloud-f-public-url', __( 'Public URL (optional)', 'gemcloud' ), s.buckets.public.public_url, true ) ],
 		},
 		{
 			title: __( 'Create the private bucket', 'gemcloud' ),
 			body: [ __( 'Create a second bucket, such as mysite-private, in the same region. Keep Block all public access switched on.', 'gemcloud' ) ],
-			fills: [ fill( 'gcs-f-private-bucket', __( 'Private bucket', 'gemcloud' ), s.buckets.private.name ) ],
+			fills: [ fill( 'gemcloud-f-private-bucket', __( 'Private bucket', 'gemcloud' ), s.buckets.private.name ) ],
 		},
 		{
 			title: __( 'Create a user that can only reach these buckets', 'gemcloud' ),
@@ -149,8 +149,8 @@ const awsSteps = ( s, c ) => {
 				__( 'Copy the Access key and the Secret access key now: AWS shows the secret only once. You can also download the .csv file.', 'gemcloud' ),
 			],
 			fills: [
-				fill( 'gcs-f-access-key', __( 'Access key ID', 'gemcloud' ), c.access_key_id ),
-				fill( 'gcs-f-secret-key', __( 'Secret access key', 'gemcloud' ), c.secret_access_key ),
+				fill( 'gemcloud-f-access-key', __( 'Access key ID', 'gemcloud' ), c.access_key_id ),
+				fill( 'gemcloud-f-secret-key', __( 'Secret access key', 'gemcloud' ), c.secret_access_key ),
 			],
 		},
 		{
@@ -198,8 +198,8 @@ const customSteps = ( s, c ) => [
 		body: [ __( 'Every S3-compatible service lists an S3 endpoint for each region. Enter it under Endpoint URL, and the region code under Region.', 'gemcloud' ) ],
 		services: true,
 		fills: [
-			fill( 'gcs-f-endpoint', __( 'Endpoint URL', 'gemcloud' ), s.endpoint.url ),
-			fill( 'gcs-f-region', __( 'Region', 'gemcloud' ), s.endpoint.region ),
+			fill( 'gemcloud-f-endpoint', __( 'Endpoint URL', 'gemcloud' ), s.endpoint.url ),
+			fill( 'gemcloud-f-region', __( 'Region', 'gemcloud' ), s.endpoint.region ),
 		],
 	},
 	{
@@ -209,21 +209,21 @@ const customSteps = ( s, c ) => [
 			__( 'Enter its public address, or your CDN in front of it, under Public URL. Leave Public URL empty to use the endpoint address.', 'gemcloud' ),
 		],
 		fills: [
-			fill( 'gcs-f-public-bucket', __( 'Public bucket', 'gemcloud' ), s.buckets.public.name ),
-			fill( 'gcs-f-public-url', __( 'Public URL (optional)', 'gemcloud' ), s.buckets.public.public_url, true ),
+			fill( 'gemcloud-f-public-bucket', __( 'Public bucket', 'gemcloud' ), s.buckets.public.name ),
+			fill( 'gemcloud-f-public-url', __( 'Public URL (optional)', 'gemcloud' ), s.buckets.public.public_url, true ),
 		],
 	},
 	{
 		title: __( 'Create the private bucket', 'gemcloud' ),
 		body: [ __( 'Create a second bucket, such as mysite-private, and keep it private (the default on every service).', 'gemcloud' ) ],
-		fills: [ fill( 'gcs-f-private-bucket', __( 'Private bucket', 'gemcloud' ), s.buckets.private.name ) ],
+		fills: [ fill( 'gemcloud-f-private-bucket', __( 'Private bucket', 'gemcloud' ), s.buckets.private.name ) ],
 	},
 	{
 		title: __( 'Create an access key', 'gemcloud' ),
 		body: [ __( 'Create a key that can read, write, list and delete objects in both buckets (where each service keeps them is listed in step 1). Copy both parts: most services show the secret only once.', 'gemcloud' ) ],
 		fills: [
-			fill( 'gcs-f-access-key', __( 'Access key ID', 'gemcloud' ), c.access_key_id ),
-			fill( 'gcs-f-secret-key', __( 'Secret access key', 'gemcloud' ), c.secret_access_key ),
+			fill( 'gemcloud-f-access-key', __( 'Access key ID', 'gemcloud' ), c.access_key_id ),
+			fill( 'gemcloud-f-secret-key', __( 'Secret access key', 'gemcloud' ), c.secret_access_key ),
 		],
 	},
 ];
@@ -237,7 +237,7 @@ const Step = ( { step, index } ) => {
 		<li className="grid grid-cols-[28px_minmax(0,1fr)] gap-3">
 			<span
 				className="flex h-7 w-7 items-center justify-center rounded-full text-[12px] font-semibold"
-				style={ done ? { background: 'var(--gcs-success-bg)', color: 'var(--gcs-success)' } : { background: 'var(--gcs-second-primary)', color: 'var(--gcs-primary)' } }
+				style={ done ? { background: 'var(--gemcloud-success-bg)', color: 'var(--gemcloud-success)' } : { background: 'var(--gemcloud-second-primary)', color: 'var(--gemcloud-primary)' } }
 				aria-label={ done ? __( 'Done', 'gemcloud' ) : undefined }
 			>
 				{ done ? <Check size={ 14 } /> : index + 1 }
@@ -245,15 +245,15 @@ const Step = ( { step, index } ) => {
 			<div className="min-w-0 pb-1 pt-1">
 				<div className="flex flex-wrap items-center gap-2 text-[14px] font-semibold">
 					{ step.title }
-					{ step.optional && <span className="rounded-full bg-[var(--gcs-secondary-color)] px-2 py-0.5 text-[11px] font-medium text-[var(--gcs-font-secondary-color)]">{ __( 'Recommended', 'gemcloud' ) }</span> }
+					{ step.optional && <span className="rounded-full bg-[var(--gemcloud-secondary-color)] px-2 py-0.5 text-[11px] font-medium text-[var(--gemcloud-font-secondary-color)]">{ __( 'Recommended', 'gemcloud' ) }</span> }
 				</div>
 				{ step.body.map( ( p, i ) => (
-					<p key={ i } className="mt-1.5 text-[13px] leading-[1.6] text-[var(--gcs-font-secondary-color)]">{ p }</p>
+					<p key={ i } className="mt-1.5 text-[13px] leading-[1.6] text-[var(--gemcloud-font-secondary-color)]">{ p }</p>
 				) ) }
 
 				{ step.services && (
-					<div className="mt-2 overflow-x-auto rounded-[6px] border border-[var(--gcs-border-color)]">
-						<table className="gcs-table">
+					<div className="mt-2 overflow-x-auto rounded-[6px] border border-[var(--gemcloud-border-color)]">
+						<table className="gemcloud-table">
 							<thead>
 								<tr>
 									<th>{ __( 'Service', 'gemcloud' ) }</th>
@@ -266,10 +266,10 @@ const Step = ( { step, index } ) => {
 								{ SERVICES.map( ( svc ) => (
 									<tr key={ svc.name }>
 										<td className="whitespace-nowrap font-medium">
-											{ svc.url ? <a href={ svc.url } target="_blank" rel="noreferrer" className="text-[var(--gcs-primary)]">{ svc.name }</a> : svc.name }
+											{ svc.url ? <a href={ svc.url } target="_blank" rel="noreferrer" className="text-[var(--gemcloud-primary)]">{ svc.name }</a> : svc.name }
 										</td>
 										<td className="text-[12px]">{ svc.endpoint }</td>
-										<td><code className="gcs-code">{ svc.region }</code></td>
+										<td><code className="gemcloud-code">{ svc.region }</code></td>
 										<td className="text-[12px]">{ svc.keys }</td>
 									</tr>
 								) ) }
@@ -287,7 +287,7 @@ const Step = ( { step, index } ) => {
 				{ ( step.links?.length > 0 || fills.length > 0 ) && (
 					<div className="mt-2.5 flex flex-wrap items-center gap-2">
 						{ ( step.links || [] ).map( ( l ) => (
-							<a key={ l.url } href={ l.url } target="_blank" rel="noreferrer" className="gcs-btn gcs-btn--outline gcs-btn--sm">
+							<a key={ l.url } href={ l.url } target="_blank" rel="noreferrer" className="gemcloud-btn gemcloud-btn--outline gemcloud-btn--sm">
 								<ExternalLink size={ 13 } />
 								{ l.label }
 							</a>
@@ -297,7 +297,7 @@ const Step = ( { step, index } ) => {
 								key={ f.id }
 								type="button"
 								onClick={ () => jumpTo( f.id ) }
-								className="inline-flex items-center gap-1 rounded-full border border-dashed border-[var(--gcs-border-color)] px-2.5 py-1 text-[12px] text-[var(--gcs-font-secondary-color)] hover:border-[var(--gcs-primary)] hover:text-[var(--gcs-primary)]"
+								className="inline-flex items-center gap-1 rounded-full border border-dashed border-[var(--gemcloud-border-color)] px-2.5 py-1 text-[12px] text-[var(--gemcloud-font-secondary-color)] hover:border-[var(--gemcloud-primary)] hover:text-[var(--gemcloud-primary)]"
 								title={ __( 'Go to this field', 'gemcloud' ) }
 							>
 								<CornerDownRight size={ 12 } />
@@ -323,7 +323,7 @@ const SetupGuide = ( { provider, providerLabel, settings, credentials } ) => {
 	const [ open, setOpen ] = useState( ! complete );
 
 	return (
-		<div className="rounded-[8px] border border-[var(--gcs-border-color)] bg-[var(--gcs-secondary-color)]">
+		<div className="rounded-[8px] border border-[var(--gemcloud-border-color)] bg-[var(--gemcloud-secondary-color)]">
 			<button
 				type="button"
 				className="flex w-full items-center justify-between gap-4 bg-transparent px-4 py-3 text-left"
@@ -331,13 +331,13 @@ const SetupGuide = ( { provider, providerLabel, settings, credentials } ) => {
 				aria-expanded={ open }
 			>
 				<span className="flex items-center gap-3">
-					<span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] bg-[var(--gcs-second-primary)] text-[var(--gcs-primary)]">
+					<span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] bg-[var(--gemcloud-second-primary)] text-[var(--gemcloud-primary)]">
 						<BookOpen size={ 16 } />
 					</span>
 					<span>
 						{ /* translators: %s: provider name */ }
 						<span className="block text-[14px] font-semibold">{ sprintf( __( 'How to get these details from %s', 'gemcloud' ), providerLabel ) }</span>
-						<span className="block text-[12px] text-[var(--gcs-font-secondary-color)]">
+						<span className="block text-[12px] text-[var(--gemcloud-font-secondary-color)]">
 							{ complete
 								? __( 'Every field is filled in. Open the guide to check a step again.', 'gemcloud' )
 								: sprintf(
@@ -348,18 +348,18 @@ const SetupGuide = ( { provider, providerLabel, settings, credentials } ) => {
 						</span>
 					</span>
 				</span>
-				<ChevronDown size={ 18 } className="shrink-0 text-[var(--gcs-text-muted)] transition-transform" style={ { transform: open ? 'rotate(180deg)' : 'none' } } />
+				<ChevronDown size={ 18 } className="shrink-0 text-[var(--gemcloud-text-muted)] transition-transform" style={ { transform: open ? 'rotate(180deg)' : 'none' } } />
 			</button>
 			{ open && (
-				<ol className="m-0 flex list-none flex-col gap-5 border-t border-[var(--gcs-border-color)] bg-[var(--gcs-background)] px-4 py-5">
+				<ol className="m-0 flex list-none flex-col gap-5 border-t border-[var(--gemcloud-border-color)] bg-[var(--gemcloud-background)] px-4 py-5">
 					{ steps.map( ( step, i ) => (
 						<Step key={ step.title } step={ step } index={ i } />
 					) ) }
 					<li className="grid grid-cols-[28px_minmax(0,1fr)] gap-3">
-						<span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--gcs-second-primary)] text-[12px] font-semibold text-[var(--gcs-primary)]">{ steps.length + 1 }</span>
+						<span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--gemcloud-second-primary)] text-[12px] font-semibold text-[var(--gemcloud-primary)]">{ steps.length + 1 }</span>
 						<div className="pt-1">
 							<div className="text-[14px] font-semibold">{ __( 'Test, then save', 'gemcloud' ) }</div>
-							<p className="mt-1.5 text-[13px] leading-[1.6] text-[var(--gcs-font-secondary-color)]">
+							<p className="mt-1.5 text-[13px] leading-[1.6] text-[var(--gemcloud-font-secondary-color)]">
 								{ __( 'Select Test connection at the bottom. When both buckets show Works, select Save changes and switch Cloud storage on at the top.', 'gemcloud' ) }
 							</p>
 						</div>

@@ -159,7 +159,7 @@ export default function Settings() {
 
 	// Always visible so it can be found; disabled until something changes.
 	const saveButton = (
-		<button type="button" className="gcs-btn gcs-btn--primary" onClick={ handleSave } disabled={ ! isDirty || saving }>
+		<button type="button" className="gemcloud-btn gemcloud-btn--primary" onClick={ handleSave } disabled={ ! isDirty || saving }>
 			{ saving ? __( 'Saving…', 'gemcloud' ) : __( 'Save changes', 'gemcloud' ) }
 		</button>
 	);
@@ -171,12 +171,12 @@ export default function Settings() {
 			<NavigationBlocker when={ isDirty && ! saving } />
 			{ ! form ? (
 				<div className="flex flex-col gap-6 md:flex-row">
-					<div className="gcs-skeleton h-[240px] w-full md:w-[220px]" />
-					<div className="gcs-skeleton h-[480px] flex-1" />
+					<div className="gemcloud-skeleton h-[240px] w-full md:w-[220px]" />
+					<div className="gemcloud-skeleton h-[480px] flex-1" />
 				</div>
 			) : (
 				<div className="flex flex-col gap-6 md:flex-row">
-					<nav className="w-full shrink-0 self-start rounded-lg border border-[var(--gcs-border-color)] bg-[var(--gcs-background)] p-2 md:sticky md:top-[120px] md:w-[220px]">
+					<nav className="w-full shrink-0 self-start rounded-lg border border-[var(--gemcloud-border-color)] bg-[var(--gemcloud-background)] p-2 md:sticky md:top-[120px] md:w-[220px]">
 						<div className="flex flex-row gap-1 overflow-x-auto md:flex-col">
 							{ TABS.map( ( tab ) => {
 								const Icon = tab.icon;
@@ -187,7 +187,7 @@ export default function Settings() {
 										type="button"
 										onClick={ () => setActiveTab( tab.key ) }
 										className={ `flex items-center gap-2.5 whitespace-nowrap rounded-[6px] px-3 py-2.5 text-left text-[14px] font-medium transition-colors ${
-											active ? 'bg-[var(--gcs-second-primary)] text-[var(--gcs-primary)]' : 'text-[var(--gcs-font-secondary-color)] hover:bg-[var(--gcs-secondary-color)]'
+											active ? 'bg-[var(--gemcloud-second-primary)] text-[var(--gemcloud-primary)]' : 'text-[var(--gemcloud-font-secondary-color)] hover:bg-[var(--gemcloud-secondary-color)]'
 										}` }
 									>
 										<Icon size={ 16 } />
@@ -198,7 +198,7 @@ export default function Settings() {
 						</div>
 					</nav>
 
-					<div className="min-w-0 max-w-[880px] flex-1 rounded-lg border border-[var(--gcs-border-color)] bg-[var(--gcs-background)] p-6">
+					<div className="min-w-0 max-w-[880px] flex-1 rounded-lg border border-[var(--gemcloud-border-color)] bg-[var(--gemcloud-background)] p-6">
 						{ activeTab === 'connection' && <ConnectionTab { ...tabProps } /> }
 						{ activeTab === 'media' && <MediaTab { ...tabProps } /> }
 						{ activeTab === 'security' && <SecurityTab { ...tabProps } /> }

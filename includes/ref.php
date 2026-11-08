@@ -11,7 +11,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class Ref {
 
-	const SCHEME = 'gcs://';
+	const SCHEME = 'gemcloud://';
+
+	/** Scheme used by the beta, still read so stored references keep working. */
+	const LEGACY_SCHEME = 'gcs://';
 
 	public string $context;
 	public int $id;
@@ -30,11 +33,11 @@ final class Ref {
 	}
 
 	public static function is_uri( string $value ): bool {
-		return 0 === strpos( $value, self::SCHEME );
+		return 0 === strpos( $value, self::SCHEME ) || 0 === strpos( $value, self::LEGACY_SCHEME );
 	}
 
 	public static function from_uri( string $uri ): ?self {
-		if ( ! preg_match( '#^gcs://([a-z0-9._-]+)/(\d+)$#', $uri, $m ) ) {
+		if ( ! preg_match( '#^(?:gemcloud|gcs)://([a-z0-9._-]+)/(\d+)$#', $uri, $m ) ) {
 			return null;
 		}
 		return new self( $m[1], (int) $m[2] );

@@ -100,7 +100,7 @@ final class S3CompatibleDriver implements StorageProvider {
 
 	public function get( string $bucket, string $key, string $save_to ): void {
 		wp_mkdir_p( dirname( $save_to ) );
-		$tmp = $save_to . '.gcs-' . wp_generate_password( 6, false ) . '.part';
+		$tmp = $save_to . '.gemcloud-' . wp_generate_password( 6, false ) . '.part';
 
 		$this->call( 'GET', $bucket, $key, [], [], '', [
 			'timeout'  => 600,

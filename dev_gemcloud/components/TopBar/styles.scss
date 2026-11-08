@@ -12,15 +12,15 @@
 	gap: 12px;
 	padding: 16px 24px;
 	margin-bottom: 32px;
-	border-bottom: 1px solid var(--gcs-border-color);
-	background: var(--gcs-background);
+	border-bottom: 1px solid var(--gemcloud-border-color);
+	background: var(--gemcloud-background);
 
 	&__left {
 		display: flex;
 		align-items: center;
 		gap: 12px;
 		min-width: 0;
-		color: var(--gcs-font-color);
+		color: var(--gemcloud-font-color);
 	}
 
 	&__middle {
@@ -36,7 +36,7 @@
 	&__crumb {
 		font-size: 16px;
 		font-weight: 500;
-		color: var(--gcs-font-color);
+		color: var(--gemcloud-font-color);
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;

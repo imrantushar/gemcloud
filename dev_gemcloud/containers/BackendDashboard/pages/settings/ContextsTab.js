@@ -31,7 +31,7 @@ const ContextsTab = ( { form, meta, setSetting } ) => {
 				title={ __( 'Contexts', 'gemcloud' ) }
 				description={ __( 'A context is a kind of file a plugin stores: the media library, paid downloads, course materials, chat attachments. Academy LMS, StoreEngine and ZenCommunity add theirs when they are active.', 'gemcloud' ) }
 			/>
-			<div className="flex flex-col divide-y divide-[var(--gcs-border-color)] rounded-[8px] border border-[var(--gcs-border-color)]">
+			<div className="flex flex-col divide-y divide-[var(--gemcloud-border-color)] rounded-[8px] border border-[var(--gemcloud-border-color)]">
 				{ meta.contexts.map( ( context ) => {
 					const o = overrides[ context.key ] || {};
 					const enabled = o.enabled ?? context.enabled;
@@ -43,10 +43,10 @@ const ContextsTab = ( { form, meta, setSetting } ) => {
 							<div className="min-w-0 max-w-[520px]">
 								<div className="flex flex-wrap items-center gap-2">
 									<span className="text-[14px] font-medium">{ context.label }</span>
-									<code className="gcs-code">{ context.key }</code>
+									<code className="gemcloud-code">{ context.key }</code>
 								</div>
-								{ context.description && <p className="mt-1 text-[13px] text-[var(--gcs-font-secondary-color)]">{ context.description }</p> }
-								{ context.source && <p className="mt-1 text-[12px] text-[var(--gcs-text-muted)]">{ context.source }</p> }
+								{ context.description && <p className="mt-1 text-[13px] text-[var(--gemcloud-font-secondary-color)]">{ context.description }</p> }
+								{ context.source && <p className="mt-1 text-[12px] text-[var(--gemcloud-text-muted)]">{ context.source }</p> }
 							</div>
 							<div className="flex items-center gap-4">
 								{ context.locked?.includes( 'visibility' ) ? (
@@ -67,20 +67,20 @@ const ContextsTab = ( { form, meta, setSetting } ) => {
 							</div>
 						</div>
 						{ kinds.length > 0 && (
-							<div className={ `flex flex-col divide-y divide-[var(--gcs-border-color)] rounded-[6px] bg-[var(--gcs-secondary-color)] ${ enabled ? '' : 'opacity-60' }` }>
+							<div className={ `flex flex-col divide-y divide-[var(--gemcloud-border-color)] rounded-[6px] bg-[var(--gemcloud-secondary-color)] ${ enabled ? '' : 'opacity-60' }` }>
 								{ kinds.map( ( [ kind, info ] ) => {
 									const on = kindsOf( o )[ kind ] ?? info.enabled ?? true;
 									return (
 										<div key={ kind } className="flex items-center justify-between gap-4 px-4 py-3">
 											<div className="min-w-0 max-w-[520px]">
 												<div className="text-[13px] font-medium">{ info.label }</div>
-												{ info.description && <p className="mt-0.5 text-[12px] text-[var(--gcs-font-secondary-color)]">{ info.description }</p> }
+												{ info.description && <p className="mt-0.5 text-[12px] text-[var(--gemcloud-font-secondary-color)]">{ info.description }</p> }
 											</div>
 											<GCSToggle size="sm" checked={ !! on && !! enabled } disabled={ ! enabled } onChange={ ( v ) => setKind( context.key, kind, v ) } label={ info.label } />
 										</div>
 									);
 								} ) }
-								<p className="px-4 py-2.5 text-[12px] text-[var(--gcs-text-muted)]">
+								<p className="px-4 py-2.5 text-[12px] text-[var(--gemcloud-text-muted)]">
 									{ __( 'Switching a kind off keeps new files of that kind public. Files already private stay private, and the people allowed to open them still can.', 'gemcloud' ) }
 								</p>
 							</div>

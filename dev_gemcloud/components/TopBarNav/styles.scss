@@ -14,7 +14,7 @@
 		border-radius: 6px;
 		font-size: 13px;
 		font-weight: 500;
-		color: var(--gcs-font-color);
+		color: var(--gemcloud-font-color);
 		text-decoration: none;
 		white-space: nowrap;
 		line-height: 1;
@@ -26,8 +26,8 @@
 
 		&:hover,
 		&:focus-visible {
-			background: var(--gcs-secondary-color);
-			color: var(--gcs-font-color);
+			background: var(--gemcloud-secondary-color);
+			color: var(--gemcloud-font-color);
 			box-shadow: none;
 			outline: none;
 		}
@@ -35,9 +35,9 @@
 
 	&__link.gemcloud-topbar-nav__link--active,
 	&__link.gemcloud-topbar-nav__link--active:hover {
-		background: var(--gcs-second-primary);
+		background: var(--gemcloud-second-primary);
 		border-color: transparent;
-		color: var(--gcs-primary);
+		color: var(--gemcloud-primary);
 		font-weight: 600;
 	}
 }

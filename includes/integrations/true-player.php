@@ -346,7 +346,7 @@ final class TruePlayer extends Integration {
 	}
 
 	/**
-	 * /?gcs_file= links of private copies of files outside the media library.
+	 * /?gemcloud_file= links of private copies of files outside the media library.
 	 *
 	 * @param bool $allowed
 	 * @param Item $item

@@ -148,7 +148,7 @@ final class UrlRewriter {
 
 	/**
 	 * The attachment a URL points at, whichever form it is in: the local
-	 * uploads URL, a public cloud URL, or a private /?gcs_file= link. Pages
+	 * uploads URL, a public cloud URL, or a private /?gemcloud_file= link. Pages
 	 * and the media modal hand out the cloud forms, so plugins that store a
 	 * picked file's URL may have saved one of them.
 	 */
@@ -208,7 +208,7 @@ final class UrlRewriter {
 	}
 
 	/**
-	 * The stored object a cloud URL (public address or /?gcs_file= link)
+	 * The stored object a cloud URL (public address or /?gemcloud_file= link)
 	 * points at, or null for any other URL.
 	 */
 	public static function item_for_url( string $url ): ?Item {

@@ -24,9 +24,9 @@ const PER_PAGE = 20;
 
 const Thumb = ( { row } ) =>
 	row.thumb ? (
-		<img src={ row.thumb } alt="" width="40" height="40" className="h-10 w-10 shrink-0 rounded-[4px] border border-[var(--gcs-border-color)] object-cover" />
+		<img src={ row.thumb } alt="" width="40" height="40" className="h-10 w-10 shrink-0 rounded-[4px] border border-[var(--gemcloud-border-color)] object-cover" />
 	) : (
-		<span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[4px] border border-[var(--gcs-border-color)] bg-[var(--gcs-secondary-color)] text-[var(--gcs-text-muted)]">
+		<span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[4px] border border-[var(--gemcloud-border-color)] bg-[var(--gemcloud-secondary-color)] text-[var(--gemcloud-text-muted)]">
 			<FileText size={ 18 } />
 		</span>
 	);
@@ -37,8 +37,8 @@ const AccessPill = ( { row } ) => {
 		<span
 			className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-[12px] font-medium"
 			style={ priv
-				? { color: 'var(--gcs-warning)', background: 'var(--gcs-warning-bg)' }
-				: { color: 'var(--gcs-info)', background: 'var(--gcs-info-bg)' } }
+				? { color: 'var(--gemcloud-warning)', background: 'var(--gemcloud-warning-bg)' }
+				: { color: 'var(--gemcloud-info)', background: 'var(--gemcloud-info-bg)' } }
 		>
 			{ priv ? <Lock size={ 12 } /> : <Globe size={ 12 } /> }
 			{ priv ? __( 'Private', 'gemcloud' ) : __( 'Public', 'gemcloud' ) }
@@ -99,15 +99,15 @@ export default function Files() {
 			title={ __( 'Files', 'gemcloud' ) }
 			description={ __( 'Every object in your buckets, one row per file and image size.', 'gemcloud' ) }
 			actions={
-				<button type="button" className="gcs-btn gcs-btn--outline" onClick={ () => setConfirmAll( true ) }>
+				<button type="button" className="gemcloud-btn gemcloud-btn--outline" onClick={ () => setConfirmAll( true ) }>
 					<RotateCcw size={ 15 } />
 					{ __( 'Retry all failed', 'gemcloud' ) }
 				</button>
 			}
 		>
-			<div className="gcs-card overflow-hidden">
-				<div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--gcs-border-color)] px-4 py-3">
-					<div className="gcs-tabs">
+			<div className="gemcloud-card overflow-hidden">
+				<div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--gemcloud-border-color)] px-4 py-3">
+					<div className="gemcloud-tabs">
 						{ STATUS_TABS.map( ( t ) => (
 							<span
 								key={ t.value || 'all' }
@@ -144,10 +144,10 @@ export default function Files() {
 							aria-label={ __( 'Visibility', 'gemcloud' ) }
 						/>
 						<div className="relative">
-							<Search size={ 15 } className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--gcs-text-muted)]" />
+							<Search size={ 15 } className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--gemcloud-text-muted)]" />
 							<input
 								type="search"
-								className="gcs-input !w-[240px] !pl-9"
+								className="gemcloud-input !w-[240px] !pl-9"
 								placeholder={ __( 'Search object keys', 'gemcloud' ) }
 								value={ search }
 								onChange={ ( e ) => setSearch( e.target.value ) }
@@ -157,15 +157,15 @@ export default function Files() {
 				</div>
 
 				{ selected.length > 0 && (
-					<div className="flex items-center justify-between gap-3 border-b border-[var(--gcs-border-color)] bg-[var(--gcs-second-primary)] px-4 py-2 text-[13px]">
+					<div className="flex items-center justify-between gap-3 border-b border-[var(--gemcloud-border-color)] bg-[var(--gemcloud-second-primary)] px-4 py-2 text-[13px]">
 						{ /* translators: %d: number of selected files */ }
-						<span className="font-medium text-[var(--gcs-primary)]">{ sprintf( __( '%d selected', 'gemcloud' ), selected.length ) }</span>
+						<span className="font-medium text-[var(--gemcloud-primary)]">{ sprintf( __( '%d selected', 'gemcloud' ), selected.length ) }</span>
 						<div className="flex gap-2">
-							<button type="button" className="gcs-btn gcs-btn--primary gcs-btn--sm" onClick={ () => retry( { ids: selected } ) }>
+							<button type="button" className="gemcloud-btn gemcloud-btn--primary gemcloud-btn--sm" onClick={ () => retry( { ids: selected } ) }>
 								<RotateCcw size={ 14 } />
 								{ __( 'Upload again', 'gemcloud' ) }
 							</button>
-							<button type="button" className="gcs-btn gcs-btn--outline gcs-btn--sm" onClick={ () => setSelected( [] ) }>
+							<button type="button" className="gemcloud-btn gemcloud-btn--outline gemcloud-btn--sm" onClick={ () => setSelected( [] ) }>
 								{ __( 'Clear', 'gemcloud' ) }
 							</button>
 						</div>
@@ -173,7 +173,7 @@ export default function Files() {
 				) }
 
 				<div className="overflow-x-auto">
-					<table className="gcs-table">
+					<table className="gemcloud-table">
 						<thead>
 							<tr>
 								<th className="w-[36px]">
@@ -198,14 +198,14 @@ export default function Files() {
 								[ ...Array( 6 ) ].map( ( _, i ) => (
 									<tr key={ i }>
 										<td colSpan={ 8 }>
-											<div className="gcs-skeleton h-8 w-full" />
+											<div className="gemcloud-skeleton h-8 w-full" />
 										</td>
 									</tr>
 								) ) }
 
 							{ ! loading && ! data.length && (
 								<tr>
-									<td colSpan={ 8 } className="py-12 text-center text-[var(--gcs-font-secondary-color)]">
+									<td colSpan={ 8 } className="py-12 text-center text-[var(--gemcloud-font-secondary-color)]">
 										{ __( 'No files found.', 'gemcloud' ) }
 									</td>
 								</tr>
@@ -225,10 +225,10 @@ export default function Files() {
 										<div className="flex w-[240px] max-w-[240px] items-center gap-3">
 											<Thumb row={ row } />
 											<div className="min-w-0 flex-1">
-												<Tooltip content={ row.title || row.filename } className="gcs-truncate font-medium">
+												<Tooltip content={ row.title || row.filename } className="gemcloud-truncate font-medium">
 													{ row.title || row.filename }
 												</Tooltip>
-												<div className="mt-0.5 flex items-center gap-1.5 text-[12px] text-[var(--gcs-font-secondary-color)]">
+												<div className="mt-0.5 flex items-center gap-1.5 text-[12px] text-[var(--gemcloud-font-secondary-color)]">
 													<span>{ row.source_type === 'attachment' ? __( 'Media', 'gemcloud' ) : row.source_type }</span>
 													<span>·</span>
 													<span>{ row.variant }</span>
@@ -240,7 +240,7 @@ export default function Files() {
 										<AccessPill row={ row } />
 									</td>
 									<td>
-										<Tooltip content={ `${ row.bucket }/${ row.object_key }` } className="gcs-code gcs-truncate max-w-[240px]">
+										<Tooltip content={ `${ row.bucket }/${ row.object_key }` } className="gemcloud-code gemcloud-truncate max-w-[240px]">
 											{ row.object_key }
 										</Tooltip>
 									</td>
@@ -252,7 +252,7 @@ export default function Files() {
 												<Tooltip content={ __( 'The cloud has the only copy. Deleting it from the bucket loses the file for good.', 'gemcloud' ) }>
 													<span
 														className="inline-flex items-center gap-1 whitespace-nowrap rounded-[4px] px-1.5 py-0.5 text-[11px] font-medium"
-														style={ { color: 'var(--gcs-warning)', background: 'var(--gcs-warning-bg)' } }
+														style={ { color: 'var(--gemcloud-warning)', background: 'var(--gemcloud-warning-bg)' } }
 													>
 														<AlertTriangle size={ 11 } />
 														{ __( 'Not on this server', 'gemcloud' ) }
@@ -260,13 +260,13 @@ export default function Files() {
 												</Tooltip>
 											) }
 											{ row.last_error && row.status !== 'synced' && (
-												<span className="max-w-[260px] text-[11px] leading-[1.4] text-[var(--gcs-danger)]" title={ row.last_error }>
+												<span className="max-w-[260px] text-[11px] leading-[1.4] text-[var(--gemcloud-danger)]" title={ row.last_error }>
 													{ row.last_error.length > 90 ? row.last_error.slice( 0, 90 ) + '…' : row.last_error }
 												</span>
 											) }
 										</div>
 									</td>
-									<td className="whitespace-nowrap text-[12px] leading-[1.45] text-[var(--gcs-font-secondary-color)]">
+									<td className="whitespace-nowrap text-[12px] leading-[1.45] text-[var(--gemcloud-font-secondary-color)]">
 										{ formatDateParts( row.updated_at ).map( ( part, i ) => (
 											<div key={ i }>{ part }</div>
 										) ) }
@@ -274,17 +274,17 @@ export default function Files() {
 									<td>
 										<div className="flex justify-end gap-1">
 											{ row.url && (
-												<a className="gcs-btn gcs-btn--outline gcs-btn--sm" href={ row.url } target="_blank" rel="noreferrer" title={ __( 'Open public URL', 'gemcloud' ) }>
+												<a className="gemcloud-btn gemcloud-btn--outline gemcloud-btn--sm" href={ row.url } target="_blank" rel="noreferrer" title={ __( 'Open public URL', 'gemcloud' ) }>
 													<ExternalLink size={ 14 } />
 												</a>
 											) }
 											{ row.source_type === 'attachment' && (
-												<button type="button" className="gcs-btn gcs-btn--outline gcs-btn--sm" onClick={ () => setEditing( row.source_id ) } title={ __( 'File details', 'gemcloud' ) } aria-label={ __( 'File details', 'gemcloud' ) }>
+												<button type="button" className="gemcloud-btn gemcloud-btn--outline gemcloud-btn--sm" onClick={ () => setEditing( row.source_id ) } title={ __( 'File details', 'gemcloud' ) } aria-label={ __( 'File details', 'gemcloud' ) }>
 													<Pencil size={ 14 } />
 												</button>
 											) }
 											{ ( row.status === 'failed' || row.status === 'pending' ) && (
-												<button type="button" className="gcs-btn gcs-btn--outline gcs-btn--sm" onClick={ () => retry( { ids: [ row.id ] } ) } title={ __( 'Upload again', 'gemcloud' ) }>
+												<button type="button" className="gemcloud-btn gemcloud-btn--outline gemcloud-btn--sm" onClick={ () => retry( { ids: [ row.id ] } ) } title={ __( 'Upload again', 'gemcloud' ) }>
 													<RotateCcw size={ 14 } />
 												</button>
 											) }

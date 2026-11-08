@@ -97,10 +97,10 @@ const BackupsTab = ( { form, setSetting } ) => {
 
 				{ blocker && <GCSAlert type="warning">{ blocker }</GCSAlert> }
 
-				<div className="flex items-start justify-between gap-6 rounded-[8px] border border-[var(--gcs-border-color)] p-4">
+				<div className="flex items-start justify-between gap-6 rounded-[8px] border border-[var(--gemcloud-border-color)] p-4">
 					<div>
 						<div className="text-[14px] font-semibold">{ __( 'Back up automatically', 'gemcloud' ) }</div>
-						<p className="mt-1 text-[13px] text-[var(--gcs-font-secondary-color)]">
+						<p className="mt-1 text-[13px] text-[var(--gemcloud-font-secondary-color)]">
 							{ __( 'Runs in the background. Large databases are written a slice at a time, so the site stays fast.', 'gemcloud' ) }
 						</p>
 					</div>
@@ -109,7 +109,7 @@ const BackupsTab = ( { form, setSetting } ) => {
 
 				<div className={ `flex flex-col gap-6 ${ b.enabled ? '' : 'pointer-events-none opacity-50' }` }>
 					<div>
-						<div className="gcs-label mb-2">{ __( 'How often', 'gemcloud' ) }</div>
+						<div className="gemcloud-label mb-2">{ __( 'How often', 'gemcloud' ) }</div>
 						<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 							<ChoiceCard
 								name="backup_frequency"
@@ -132,20 +132,20 @@ const BackupsTab = ( { form, setSetting } ) => {
 					</div>
 
 					<div>
-						<div className="gcs-label mb-2">{ __( 'Keep backups for', 'gemcloud' ) }</div>
+						<div className="gemcloud-label mb-2">{ __( 'Keep backups for', 'gemcloud' ) }</div>
 						<div className="flex flex-wrap gap-2">
 							{ KEEP_DAYS.map( ( days ) => (
 								<button
 									key={ days }
 									type="button"
-									className={ `gcs-btn gcs-btn--sm ${ Number( b.keep_days ) === days ? 'gcs-btn--soft' : 'gcs-btn--outline' }` }
+									className={ `gemcloud-btn gemcloud-btn--sm ${ Number( b.keep_days ) === days ? 'gemcloud-btn--soft' : 'gemcloud-btn--outline' }` }
 									onClick={ () => set( 'keep_days', days ) }
 								>
 									{ sprintf( /* translators: %d: number of days */ __( '%d days', 'gemcloud' ), days ) }
 								</button>
 							) ) }
 						</div>
-						<p className="gcs-help mt-2">{ __( 'Older backups are deleted from the bucket. The newest one is always kept.', 'gemcloud' ) }</p>
+						<p className="gemcloud-help mt-2">{ __( 'Older backups are deleted from the bucket. The newest one is always kept.', 'gemcloud' ) }</p>
 					</div>
 				</div>
 			</div>
@@ -160,8 +160,8 @@ const BackupsTab = ( { form, setSetting } ) => {
 								: __( 'Back up before updating plugins, importing data or making big changes.', 'gemcloud' )
 						}
 					/>
-					<button type="button" className="gcs-btn gcs-btn--primary mb-4" onClick={ backUpNow } disabled={ !! blocker || !! running || 'run' === busy }>
-						{ 'run' === busy ? <Loader2 size={ 16 } className="gcs-spin" /> : <DatabaseBackup size={ 16 } /> }
+					<button type="button" className="gemcloud-btn gemcloud-btn--primary mb-4" onClick={ backUpNow } disabled={ !! blocker || !! running || 'run' === busy }>
+						{ 'run' === busy ? <Loader2 size={ 16 } className="gemcloud-spin" /> : <DatabaseBackup size={ 16 } /> }
 						{ __( 'Back up now', 'gemcloud' ) }
 					</button>
 				</div>
@@ -187,8 +187,8 @@ const BackupsTab = ( { form, setSetting } ) => {
 					</GCSAlert>
 				) }
 
-				<div className="overflow-x-auto rounded-[8px] border border-[var(--gcs-border-color)]">
-					<table className="gcs-table">
+				<div className="overflow-x-auto rounded-[8px] border border-[var(--gemcloud-border-color)]">
+					<table className="gemcloud-table">
 						<thead>
 							<tr>
 								<th>{ __( 'Created', 'gemcloud' ) }</th>
@@ -200,14 +200,14 @@ const BackupsTab = ( { form, setSetting } ) => {
 						<tbody>
 							{ ! data && (
 								<tr>
-									<td colSpan="4" className="text-[var(--gcs-text-muted)]">
+									<td colSpan="4" className="text-[var(--gemcloud-text-muted)]">
 										{ __( 'Loading…', 'gemcloud' ) }
 									</td>
 								</tr>
 							) }
 							{ data && data.backups.length === 0 && (
 								<tr>
-									<td colSpan="4" className="text-[var(--gcs-text-muted)]">
+									<td colSpan="4" className="text-[var(--gemcloud-text-muted)]">
 										{ __( 'No backups yet.', 'gemcloud' ) }
 									</td>
 								</tr>
@@ -218,7 +218,7 @@ const BackupsTab = ( { form, setSetting } ) => {
 									<tr key={ row.id }>
 										<td>
 											<div className="font-medium">{ formatDateTime( row.created_at ) }</div>
-											<div className="text-[12px] text-[var(--gcs-text-muted)]">
+											<div className="text-[12px] text-[var(--gemcloud-text-muted)]">
 												{ row.filename } · ID { row.id }
 											</div>
 										</td>
@@ -228,11 +228,11 @@ const BackupsTab = ( { form, setSetting } ) => {
 										</td>
 										<td>
 											<div className="flex justify-end gap-2">
-												<button type="button" className="gcs-btn gcs-btn--sm gcs-btn--outline" onClick={ () => download( row.id ) } disabled={ 'synced' !== row.status || `dl-${ row.id }` === busy }>
+												<button type="button" className="gemcloud-btn gemcloud-btn--sm gemcloud-btn--outline" onClick={ () => download( row.id ) } disabled={ 'synced' !== row.status || `dl-${ row.id }` === busy }>
 													<Download size={ 14 } />
 													{ __( 'Download', 'gemcloud' ) }
 												</button>
-												<button type="button" className="gcs-btn gcs-btn--sm gcs-btn--outline" onClick={ () => setConfirm( row ) } disabled={ 'deleting' === row.status } aria-label={ __( 'Delete', 'gemcloud' ) }>
+												<button type="button" className="gemcloud-btn gemcloud-btn--sm gemcloud-btn--outline" onClick={ () => setConfirm( row ) } disabled={ 'deleting' === row.status } aria-label={ __( 'Delete', 'gemcloud' ) }>
 													<Trash2 size={ 14 } />
 												</button>
 											</div>

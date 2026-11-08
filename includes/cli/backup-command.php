@@ -127,7 +127,7 @@ final class BackupCommand {
 
 		WP_CLI::confirm( sprintf( 'Replace every table in the %s database with backup %d from %s UTC? Changes made since then are lost.', DB_NAME, $item->source_id, gmdate( 'Y-m-d H:i', $item->source_id ) ), $assoc );
 
-		$file = get_temp_dir() . 'gcs-restore-' . wp_generate_password( 24, false ) . '.sql.gz';
+		$file = get_temp_dir() . 'gemcloud-restore-' . wp_generate_password( 24, false ) . '.sql.gz';
 		WP_CLI::log( 'Downloading ' . size_format( (int) $item->size_bytes, 1 ) . '…' );
 		try {
 			Manager::driver()->get( $item->bucket, $item->object_key, $file );

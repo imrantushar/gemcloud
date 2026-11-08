@@ -70,7 +70,7 @@ const MediaTab = ( { form, meta, setSetting } ) => {
 					label={
 						<>
 							{ __( 'Path prefix', 'gemcloud' ) }
-							<span className="inline-flex items-center gap-1 rounded-full bg-[var(--gcs-secondary-color)] px-2 py-0.5 text-[11px] font-medium text-[var(--gcs-font-secondary-color)]">
+							<span className="inline-flex items-center gap-1 rounded-full bg-[var(--gemcloud-secondary-color)] px-2 py-0.5 text-[11px] font-medium text-[var(--gemcloud-font-secondary-color)]">
 								<Lock size={ 11 } />
 								{ __( 'Automatic', 'gemcloud' ) }
 							</span>
@@ -79,13 +79,13 @@ const MediaTab = ( { form, meta, setSetting } ) => {
 					help={
 						<>
 							{ __( 'Set automatically from where WordPress keeps uploads, so a file\'s cloud address mirrors its local one:', 'gemcloud' ) }{ ' ' }
-							<code className="gcs-code">{ `${ s.path_prefix }/2026/10/photo.jpg` }</code>
+							<code className="gemcloud-code">{ `${ s.path_prefix }/2026/10/photo.jpg` }</code>
 						</>
 					}
 				>
 					<div className="relative">
-						<input id="gcs-f-path-prefix" className="gcs-input !pr-10" value={ s.path_prefix } readOnly aria-readonly="true" />
-						<Lock size={ 15 } className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[var(--gcs-text-muted)]" aria-hidden="true" />
+						<input id="gemcloud-f-path-prefix" className="gemcloud-input !pr-10" value={ s.path_prefix } readOnly aria-readonly="true" />
+						<Lock size={ 15 } className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[var(--gemcloud-text-muted)]" aria-hidden="true" />
 					</div>
 				</Field>
 			</div>

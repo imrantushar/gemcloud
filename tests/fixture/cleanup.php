@@ -11,9 +11,9 @@ if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
 	exit;
 }
 
-$fx = get_option( 'gcs_fixture' );
+$fx = get_option( 'gemcloud_fixture' );
 if ( ! is_array( $fx ) ) {
-	WP_CLI::error( 'No test content recorded (gcs_fixture option is missing).' );
+	WP_CLI::error( 'No test content recorded (gemcloud_fixture option is missing).' );
 }
 
 global $wpdb;
@@ -67,5 +67,5 @@ foreach ( $fx['files'] as $file ) {
 	}
 }
 
-delete_option( 'gcs_fixture' );
+delete_option( 'gemcloud_fixture' );
 WP_CLI::success( 'Test content removed. Cloud copies are deleted by the background queue.' );

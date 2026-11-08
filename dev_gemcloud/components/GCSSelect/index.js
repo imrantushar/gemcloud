@@ -2,7 +2,7 @@ import React from 'react';
 import Select from 'react-select';
 
 /**
- * react-select with ZenCommunity's look (styles: .gcs-rs in _select.scss):
+ * react-select with ZenCommunity's look (styles: .gemcloud-rs in _select.scss):
  * a rounded control, a floating menu, a light hover tint and a check on the
  * chosen option. Takes and returns plain values, like a native <select>.
  *
@@ -24,8 +24,8 @@ const GCSSelect = ( {
 	return (
 		<div className={ className } style={ width ? { width } : undefined }>
 			<Select
-				className="gcs-rs"
-				classNamePrefix="gcs-rs"
+				className="gemcloud-rs"
+				classNamePrefix="gemcloud-rs"
 				value={ selected }
 				options={ options }
 				placeholder={ placeholder }

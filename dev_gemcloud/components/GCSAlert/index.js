@@ -2,10 +2,10 @@ import React from 'react';
 import { AlertCircle, AlertTriangle, CheckCircle, Info } from 'lucide-react';
 
 const TONES = {
-	info: { Icon: Info, color: 'var(--gcs-info)', background: 'var(--gcs-info-bg)' },
-	success: { Icon: CheckCircle, color: 'var(--gcs-success)', background: 'var(--gcs-success-bg)' },
-	warning: { Icon: AlertTriangle, color: 'var(--gcs-warning)', background: 'var(--gcs-warning-bg)' },
-	error: { Icon: AlertCircle, color: 'var(--gcs-danger)', background: 'var(--gcs-danger-bg)' },
+	info: { Icon: Info, color: 'var(--gemcloud-info)', background: 'var(--gemcloud-info-bg)' },
+	success: { Icon: CheckCircle, color: 'var(--gemcloud-success)', background: 'var(--gemcloud-success-bg)' },
+	warning: { Icon: AlertTriangle, color: 'var(--gemcloud-warning)', background: 'var(--gemcloud-warning-bg)' },
+	error: { Icon: AlertCircle, color: 'var(--gemcloud-danger)', background: 'var(--gemcloud-danger-bg)' },
 };
 
 const GCSAlert = ( { type = 'info', title, children, action } ) => {
@@ -14,7 +14,7 @@ const GCSAlert = ( { type = 'info', title, children, action } ) => {
 	return (
 		<div
 			className="flex items-start gap-3 rounded-[8px] border px-4 py-3 text-[13px]"
-			style={ { background: tone.background, borderColor: tone.color, color: 'var(--gcs-font-color)' } }
+			style={ { background: tone.background, borderColor: tone.color, color: 'var(--gemcloud-font-color)' } }
 			role={ type === 'error' ? 'alert' : 'status' }
 		>
 			<Icon size={ 18 } className="mt-[1px] shrink-0" style={ { color: tone.color } } />

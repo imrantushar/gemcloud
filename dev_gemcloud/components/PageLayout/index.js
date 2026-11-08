@@ -22,7 +22,7 @@ const PageLayout = ( { title, heading, description, actions, children } ) => (
 						height="32"
 						style={ { borderRadius: '6px' } }
 					/>
-					<ChevronRight size={ 16 } className="shrink-0 text-[var(--gcs-text-muted)]" />
+					<ChevronRight size={ 16 } className="shrink-0 text-[var(--gemcloud-text-muted)]" />
 					<span className="gemcloud-topbar__crumb">{ title }</span>
 				</>
 			) }
