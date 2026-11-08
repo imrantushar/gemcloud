@@ -103,14 +103,14 @@ final class RestController {
 
 			Credentials::save(
 				(string) ( $body['credentials']['access_key_id'] ?? '' ),
-				(string) ( $body['credentials']['secret_access_key'] ?? '' ),
+				sanitize_text_field( (string) ( $body['credentials']['secret_access_key'] ?? '' ) ),
 				$provider
 			);
 
 			// Keys typed for the other providers, kept for when they're chosen.
 			foreach ( (array) ( $body['credentials']['profiles'] ?? [] ) as $key => $keys ) {
 				if ( $key !== $provider && in_array( $key, Settings::PROVIDERS, true ) && is_array( $keys ) ) {
-					Credentials::save_profile( $key, (string) ( $keys['access_key_id'] ?? '' ), (string) ( $keys['secret_access_key'] ?? '' ) );
+					Credentials::save_profile( $key, (string) ( $keys['access_key_id'] ?? '' ), sanitize_text_field( (string) ( $keys['secret_access_key'] ?? '' ) ) );
 				}
 			}
 		}
@@ -195,7 +195,7 @@ final class RestController {
 	}
 
 	public static function configure_cors( WP_REST_Request $request ) {
-		$which    = (string) ( $request->get_param( 'bucket' ) ?? 'both' );
+		$which    = sanitize_key( (string) ( $request->get_param( 'bucket' ) ?? 'both' ) );
 		$settings = Settings::get();
 		$origins  = array_values( array_unique( array_filter( [
 			self::origin( home_url() ),
@@ -641,7 +641,7 @@ final class RestController {
 			if ( ! defined( 'GEMCLOUD_ACCESS_KEY_ID' ) && isset( $body['credentials']['access_key_id'] ) ) {
 				$access = preg_replace( '/[^A-Za-z0-9]/', '', (string) $body['credentials']['access_key_id'] );
 			}
-			$posted = trim( (string) ( $body['credentials']['secret_access_key'] ?? '' ) );
+			$posted = sanitize_text_field( (string) ( $body['credentials']['secret_access_key'] ?? '' ) );
 			if ( ! defined( 'GEMCLOUD_SECRET_ACCESS_KEY' ) && '' !== $posted && ! Credentials::is_mask( $posted ) ) {
 				$secret = $posted;
 			}

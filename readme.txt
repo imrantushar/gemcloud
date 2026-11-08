@@ -74,11 +74,13 @@ To rebuild it, run `npm install --legacy-peer-deps` and then `npm run build`. PH
 GemCloud bundles these open-source libraries:
 
 * [Action Scheduler](https://github.com/woocommerce/action-scheduler) — GPL-3.0-or-later
-* [Redux Toolkit](https://github.com/reduxjs/redux-toolkit) and [React Redux](https://github.com/reduxjs/react-redux) — MIT
+* [Redux Toolkit](https://github.com/reduxjs/redux-toolkit), [Redux](https://github.com/reduxjs/redux) and [React Redux](https://github.com/reduxjs/react-redux) — MIT
+* [Immer](https://github.com/immerjs/immer) and [Reselect](https://github.com/reduxjs/reselect), included by Redux Toolkit — MIT
 * [React Router](https://github.com/remix-run/react-router) — MIT
 * [React Select](https://github.com/JedWatson/react-select) and [Emotion](https://github.com/emotion-js/emotion) — MIT
 * [Axios](https://github.com/axios/axios) — MIT
-* [Lucide](https://github.com/lucide-icons/lucide) — ISC
+* [Lucide](https://github.com/lucide-icons/lucide) icons — ISC
+* [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss) — MIT (build tool; only the generated styles ship)
 
 React and WordPress packages are loaded from WordPress core, not bundled.
 

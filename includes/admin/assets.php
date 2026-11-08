@@ -24,14 +24,11 @@ class Assets {
 			return;
 		}
 
-		// The app takes over the screen; other plugins' notices overlap its chrome.
-		add_action( 'admin_head', static function () {
-			echo '<style>#wpbody-content > *:not(#gemcloud-app):not(#screen-meta):not(#screen-meta-links){display:none !important;}</style>';
-		} );
-
 		$asset = include $asset_file;
 
 		wp_enqueue_style( 'gemcloud-app-style', GEMCLOUD_ASSETS_URI . 'build/app.css', [], $asset['version'] );
+		// The app takes over the screen; other plugins' notices overlap its chrome.
+		wp_add_inline_style( 'gemcloud-app-style', '#wpbody-content > *:not(#gemcloud-app):not(#screen-meta):not(#screen-meta-links){display:none !important;}' );
 		wp_enqueue_script( 'gemcloud-app-scripts', GEMCLOUD_ASSETS_URI . sprintf( 'build/app.%s.js', GEMCLOUD_VERSION ), $asset['dependencies'], $asset['version'], true );
 
 		wp_localize_script( 'gemcloud-app-scripts', 'GemCloudGlobal', [

@@ -11,7 +11,7 @@ class Menu {
 
 	public function register(): void {
 		add_action( 'admin_menu', [ $this, 'admin_menu' ] );
-		add_action( 'admin_head', [ $this, 'menu_css' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'menu_css' ] );
 	}
 
 	/**
@@ -25,18 +25,15 @@ class Menu {
 			$menu . ':has(> a[href$="page=' . GEMCLOUD_PLUGIN_SLUG . '"])',
 			$menu . ':has(+ li > a[href$="page=' . GEMCLOUD_PLUGIN_SLUG . '-settings"])',
 		];
-		printf(
-			'<style id="gemcloud-menu">%s{margin-bottom:6px;padding-bottom:7px;border-bottom:1px solid rgba(255,255,255,.14)}</style>',
-			implode( ',', $after ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fixed selectors.
-		);
+		wp_register_style( 'gemcloud-menu', false, [], GEMCLOUD_VERSION );
+		wp_enqueue_style( 'gemcloud-menu' );
+		wp_add_inline_style( 'gemcloud-menu', implode( ',', $after ) . '{margin-bottom:6px;padding-bottom:7px;border-bottom:1px solid rgba(255,255,255,.14)}' );
 	}
 
 	public function admin_menu(): void {
 		$title = apply_filters( 'gemcloud/admin/toplevel_menu_title', __( 'GemCloud', 'gemcloud' ) );
 
-		// The sidebar is too narrow for the name on one line; let it wrap
-		// between words instead of before its last letter.
-		$menu_title = str_replace( 'GemCloud', 'GemCloud<wbr>Storage', esc_html( $title ) );
+		$menu_title = esc_html( $title );
 
 		add_menu_page( $title, $menu_title, 'manage_options', GEMCLOUD_PLUGIN_SLUG, [ $this, 'load_main_template' ], self::icon(), 81 );
 
