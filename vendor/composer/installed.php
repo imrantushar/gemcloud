@@ -1,19 +1,19 @@
 <?php return array(
     'root' => array(
-        'name' => 'kodezen/gemcloudstorage',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'name' => 'kodezen/gemcloud',
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => '77dcff3b3980e791207b045bc2f73002bc9b07e5',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => false,
     ),
     'versions' => array(
-        'kodezen/gemcloudstorage' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+        'kodezen/gemcloud' => array(
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => '77dcff3b3980e791207b045bc2f73002bc9b07e5',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

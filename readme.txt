@@ -69,7 +69,7 @@ When connected, GemCloud sends your files (media uploads, protected files and, i
 
 The admin JavaScript in `assets/build/` is compiled. Its human-readable source is included in the `dev_gemcloud/` folder (styles in `assets/scss/`) and is also public on GitHub: [github.com/imrantushar/gemcloud](https://github.com/imrantushar/gemcloud).
 
-To rebuild it, run `npm install --legacy-peer-deps` and then `npm run build`. PHP dependencies are installed with `composer install --no-dev`.
+To rebuild it, run `npm install --legacy-peer-deps` and then `npm run build`. To build the full release zip, run `npm run dist`. It installs missing packages and then builds the JS, the production Composer packages, the translation template and the zip.
 
 GemCloud bundles these open-source libraries:
 

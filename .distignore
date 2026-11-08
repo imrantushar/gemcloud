@@ -37,3 +37,9 @@ SKILL.md
 .env
 .env.*
 auth.json
+
+# Release build kit (the Node dist builder + its config/cache/output).
+build-tools
+build.config.json
+.build-cache
+/dist
