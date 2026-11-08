@@ -27,7 +27,7 @@ final class CleanupJob {
 		$table = ItemRepository::table();
 
 		// Rows stuck in "uploading" for over an hour: the worker died.
-		$stuck = $wpdb->get_col( $wpdb->prepare( "SELECT id FROM {$table} WHERE status = %s AND updated_at < %s LIMIT 500", Item::UPLOADING, gmdate( 'Y-m-d H:i:s', time() - HOUR_IN_SECONDS ) ) );
+		$stuck = $wpdb->get_col( $wpdb->prepare( "SELECT id FROM %i WHERE status = %s AND updated_at < %s LIMIT 500", $table, Item::UPLOADING, gmdate( 'Y-m-d H:i:s', time() - HOUR_IN_SECONDS ) ) );
 		foreach ( array_map( 'intval', (array) $stuck ) as $id ) {
 			$item = ItemRepository::find( $id );
 			if ( ! $item ) {
@@ -42,7 +42,7 @@ final class CleanupJob {
 		}
 
 		// Multipart uploads abandoned by failed rows.
-		$abandoned = $wpdb->get_col( $wpdb->prepare( "SELECT id FROM {$table} WHERE status = %s AND meta LIKE %s LIMIT 500", Item::FAILED, '%"upload_id"%' ) );
+		$abandoned = $wpdb->get_col( $wpdb->prepare( "SELECT id FROM %i WHERE status = %s AND meta LIKE %s LIMIT 500", $table, Item::FAILED, '%"upload_id"%' ) );
 		foreach ( array_map( 'intval', (array) $abandoned ) as $id ) {
 			$item = ItemRepository::find( $id );
 			if ( $item ) {
@@ -52,7 +52,7 @@ final class CleanupJob {
 
 		// Files downloaded on demand more than a day ago. RemoveLocalJob
 		// decides per attachment (private ones always go).
-		$restored      = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE source_type = 'attachment' AND status = %s AND local_state = 'present' AND meta LIKE %s LIMIT 500", Item::SYNCED, '%"restored_at"%' ) );
+		$restored      = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM %i WHERE source_type = 'attachment' AND status = %s AND local_state = 'present' AND meta LIKE %s LIMIT 500", $table, Item::SYNCED, '%"restored_at"%' ) );
 		$by_attachment = [];
 		foreach ( (array) $restored as $row ) {
 			$item = Item::from_row( $row );

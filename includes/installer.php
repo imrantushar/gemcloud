@@ -50,7 +50,7 @@ class Installer {
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- one-time rename of this plugin's own table.
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $old_table ) ) === $old_table
 			&& $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $new_table ) ) !== $new_table ) {
-			$wpdb->query( "RENAME TABLE `{$old_table}` TO `{$new_table}`" );
+			$wpdb->query( $wpdb->prepare( 'RENAME TABLE %i TO %i', $old_table, $new_table ) );
 		}
 		$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_key = REPLACE(meta_key, '_gemcloudstorage_', '_gemcloud_') WHERE meta_key LIKE '\\_gemcloudstorage\\_%'" );
 		// phpcs:enable

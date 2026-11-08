@@ -392,6 +392,7 @@ final class TruePlayer extends Integration {
 			}
 		}
 
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- TruePlayer's own access filter, applied to follow its rules.
 		$access = apply_filters( 'trueplayer/gate/access', [ 'allowed' => true ], $video_id, $subject );
 		return ! empty( $access['allowed'] );
 	}

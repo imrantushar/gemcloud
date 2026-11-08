@@ -83,8 +83,8 @@ final class ItemRepository {
 		}
 
 		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
-		// phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- placeholders built above.
-		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM %i WHERE source_type = %s AND source_id IN ({$placeholders})", array_merge( [ self::table(), $source_type ], $ids ) ) );
+		// phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber -- one placeholder per spread value, built above.
+		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM %i WHERE source_type = %s AND source_id IN ({$placeholders})", self::table(), $source_type, ...$ids ) );
 		foreach ( (array) $rows as $row ) {
 			$item = Item::from_row( $row );
 			self::$cache[ $source_type . ':' . $item->source_id ][ $item->variant ] = $item;
@@ -133,8 +133,8 @@ final class ItemRepository {
 	public static function claim( int $id, array $from = [ Item::PENDING, Item::FAILED ] ): bool {
 		global $wpdb;
 		$placeholders = implode( ',', array_fill( 0, count( $from ), '%s' ) );
-		// phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- placeholders built above.
-		$changed = $wpdb->query( $wpdb->prepare( "UPDATE %i SET status = %s, updated_at = %s WHERE id = %d AND status IN ({$placeholders})", array_merge( [ self::table(), Item::UPLOADING, current_time( 'mysql', true ), $id ], $from ) ) );
+		// phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber -- one placeholder per spread value, built above.
+		$changed = $wpdb->query( $wpdb->prepare( "UPDATE %i SET status = %s, updated_at = %s WHERE id = %d AND status IN ({$placeholders})", self::table(), Item::UPLOADING, current_time( 'mysql', true ), $id, ...$from ) );
 		self::$cache = [];
 		return 1 === (int) $changed;
 	}
@@ -173,14 +173,15 @@ final class ItemRepository {
 		$sets = [];
 		$args = [];
 		foreach ( $set as $column => $value ) {
-			$sets[] = "`{$column}` = %s";
+			$sets[] = '%i = %s';
+			$args[] = $column;
 			$args[] = $value;
 		}
 		$sets[] = 'updated_at = %s';
 		$args[] = current_time( 'mysql', true );
 
 		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
-		// phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.PreparedSQL.NotPrepared -- $sets are fixed `column = %s` fragments; placeholders built above.
+		// phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $sets are fixed `%i = %s` fragments; placeholders built above.
 		$count       = (int) $wpdb->query( $wpdb->prepare( 'UPDATE %i SET ' . implode( ', ', $sets ) . " WHERE id IN ({$placeholders})", array_merge( [ self::table() ], $args, $ids ) ) );
 		self::$cache = [];
 		return $count;
@@ -197,16 +198,16 @@ final class ItemRepository {
 		foreach ( Item::STATUSES as $status ) {
 			$by_status[ $status ] = 0;
 		}
-		foreach ( (array) $wpdb->get_results( "SELECT status, COUNT(*) AS c FROM {$table} GROUP BY status" ) as $row ) {
+		foreach ( (array) $wpdb->get_results( $wpdb->prepare( "SELECT status, COUNT(*) AS c FROM %i GROUP BY status", $table ) ) as $row ) {
 			$by_status[ $row->status ] = (int) $row->c;
 		}
 
-		$totals = $wpdb->get_row( "SELECT COUNT(*) AS objects, COALESCE(SUM(CASE WHEN status = 'synced' THEN size_bytes END), 0) AS bytes, SUM(local_state = 'removed') AS removed, SUM(visibility = 'private') AS private_objects FROM {$table}" );
+		$totals = $wpdb->get_row( $wpdb->prepare( "SELECT COUNT(*) AS objects, COALESCE(SUM(CASE WHEN status = 'synced' THEN size_bytes END), 0) AS bytes, SUM(local_state = 'removed') AS removed, SUM(visibility = 'private') AS private_objects FROM %i", $table ) );
 
-		$oldest_pending = $wpdb->get_var( "SELECT MIN(updated_at) FROM {$table} WHERE status IN ('pending','uploading')" );
+		$oldest_pending = $wpdb->get_var( $wpdb->prepare( "SELECT MIN(updated_at) FROM %i WHERE status IN ('pending','uploading')", $table ) );
 
 		$by_context = [];
-		foreach ( (array) $wpdb->get_results( "SELECT source_type, COUNT(*) AS c, COALESCE(SUM(CASE WHEN status = 'synced' THEN size_bytes END), 0) AS bytes FROM {$table} GROUP BY source_type" ) as $row ) {
+		foreach ( (array) $wpdb->get_results( $wpdb->prepare( "SELECT source_type, COUNT(*) AS c, COALESCE(SUM(CASE WHEN status = 'synced' THEN size_bytes END), 0) AS bytes FROM %i GROUP BY source_type", $table ) ) as $row ) {
 			$by_context[] = [
 				'source_type' => $row->source_type,
 				'objects'     => (int) $row->c,
@@ -273,13 +274,13 @@ final class ItemRepository {
 		$offset   = ( $page - 1 ) * $per_page;
 		$sql_where = implode( ' AND ', $where );
 
-		$count_sql = "SELECT COUNT(*) FROM {$table} WHERE {$sql_where}";
-		$list_sql  = "SELECT * FROM {$table} WHERE {$sql_where} ORDER BY id DESC LIMIT %d OFFSET %d";
+		$count_sql = "SELECT COUNT(*) FROM %i WHERE {$sql_where}";
+		$list_sql  = "SELECT * FROM %i WHERE {$sql_where} ORDER BY id DESC LIMIT %d OFFSET %d";
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared -- $sql_where only holds placeholders.
-		$total = (int) ( $params ? $wpdb->get_var( $wpdb->prepare( $count_sql, $params ) ) : $wpdb->get_var( $count_sql ) );
-		$rows  = $wpdb->get_results( $wpdb->prepare( $list_sql, array_merge( $params, [ $per_page, $offset ] ) ) );
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $sql_where only holds placeholders.
+		$total = (int) $wpdb->get_var( $wpdb->prepare( $count_sql, $table, ...$params ) );
+		$rows  = $wpdb->get_results( $wpdb->prepare( $list_sql, $table, ...array_merge( $params, [ $per_page, $offset ] ) ) );
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 		return [
 			'items' => array_map( [ Item::class, 'from_row' ], (array) $rows ),

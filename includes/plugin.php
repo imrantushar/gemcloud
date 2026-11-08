@@ -31,7 +31,6 @@ final class Plugin {
 
 	private function __construct() {
 		add_action( 'plugins_loaded', [ $this, 'boot' ], 20 );
-		add_action( 'init', [ $this, 'load_textdomain' ] );
 	}
 
 	public function boot(): void {
@@ -72,7 +71,4 @@ final class Plugin {
 		do_action( 'gemcloud/loaded', GEMCLOUD_VERSION );
 	}
 
-	public function load_textdomain(): void {
-		load_plugin_textdomain( 'gemcloud', false, dirname( plugin_basename( GEMCLOUD_PLUGIN_FILE ) ) . '/languages' );
-	}
 }

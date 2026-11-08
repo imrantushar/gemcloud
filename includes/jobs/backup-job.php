@@ -53,14 +53,15 @@ final class BackupJob {
 				$table = $tables[ $run['table_index'] ];
 
 				if ( 0 === (int) $run['offset'] ) {
-					$create = $wpdb->get_row( "SHOW CREATE TABLE `{$table}`", ARRAY_N );
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange -- reads the table definition for the backup; changes nothing.
+					$create = $wpdb->get_row( $wpdb->prepare( 'SHOW CREATE TABLE %i', $table ), ARRAY_N );
 					if ( ! $create ) {
 						throw new \RuntimeException( sprintf( 'Could not read the structure of %s: %s', $table, $wpdb->last_error ) );
 					}
 					gzwrite( $gz, "\n-- Table {$table}\nDROP TABLE IF EXISTS `{$table}`;\n" . str_replace( [ "\r", "\n" ], ' ', $create[1] ) . ";\n" );
 				}
 
-				$rows = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM `{$table}` LIMIT %d, %d", (int) $run['offset'], self::ROWS_PER_READ ), ARRAY_N );
+				$rows = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM %i LIMIT %d, %d", $table, (int) $run['offset'], self::ROWS_PER_READ ), ARRAY_N );
 				if ( '' !== $wpdb->last_error ) {
 					throw new \RuntimeException( sprintf( 'Could not read %s: %s', $table, $wpdb->last_error ) );
 				}

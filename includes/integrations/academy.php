@@ -293,16 +293,17 @@ final class Academy extends Integration {
 
 		if ( $hp ) {
 			$table = $wpdb->prefix . 'academy_lessonmeta';
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $table is the prefixed table name; $where is built from prepared fragments by the callers.
 			return (array) $wpdb->get_results( "SELECT lesson_id, meta_key, meta_value FROM {$table} WHERE {$where}" );
 		}
 
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $where is built from prepared fragments by the callers.
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $where is built from prepared fragments by the callers.
 		return (array) $wpdb->get_results(
 			"SELECT pm.post_id AS lesson_id, pm.meta_key, pm.meta_value
 			FROM {$wpdb->postmeta} pm INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id AND p.post_type = 'academy_lessons'
 			WHERE " . str_replace( [ 'meta_key', 'meta_value' ], [ 'pm.meta_key', 'pm.meta_value' ], $where )
 		);
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	}
 
 	/**

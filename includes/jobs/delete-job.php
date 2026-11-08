@@ -89,6 +89,6 @@ final class DeleteJob {
 		global $wpdb;
 		$table = ItemRepository::table();
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- custom table.
-		return (bool) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$table} WHERE bucket = %s AND object_key = %s AND status <> %s AND id <> %d LIMIT 1", $item->bucket, $item->object_key, Item::DELETING, $item->id ) );
+		return (bool) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM %i WHERE bucket = %s AND object_key = %s AND status <> %s AND id <> %d LIMIT 1", $table, $item->bucket, $item->object_key, Item::DELETING, $item->id ) );
 	}
 }
