@@ -1,13 +1,13 @@
 <?php
-namespace GemCloudStorage\Backups;
+namespace GemCloud\Backups;
 
-use GemCloudStorage\Contexts;
-use GemCloudStorage\Items\Item;
-use GemCloudStorage\Items\ItemRepository;
-use GemCloudStorage\Jobs\Queue;
-use GemCloudStorage\Manager;
-use GemCloudStorage\Ref;
-use GemCloudStorage\Settings;
+use GemCloud\Contexts;
+use GemCloud\Items\Item;
+use GemCloud\Items\ItemRepository;
+use GemCloud\Jobs\Queue;
+use GemCloud\Manager;
+use GemCloud\Ref;
+use GemCloud\Settings;
 use WP_Error;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -31,12 +31,12 @@ final class Backups {
 	const CONTEXT = 'backups.database';
 
 	/** The backup being written: progress, temp file, tables. */
-	const RUN_OPTION = 'gemcloudstorage_backup_run';
+	const RUN_OPTION = 'gemcloud_backup_run';
 
 	/** Result of the last finished or failed backup. */
-	const LAST_OPTION = 'gemcloudstorage_backup_last';
+	const LAST_OPTION = 'gemcloud_backup_last';
 
-	const CHECK_HOOK = 'gemcloudstorage/backup_check';
+	const CHECK_HOOK = 'gemcloud/backup_check';
 
 	const FREQUENCIES = [
 		'daily'  => DAY_IN_SECONDS,
@@ -46,20 +46,20 @@ final class Backups {
 	const KEEP_DAYS = [ 7, 14, 30, 90 ];
 
 	public static function init(): void {
-		add_action( 'gemcloudstorage/loaded', [ self::class, 'register_context' ], 6 );
-		add_action( 'gemcloudstorage/uploaded', [ self::class, 'on_uploaded' ] );
-		add_action( 'gemcloudstorage/upload_failed', [ self::class, 'on_upload_failed' ], 10, 2 );
+		add_action( 'gemcloud/loaded', [ self::class, 'register_context' ], 6 );
+		add_action( 'gemcloud/uploaded', [ self::class, 'on_uploaded' ] );
+		add_action( 'gemcloud/upload_failed', [ self::class, 'on_upload_failed' ], 10, 2 );
 		add_action( self::CHECK_HOOK, [ self::class, 'maybe_start' ] );
 		add_action( 'action_scheduler_init', [ self::class, 'schedule_check' ] );
 	}
 
 	public static function register_context(): void {
 		Contexts::register( self::CONTEXT, [
-			'label'       => __( 'Database backups', 'gemcloudstorage' ),
-			'description' => __( 'Compressed copies of this site\'s database.', 'gemcloudstorage' ),
+			'label'       => __( 'Database backups', 'gemcloud' ),
+			'description' => __( 'Compressed copies of this site\'s database.', 'gemcloud' ),
 			'visibility'  => 'private',
 			'path'        => 'backups/database/{Y}/{m}/{uuid}/{filename}',
-			'source'      => 'GemCloudStorage',
+			'source'      => 'GemCloud',
 			'locked'      => [ 'visibility' ],
 			// Switched on and off from its own settings tab, not Contexts.
 			'internal'    => true,
@@ -89,18 +89,18 @@ final class Backups {
 		if ( '' !== $owner ) {
 			return sprintf(
 				/* translators: %s: backup plugin name */
-				__( '%s already backs up this database to your bucket on a schedule, so backups here are paused to avoid a second copy. Earlier backups below stay downloadable.', 'gemcloudstorage' ),
+				__( '%s already backs up this database to your bucket on a schedule, so backups here are paused to avoid a second copy. Earlier backups below stay downloadable.', 'gemcloud' ),
 				$owner
 			);
 		}
 		if ( ! Manager::available() ) {
-			return __( 'Connect a bucket and switch cloud storage on first.', 'gemcloudstorage' );
+			return __( 'Connect a bucket and switch cloud storage on first.', 'gemcloud' );
 		}
 		if ( '' === (string) Settings::value( 'buckets.private.name', '' ) ) {
-			return __( 'Backups hold every customer, order and password hash, so they are only kept in a private bucket. Add one under Connection.', 'gemcloudstorage' );
+			return __( 'Backups hold every customer, order and password hash, so they are only kept in a private bucket. Add one under Connection.', 'gemcloud' );
 		}
 		if ( ! function_exists( 'gzopen' ) ) {
-			return __( 'This server\'s PHP has no zlib extension, which backups need for compression.', 'gemcloudstorage' );
+			return __( 'This server\'s PHP has no zlib extension, which backups need for compression.', 'gemcloud' );
 		}
 		return '';
 	}
@@ -116,7 +116,7 @@ final class Backups {
 		 *
 		 * @param string $owner Plugin name, or '' when backups run here.
 		 */
-		return (string) apply_filters( 'gemcloudstorage/backups/handled_by', '' );
+		return (string) apply_filters( 'gemcloud/backups/handled_by', '' );
 	}
 
 	// ── Running ─────────────────────────────────────────────────────────────
@@ -142,10 +142,10 @@ final class Backups {
 	public static function start( string $trigger = 'manual' ) {
 		$blocker = self::blocker();
 		if ( '' !== $blocker ) {
-			return new WP_Error( 'gemcloudstorage_backup_blocked', $blocker );
+			return new WP_Error( 'gemcloud_backup_blocked', $blocker );
 		}
 		if ( self::running() ) {
-			return new WP_Error( 'gemcloudstorage_backup_running', __( 'A backup is already running.', 'gemcloudstorage' ) );
+			return new WP_Error( 'gemcloud_backup_running', __( 'A backup is already running.', 'gemcloud' ) );
 		}
 
 		global $wpdb;
@@ -177,7 +177,7 @@ final class Backups {
 		// Exporting saves progress every ~20 seconds: an hour of silence
 		// means the worker died.
 		if ( 'exporting' === $run['status'] && time() - (int) ( $run['touched_at'] ?? $run['started_at'] ) > HOUR_IN_SECONDS ) {
-			self::finish( $run, 'failed', __( 'The backup stopped responding and was abandoned.', 'gemcloudstorage' ) );
+			self::finish( $run, 'failed', __( 'The backup stopped responding and was abandoned.', 'gemcloud' ) );
 			return null;
 		}
 
@@ -185,7 +185,7 @@ final class Backups {
 		if ( 'uploading' === $run['status'] ) {
 			$item = self::find( (int) $run['id'] );
 			if ( ! $item || Item::FAILED === $item->status ) {
-				self::finish( $run, 'failed', $item ? (string) $item->last_error : __( 'The upload was lost.', 'gemcloudstorage' ) );
+				self::finish( $run, 'failed', $item ? (string) $item->last_error : __( 'The upload was lost.', 'gemcloud' ) );
 				return null;
 			}
 			if ( $item->is_synced() ) {
@@ -238,7 +238,7 @@ final class Backups {
 		}
 		$run = get_option( self::RUN_OPTION, null );
 		if ( is_array( $run ) && (int) $run['id'] === $item->source_id ) {
-			self::finish( $run, 'failed', is_object( $error ) && method_exists( $error, 'getMessage' ) ? $error->getMessage() : __( 'The upload failed.', 'gemcloudstorage' ) );
+			self::finish( $run, 'failed', is_object( $error ) && method_exists( $error, 'getMessage' ) ? $error->getMessage() : __( 'The upload failed.', 'gemcloud' ) );
 		}
 		Manager::delete( Ref::of( self::CONTEXT, $item->source_id ) );
 	}
@@ -250,7 +250,7 @@ final class Backups {
 	 */
 	public static function all( int $limit = 100 ): array {
 		global $wpdb;
-		$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . ItemRepository::table() . ' WHERE source_type = %s ORDER BY source_id DESC LIMIT %d', self::CONTEXT, $limit ) );
+		$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i WHERE source_type = %s ORDER BY source_id DESC LIMIT %d', ItemRepository::table(), self::CONTEXT, $limit ) );
 		return array_map( [ Item::class, 'from_row' ], (array) $rows );
 	}
 
@@ -298,7 +298,7 @@ final class Backups {
 		$dir  = untrailingslashit( get_temp_dir() );
 
 		if ( ! wp_is_writable( $dir ) ) {
-			$dir = wp_get_upload_dir()['basedir'] . '/gemcloudstorage-tmp';
+			$dir = wp_get_upload_dir()['basedir'] . '/gemcloud-tmp';
 			wp_mkdir_p( $dir );
 			// phpcs:disable WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- guard files.
 			if ( ! file_exists( $dir . '/.htaccess' ) ) {

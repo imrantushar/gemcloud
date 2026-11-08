@@ -1,8 +1,8 @@
 <?php
-namespace GemCloudStorage\Jobs;
+namespace GemCloud\Jobs;
 
-use GemCloudStorage\Integrations\Integrations;
-use GemCloudStorage\Manager;
+use GemCloud\Integrations\Integrations;
+use GemCloud\Manager;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Brings every product file into line, in batches: each attachment a
  * product uses is made private, and files products keep outside the media
  * library are copied up. Runs daily, after the settings change, and from
- * `wp gemcloudstorage reconcile`. Hooks on saving catch most changes at
+ * `wp gemcloud reconcile`. Hooks on saving catch most changes at
  * once; this catches the rest (imports, direct database edits).
  */
 final class ReconcileJob {

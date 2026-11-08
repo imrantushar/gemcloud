@@ -1,14 +1,14 @@
 <?php
-namespace GemCloudStorage\Integrations;
+namespace GemCloud\Integrations;
 
-use GemCloudStorage\Contexts;
-use GemCloudStorage\Items\Item;
-use GemCloudStorage\Items\ItemRepository;
-use GemCloudStorage\Manager;
-use GemCloudStorage\Media\PrivateDelivery;
-use GemCloudStorage\Media\UrlRewriter;
-use GemCloudStorage\Ref;
-use GemCloudStorage\Settings;
+use GemCloud\Contexts;
+use GemCloud\Items\Item;
+use GemCloud\Items\ItemRepository;
+use GemCloud\Manager;
+use GemCloud\Media\PrivateDelivery;
+use GemCloud\Media\UrlRewriter;
+use GemCloud\Ref;
+use GemCloud\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -56,7 +56,7 @@ final class TruePlayer extends Integration {
 	}
 
 	public function label(): string {
-		return __( 'TruePlayer', 'gemcloudstorage' );
+		return __( 'TruePlayer', 'gemcloud' );
 	}
 
 	public function contexts(): array {
@@ -70,24 +70,24 @@ final class TruePlayer extends Integration {
 	public function kinds(): array {
 		return [
 			'private_videos' => [
-				'label'       => __( 'Private videos', 'gemcloudstorage' ),
-				'description' => __( 'The video or audio file of videos switched to "Private" in TruePlayer. Plays only for viewers TruePlayer lets in.', 'gemcloudstorage' ),
+				'label'       => __( 'Private videos', 'gemcloud' ),
+				'description' => __( 'The video or audio file of videos switched to "Private" in TruePlayer. Plays only for viewers TruePlayer lets in.', 'gemcloud' ),
 			],
 			'subtitles'      => [
-				'label'       => __( 'Subtitles of private videos', 'gemcloudstorage' ),
-				'description' => __( 'Caption files (.vtt) of those videos.', 'gemcloudstorage' ),
+				'label'       => __( 'Subtitles of private videos', 'gemcloud' ),
+				'description' => __( 'Caption files (.vtt) of those videos.', 'gemcloud' ),
 			],
 			'other_files'    => [
-				'label'       => __( 'Files stored outside the media library', 'gemcloudstorage' ),
-				'description' => __( 'Videos, posters and captions picked by URL from elsewhere in uploads, such as ZenCommunity uploads. Copied to the cloud; the server keeps its copy.', 'gemcloudstorage' ),
+				'label'       => __( 'Files stored outside the media library', 'gemcloud' ),
+				'description' => __( 'Videos, posters and captions picked by URL from elsewhere in uploads, such as ZenCommunity uploads. Copied to the cloud; the server keeps its copy.', 'gemcloud' ),
 			],
 		];
 	}
 
 	public function register_context(): void {
 		Contexts::register( self::KEY, [
-			'label'       => __( 'TruePlayer videos', 'gemcloudstorage' ),
-			'description' => __( 'Self-hosted videos play from the cloud. Videos switched to "Private" in TruePlayer are kept in the private bucket and open only for viewers TruePlayer allows. Posters stay public.', 'gemcloudstorage' ),
+			'label'       => __( 'TruePlayer videos', 'gemcloud' ),
+			'description' => __( 'Self-hosted videos play from the cloud. Videos switched to "Private" in TruePlayer are kept in the private bucket and open only for viewers TruePlayer allows. Posters stay public.', 'gemcloud' ),
 			'visibility'  => 'private',
 			'path'        => 'private/trueplayer/{id}/{uuid}/{filename}',
 			'source'      => 'TruePlayer',
@@ -97,8 +97,8 @@ final class TruePlayer extends Integration {
 
 		// Switched with the context above.
 		Contexts::register( self::FILES, [
-			'label'       => __( 'TruePlayer files outside the media library', 'gemcloudstorage' ),
-			'description' => __( 'Public copies of files TruePlayer plays from elsewhere in uploads.', 'gemcloudstorage' ),
+			'label'       => __( 'TruePlayer files outside the media library', 'gemcloud' ),
+			'description' => __( 'Public copies of files TruePlayer plays from elsewhere in uploads.', 'gemcloud' ),
 			'visibility'  => 'public',
 			'path'        => '{prefix}/{file}',
 			'source'      => 'TruePlayer',
@@ -115,7 +115,7 @@ final class TruePlayer extends Integration {
 
 		add_filter( 'trueplayer/config', [ $this, 'play_from_cloud' ], 20, 2 );
 		add_filter( 'rest_request_before_callbacks', [ $this, 'stream_from_cloud' ], 10, 3 );
-		add_filter( 'gemcloudstorage/can_access', [ $this, 'own_file_access' ], 10, 2 );
+		add_filter( 'gemcloud/can_access', [ $this, 'own_file_access' ], 10, 2 );
 	}
 
 	/**
@@ -328,7 +328,7 @@ final class TruePlayer extends Integration {
 		// REST requests without a nonce run logged out; the player's video
 		// request carries the login cookie, so read the viewer from it.
 		if ( ! $this->viewer_allowed( $video_id, (int) wp_validate_auth_cookie( '', 'logged_in' ) ) ) {
-			return new \WP_Error( 'gemcloudstorage_forbidden', __( 'You don\'t have access to this video.', 'gemcloudstorage' ), [ 'status' => 403 ] );
+			return new \WP_Error( 'gemcloud_forbidden', __( 'You don\'t have access to this video.', 'gemcloud' ), [ 'status' => 403 ] );
 		}
 
 		$url = Manager::signed_url_for( $item, [
@@ -407,9 +407,9 @@ final class TruePlayer extends Integration {
 				}
 				$reasons[] = 'subtitles' === $kind
 					/* translators: %s: video title */
-					? sprintf( __( 'Subtitles of private video "%s"', 'gemcloudstorage' ), get_the_title( $video_id ) )
+					? sprintf( __( 'Subtitles of private video "%s"', 'gemcloud' ), get_the_title( $video_id ) )
 					/* translators: %s: video title */
-					: sprintf( __( 'Private video "%s"', 'gemcloudstorage' ), get_the_title( $video_id ) );
+					: sprintf( __( 'Private video "%s"', 'gemcloud' ), get_the_title( $video_id ) );
 			}
 		}
 		return array_values( array_unique( $reasons ) );
@@ -515,7 +515,7 @@ final class TruePlayer extends Integration {
 			$likes[] = $wpdb->prepare( 'pm.meta_value LIKE %s', '%' . $wpdb->esc_like( $n ) . '%' );
 		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $likes are prepared above.
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared -- $likes are prepared above.
 		$rows = $wpdb->get_results( $wpdb->prepare(
 			"SELECT pm.post_id, pm.meta_value FROM {$wpdb->postmeta} pm
 			INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
@@ -523,6 +523,7 @@ final class TruePlayer extends Integration {
 			self::META_KEY,
 			TRUEPLAYER_VIDEO_POST_TYPE
 		) );
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared
 
 		$out = [];
 		foreach ( (array) $rows as $row ) {

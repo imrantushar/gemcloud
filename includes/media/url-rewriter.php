@@ -1,9 +1,9 @@
 <?php
-namespace GemCloudStorage\Media;
+namespace GemCloud\Media;
 
-use GemCloudStorage\Items\Item;
-use GemCloudStorage\Items\ItemRepository;
-use GemCloudStorage\Manager;
+use GemCloud\Items\Item;
+use GemCloud\Items\ItemRepository;
+use GemCloud\Manager;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -200,7 +200,7 @@ final class UrlRewriter {
 		}
 
 		// A file a product keeps outside the media library, inside uploads.
-		$relative = \GemCloudStorage\Keys::relative_to_uploads( $item->local_path );
+		$relative = \GemCloud\Keys::relative_to_uploads( $item->local_path );
 		if ( '' === $relative ) {
 			return $url;
 		}
@@ -227,7 +227,7 @@ final class UrlRewriter {
 			return null;
 		}
 		$path = strtok( $url, '?' );
-		foreach ( array_unique( array_filter( [ \GemCloudStorage\Settings::value( 'buckets.public.name', '' ), \GemCloudStorage\Settings::value( 'buckets.private.name', '' ) ] ) ) as $bucket ) {
+		foreach ( array_unique( array_filter( [ \GemCloud\Settings::value( 'buckets.public.name', '' ), \GemCloud\Settings::value( 'buckets.private.name', '' ) ] ) ) as $bucket ) {
 			$base = Manager::public_base_url( $bucket );
 			if ( $base && 0 === strpos( $path, $base . '/' ) ) {
 				return ItemRepository::find_by_key( rawurldecode( substr( $path, strlen( $base ) + 1 ) ) );

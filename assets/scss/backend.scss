@@ -2,14 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-#gemcloudstorage-app.gemcloudstorage-scope {
+#gemcloud-app.gemcloud-scope {
 	background: var(--gcs-body-background);
 	color: var(--gcs-font-color);
 	min-height: calc(100vh - 32px);
 }
 
-html:has(#gemcloudstorage-app),
-body:has(#gemcloudstorage-app) {
+html:has(#gemcloud-app),
+body:has(#gemcloud-app) {
 	scrollbar-width: none;
 
 	&::-webkit-scrollbar {
@@ -17,7 +17,7 @@ body:has(#gemcloudstorage-app) {
 	}
 }
 
-.gemcloudstorage-route {
+.gemcloud-route {
 	animation: gcs-route-in 0.28s ease;
 }
 
@@ -27,11 +27,11 @@ body:has(#gemcloudstorage-app) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.gemcloudstorage-route { animation: none; }
+	.gemcloud-route { animation: none; }
 }
 
 // Scoped reset (Tailwind preflight is off so WP admin stays untouched).
-.gemcloudstorage-scope {
+.gemcloud-scope {
 	font-family: var(--gcs-font);
 	line-height: 1.5;
 

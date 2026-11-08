@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"baseUrl": "dev_gemcloudstorage",
+		"baseUrl": "dev_gemcloud",
 		"paths": {
 			"@GCSComponents/*": [ "components/*" ],
 			"@GCSContainers/*": [ "containers/*" ],
@@ -9,5 +9,5 @@
 			"@GCSUtils/*": [ "utils/*" ]
 		}
 	},
-	"include": [ "dev_gemcloudstorage" ]
+	"include": [ "dev_gemcloud" ]
 }

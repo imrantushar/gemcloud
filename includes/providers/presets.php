@@ -1,5 +1,5 @@
 <?php
-namespace GemCloudStorage\Providers;
+namespace GemCloud\Providers;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -15,6 +15,7 @@ final class Presets {
 		$region = '' !== ( $c['region'] ?? '' ) ? $c['region'] : 'us-east-1';
 
 		return new Endpoint( [
+			// phpcs:ignore PluginCheck.CodeAnalysis.Offloading.OffloadedContent -- API endpoint of the bucket the site owner connects, not a remote asset.
 			'url'          => "https://s3.{$region}.amazonaws.com",
 			'region'       => $region,
 			'path_style'   => 'auto', // dotted bucket names break TLS on virtual hosts
@@ -63,20 +64,20 @@ final class Presets {
 		return [
 			[
 				'key'         => 'r2',
-				'label'       => __( 'Cloudflare R2', 'gemcloudstorage' ),
-				'description' => __( 'No egress fees. Recommended for downloads and video.', 'gemcloudstorage' ),
+				'label'       => __( 'Cloudflare R2', 'gemcloud' ),
+				'description' => __( 'No egress fees. Recommended for downloads and video.', 'gemcloud' ),
 				'fields'      => [ 'account_id', 'jurisdiction' ],
 			],
 			[
 				'key'         => 'aws',
-				'label'       => __( 'Amazon S3', 'gemcloudstorage' ),
-				'description' => __( 'Egress is charged per GB. Use CloudFront for public files.', 'gemcloudstorage' ),
+				'label'       => __( 'Amazon S3', 'gemcloud' ),
+				'description' => __( 'Egress is charged per GB. Use CloudFront for public files.', 'gemcloud' ),
 				'fields'      => [ 'region' ],
 			],
 			[
 				'key'         => 'custom',
-				'label'       => __( 'S3-compatible', 'gemcloudstorage' ),
-				'description' => __( 'Wasabi, Backblaze B2, DigitalOcean Spaces, MinIO. Untested; works with any SigV4 endpoint.', 'gemcloudstorage' ),
+				'label'       => __( 'S3-compatible', 'gemcloud' ),
+				'description' => __( 'Wasabi, Backblaze B2, DigitalOcean Spaces, MinIO. Untested; works with any SigV4 endpoint.', 'gemcloud' ),
 				'fields'      => [ 'url', 'region', 'path_style' ],
 			],
 		];

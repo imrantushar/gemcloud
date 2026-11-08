@@ -1,5 +1,5 @@
 <?php
-namespace GemCloudStorage\Utils;
+namespace GemCloud\Utils;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -12,29 +12,29 @@ class Helper {
 	 */
 	public static function get_admin_menu_list(): array {
 		$menu = [
-			GEMCLOUDSTORAGE_PLUGIN_SLUG               => [
-				'parent_slug' => GEMCLOUDSTORAGE_PLUGIN_SLUG,
-				'title'       => __( 'Dashboard', 'gemcloudstorage' ),
+			GEMCLOUD_PLUGIN_SLUG               => [
+				'parent_slug' => GEMCLOUD_PLUGIN_SLUG,
+				'title'       => __( 'Dashboard', 'gemcloud' ),
 				'capability'  => 'manage_options',
 			],
-			GEMCLOUDSTORAGE_PLUGIN_SLUG . '-files'    => [
-				'parent_slug' => GEMCLOUDSTORAGE_PLUGIN_SLUG,
-				'title'       => __( 'Files', 'gemcloudstorage' ),
+			GEMCLOUD_PLUGIN_SLUG . '-files'    => [
+				'parent_slug' => GEMCLOUD_PLUGIN_SLUG,
+				'title'       => __( 'Files', 'gemcloud' ),
 				'capability'  => 'manage_options',
 			],
-			GEMCLOUDSTORAGE_PLUGIN_SLUG . '-tools'    => [
-				'parent_slug' => GEMCLOUDSTORAGE_PLUGIN_SLUG,
-				'title'       => __( 'Tools', 'gemcloudstorage' ),
+			GEMCLOUD_PLUGIN_SLUG . '-tools'    => [
+				'parent_slug' => GEMCLOUD_PLUGIN_SLUG,
+				'title'       => __( 'Tools', 'gemcloud' ),
 				'capability'  => 'manage_options',
 			],
-			GEMCLOUDSTORAGE_PLUGIN_SLUG . '-settings' => [
-				'parent_slug' => GEMCLOUDSTORAGE_PLUGIN_SLUG,
-				'title'       => __( 'Settings', 'gemcloudstorage' ),
+			GEMCLOUD_PLUGIN_SLUG . '-settings' => [
+				'parent_slug' => GEMCLOUD_PLUGIN_SLUG,
+				'title'       => __( 'Settings', 'gemcloud' ),
 				'capability'  => 'manage_options',
 			],
 		];
 
-		return apply_filters( 'gemcloudstorage/admin/menu_list', $menu );
+		return apply_filters( 'gemcloud/admin/menu_list', $menu );
 	}
 
 	public static function format_bytes( int $bytes ): string {

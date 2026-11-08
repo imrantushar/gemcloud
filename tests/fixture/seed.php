@@ -1,9 +1,9 @@
 <?php
 /**
- * Test content for GemCloudStorage's Academy LMS and StoreEngine integrations.
+ * Test content for GemCloud's Academy LMS and StoreEngine integrations.
  *
- *     wp eval-file wp-content/plugins/gemcloudstorage/tests/fixture/seed.php
- *     wp eval-file wp-content/plugins/gemcloudstorage/tests/fixture/cleanup.php
+ *     wp eval-file wp-content/plugins/gemcloud/tests/fixture/seed.php
+ *     wp eval-file wp-content/plugins/gemcloud/tests/fixture/cleanup.php
  *
  * Creates, through each product's own APIs so their hooks run:
  *  - Academy: a free course with a video lesson (video + subtitles), a
@@ -109,17 +109,17 @@ if ( ! $video_source ) {
 
 $f = [];
 $f['video']    = $attach( 'gcs-test-lesson-video.mp4', file_get_contents( $video_source ), 'GCS test: lesson video' );
-$f['subtitle'] = $attach( 'gcs-test-lesson-video.vtt', "WEBVTT\n\n00:00:00.000 --> 00:00:04.000\nGemCloudStorage test subtitles.\n\n00:00:04.000 --> 00:00:09.000\nThese captions are streamed through the site.\n", 'GCS test: subtitles' );
-$f['notes']    = $attach( 'gcs-test-lesson-notes.pdf', $pdf( 'Lesson notes', 'GemCloudStorage test: only enrolled students should open this.' ), 'GCS test: lesson notes' );
-$f['preview']  = $attach( 'gcs-test-preview-handout.pdf', $pdf( 'Preview handout', 'GemCloudStorage test: anyone may open this, the lesson is a free preview.' ), 'GCS test: preview handout' );
+$f['subtitle'] = $attach( 'gcs-test-lesson-video.vtt', "WEBVTT\n\n00:00:00.000 --> 00:00:04.000\nGemCloud test subtitles.\n\n00:00:04.000 --> 00:00:09.000\nThese captions are streamed through the site.\n", 'GCS test: subtitles' );
+$f['notes']    = $attach( 'gcs-test-lesson-notes.pdf', $pdf( 'Lesson notes', 'GemCloud test: only enrolled students should open this.' ), 'GCS test: lesson notes' );
+$f['preview']  = $attach( 'gcs-test-preview-handout.pdf', $pdf( 'Preview handout', 'GemCloud test: anyone may open this, the lesson is a free preview.' ), 'GCS test: preview handout' );
 $f['thumb']    = $attach( 'gcs-test-course-thumbnail.png', file_get_contents( ABSPATH . 'wp-admin/images/w-logo-blue.png' ), 'GCS test: course thumbnail' );
-$f['ebook']    = $attach( 'gcs-test-ebook.zip', $zip( wp_tempnam( 'gcs-ebook' ), [ 'GCS Test eBook.pdf' => $pdf( 'GCS Test eBook', 'A purchased download, stored in the media library.' ), 'readme.txt' => "GemCloudStorage StoreEngine test download (media library).\n" ] ), 'GCS test: ebook download' );
+$f['ebook']    = $attach( 'gcs-test-ebook.zip', $zip( wp_tempnam( 'gcs-ebook' ), [ 'GCS Test eBook.pdf' => $pdf( 'GCS Test eBook', 'A purchased download, stored in the media library.' ), 'readme.txt' => "GemCloud StoreEngine test download (media library).\n" ] ), 'GCS test: ebook download' );
 
 // A download kept outside the media library, the way StoreEngine's protected folder is used.
 $se_dir = wp_upload_dir()['basedir'] . '/storeengine_uploads';
 wp_mkdir_p( $se_dir );
 $software_path = $se_dir . '/gcs-test-software.zip';
-$zip( $software_path, [ 'readme.txt' => "GemCloudStorage StoreEngine test download (outside the media library).\n", 'app/config.json' => '{"name":"gcs-test"}' ] );
+$zip( $software_path, [ 'readme.txt' => "GemCloud StoreEngine test download (outside the media library).\n", 'app/config.json' => '{"name":"gcs-test"}' ] );
 $fx['files'][] = $software_path;
 
 // ── Academy LMS ─────────────────────────────────────────────────────────────
@@ -161,7 +161,7 @@ $course = wp_insert_post( [
 	'post_type'    => 'academy_courses',
 	'post_status'  => 'publish',
 	'post_title'   => 'GCS Test Course',
-	'post_content' => 'A course for testing GemCloudStorage: lesson video, subtitles and attachments are kept in the private bucket.',
+	'post_content' => 'A course for testing GemCloud: lesson video, subtitles and attachments are kept in the private bucket.',
 	'post_author'  => $admin,
 ] );
 $fx['posts'][] = $course;
@@ -170,7 +170,7 @@ update_post_meta( $course, 'academy_course_type', 'free' );
 set_post_thumbnail( $course, $f['thumb'] );
 update_post_meta( $course, 'academy_course_curriculum', [
 	[
-		'title'   => 'GemCloudStorage tests',
+		'title'   => 'GemCloud tests',
 		'content' => '',
 		'topics'  => [
 			[ 'id' => $l_preview, 'name' => 'GCS test: free preview lesson', 'type' => 'lesson' ],

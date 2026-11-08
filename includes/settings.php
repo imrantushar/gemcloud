@@ -1,5 +1,5 @@
 <?php
-namespace GemCloudStorage;
+namespace GemCloud;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Settings {
 
-	const OPTION = 'gemcloudstorage_settings';
+	const OPTION = 'gemcloud_settings';
 
 	const PROVIDERS = [ 'r2', 'aws', 'custom' ];
 
@@ -78,11 +78,11 @@ class Settings {
 		$settings['path_prefix'] = self::path_prefix();
 
 		// Constants win over stored values.
-		if ( defined( 'GEMCLOUDSTORAGE_PROVIDER' ) && in_array( GEMCLOUDSTORAGE_PROVIDER, self::PROVIDERS, true ) ) {
-			$settings['provider'] = GEMCLOUDSTORAGE_PROVIDER;
+		if ( defined( 'GEMCLOUD_PROVIDER' ) && in_array( GEMCLOUD_PROVIDER, self::PROVIDERS, true ) ) {
+			$settings['provider'] = GEMCLOUD_PROVIDER;
 		}
-		if ( defined( 'GEMCLOUDSTORAGE_ACCOUNT_ID' ) ) {
-			$settings['endpoint']['account_id'] = (string) GEMCLOUDSTORAGE_ACCOUNT_ID;
+		if ( defined( 'GEMCLOUD_ACCOUNT_ID' ) ) {
+			$settings['endpoint']['account_id'] = (string) GEMCLOUD_ACCOUNT_ID;
 		}
 
 		return $settings;
@@ -152,7 +152,7 @@ class Settings {
 		 * @param array $clean    New settings.
 		 * @param array $current  Settings before the save.
 		 */
-		do_action( 'gemcloudstorage/settings_saved', $clean, $current );
+		do_action( 'gemcloud/settings_saved', $clean, $current );
 
 		return self::get();
 	}
@@ -182,7 +182,7 @@ class Settings {
 		 *
 		 * @param string $prefix For example "wp-content/uploads".
 		 */
-		return trim( (string) apply_filters( 'gemcloudstorage/path_prefix', '' !== $prefix ? $prefix : 'wp-content/uploads' ), '/' );
+		return trim( (string) apply_filters( 'gemcloud/path_prefix', '' !== $prefix ? $prefix : 'wp-content/uploads' ), '/' );
 	}
 
 	/**

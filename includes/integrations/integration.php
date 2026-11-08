@@ -1,9 +1,9 @@
 <?php
-namespace GemCloudStorage\Integrations;
+namespace GemCloud\Integrations;
 
-use GemCloudStorage\Contexts;
-use GemCloudStorage\Settings;
-use GemCloudStorage\Media\MediaHooks;
+use GemCloud\Contexts;
+use GemCloud\Settings;
+use GemCloud\Media\MediaHooks;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -28,7 +28,7 @@ abstract class Integration {
 	/** Whether the product is installed and active. */
 	abstract public function detected(): bool;
 
-	/** Register the context. Runs on gemcloudstorage/loaded. */
+	/** Register the context. Runs on gemcloud/loaded. */
 	abstract public function register_context(): void;
 
 	/** Hook into the product. Runs once, after the context is registered. */

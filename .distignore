@@ -1,6 +1,4 @@
 # === Dev sources ===
-dev_gemcloudstorage
-assets/scss
 tests
 
 # === Build configs ===
@@ -11,8 +9,6 @@ webpack.config.js
 postcss.config.js
 tailwind.config.js
 jsconfig.json
-composer.json
-composer.lock
 *.map
 *.log
 dist

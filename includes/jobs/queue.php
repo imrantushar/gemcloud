@@ -1,5 +1,5 @@
 <?php
-namespace GemCloudStorage\Jobs;
+namespace GemCloud\Jobs;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -7,24 +7,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Every cloud operation runs as an Action Scheduler job in the
- * "gemcloudstorage" group; no admin request waits on S3 or R2. Falls back to
+ * "gemcloud" group; no admin request waits on S3 or R2. Falls back to
  * WP-Cron if Action Scheduler is somehow missing.
  */
 final class Queue {
 
-	const GROUP = 'gemcloudstorage';
+	const GROUP = 'gemcloud';
 
-	const UPLOAD          = 'gemcloudstorage/upload';
-	const REMOVE_LOCAL    = 'gemcloudstorage/remove_local';
-	const DELETE          = 'gemcloudstorage/delete';
-	const MIGRATE         = 'gemcloudstorage/migrate_batch';
-	const DOWNLOAD_BACK   = 'gemcloudstorage/download_back_batch';
-	const REQUEUE         = 'gemcloudstorage/requeue';
-	const CLEANUP         = 'gemcloudstorage/cleanup';
-	const RECONCILE       = 'gemcloudstorage/reconcile';
-	const BACKUP          = 'gemcloudstorage/backup';
+	const UPLOAD          = 'gemcloud/upload';
+	const REMOVE_LOCAL    = 'gemcloud/remove_local';
+	const DELETE          = 'gemcloud/delete';
+	const MIGRATE         = 'gemcloud/migrate_batch';
+	const DOWNLOAD_BACK   = 'gemcloud/download_back_batch';
+	const REQUEUE         = 'gemcloud/requeue';
+	const CLEANUP         = 'gemcloud/cleanup';
+	const RECONCILE       = 'gemcloud/reconcile';
+	const BACKUP          = 'gemcloud/backup';
 
-	const STATE_OPTION = 'gemcloudstorage_queue_state';
+	const STATE_OPTION = 'gemcloud_queue_state';
 
 	/** Delays between attempts after a temporary error: 1 min, 5 min, 30 min, 2 h, 6 h. */
 	const RETRY_DELAYS = [ 60, 300, 1800, 7200, 21600 ];

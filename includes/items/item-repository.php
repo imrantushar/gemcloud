@@ -1,7 +1,7 @@
 <?php
-namespace GemCloudStorage\Items;
+namespace GemCloud\Items;
 
-use GemCloudStorage\Installer;
+use GemCloud\Installer;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -24,7 +24,7 @@ final class ItemRepository {
 
 	public static function find( int $id ): ?Item {
 		global $wpdb;
-		$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . self::table() . ' WHERE id = %d', $id ) );
+		$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE id = %d', self::table(), $id ) );
 		return $row ? Item::from_row( $row ) : null;
 	}
 
@@ -38,7 +38,7 @@ final class ItemRepository {
 
 		if ( $fresh || ! isset( self::$cache[ $cache_key ] ) ) {
 			global $wpdb;
-			$rows  = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . self::table() . ' WHERE source_type = %s AND source_id = %d', $source_type, $source_id ) );
+			$rows  = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i WHERE source_type = %s AND source_id = %d', self::table(), $source_type, $source_id ) );
 			$items = [];
 			foreach ( (array) $rows as $row ) {
 				$item                    = Item::from_row( $row );
@@ -55,7 +55,7 @@ final class ItemRepository {
 	 */
 	public static function find_by_key( string $object_key ): ?Item {
 		global $wpdb;
-		$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . self::table() . " WHERE object_key = %s AND source_type NOT LIKE '~%%' ORDER BY id DESC LIMIT 1", $object_key ) );
+		$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE object_key = %s AND source_type NOT LIKE %s ORDER BY id DESC LIMIT 1', self::table(), $object_key, '~%' ) );
 		return $row ? Item::from_row( $row ) : null;
 	}
 
@@ -84,7 +84,7 @@ final class ItemRepository {
 
 		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
 		// phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- placeholders built above.
-		$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . self::table() . " WHERE source_type = %s AND source_id IN ({$placeholders})", array_merge( [ $source_type ], $ids ) ) );
+		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM %i WHERE source_type = %s AND source_id IN ({$placeholders})", array_merge( [ self::table(), $source_type ], $ids ) ) );
 		foreach ( (array) $rows as $row ) {
 			$item = Item::from_row( $row );
 			self::$cache[ $source_type . ':' . $item->source_id ][ $item->variant ] = $item;
@@ -134,7 +134,7 @@ final class ItemRepository {
 		global $wpdb;
 		$placeholders = implode( ',', array_fill( 0, count( $from ), '%s' ) );
 		// phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- placeholders built above.
-		$changed = $wpdb->query( $wpdb->prepare( 'UPDATE ' . self::table() . " SET status = %s, updated_at = %s WHERE id = %d AND status IN ({$placeholders})", array_merge( [ Item::UPLOADING, current_time( 'mysql', true ), $id ], $from ) ) );
+		$changed = $wpdb->query( $wpdb->prepare( "UPDATE %i SET status = %s, updated_at = %s WHERE id = %d AND status IN ({$placeholders})", array_merge( [ self::table(), Item::UPLOADING, current_time( 'mysql', true ), $id ], $from ) ) );
 		self::$cache = [];
 		return 1 === (int) $changed;
 	}
@@ -150,7 +150,7 @@ final class ItemRepository {
 	 */
 	public static function by_status( string $status, int $limit = 100, int $after_id = 0 ): array {
 		global $wpdb;
-		$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . self::table() . ' WHERE status = %s AND id > %d ORDER BY id ASC LIMIT %d', $status, $after_id, $limit ) );
+		$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i WHERE status = %s AND id > %d ORDER BY id ASC LIMIT %d', self::table(), $status, $after_id, $limit ) );
 		return array_map( [ Item::class, 'from_row' ], (array) $rows );
 	}
 
@@ -159,7 +159,7 @@ final class ItemRepository {
 	 */
 	public static function where_local_removed( int $limit = 20, int $after_id = 0 ): array {
 		global $wpdb;
-		$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . self::table() . " WHERE local_state = 'removed' AND source_type = 'attachment' AND status = %s AND id > %d ORDER BY id ASC LIMIT %d", Item::SYNCED, $after_id, $limit ) );
+		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM %i WHERE local_state = 'removed' AND source_type = 'attachment' AND status = %s AND id > %d ORDER BY id ASC LIMIT %d", self::table(), Item::SYNCED, $after_id, $limit ) );
 		return array_map( [ Item::class, 'from_row' ], (array) $rows );
 	}
 
@@ -180,8 +180,8 @@ final class ItemRepository {
 		$args[] = current_time( 'mysql', true );
 
 		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
-		// phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- placeholders built above.
-		$count       = (int) $wpdb->query( $wpdb->prepare( 'UPDATE ' . self::table() . ' SET ' . implode( ', ', $sets ) . " WHERE id IN ({$placeholders})", array_merge( $args, $ids ) ) );
+		// phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.PreparedSQL.NotPrepared -- $sets are fixed `column = %s` fragments; placeholders built above.
+		$count       = (int) $wpdb->query( $wpdb->prepare( 'UPDATE %i SET ' . implode( ', ', $sets ) . " WHERE id IN ({$placeholders})", array_merge( [ self::table() ], $args, $ids ) ) );
 		self::$cache = [];
 		return $count;
 	}
@@ -258,7 +258,7 @@ final class ItemRepository {
 				$params[] = (string) $context;
 			}
 			if ( ! empty( $args['private_by'] ) ) {
-				$any[]    = "( source_type = 'attachment' AND source_id IN ( SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_gemcloudstorage_private_by' AND meta_value LIKE %s ) )";
+				$any[]    = "( source_type = 'attachment' AND source_id IN ( SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_gemcloud_private_by' AND meta_value LIKE %s ) )";
 				$params[] = '%' . $wpdb->esc_like( '"' . $args['private_by'] . '"' ) . '%';
 			}
 			$where[] = '( ' . implode( ' OR ', $any ) . ' )';
@@ -289,7 +289,7 @@ final class ItemRepository {
 
 	public static function ids_with_status( string $status, int $limit = 500, int $after_id = 0 ): array {
 		global $wpdb;
-		return array_map( 'intval', (array) $wpdb->get_col( $wpdb->prepare( 'SELECT id FROM ' . self::table() . ' WHERE status = %s AND id > %d ORDER BY id ASC LIMIT %d', $status, $after_id, $limit ) ) );
+		return array_map( 'intval', (array) $wpdb->get_col( $wpdb->prepare( 'SELECT id FROM %i WHERE status = %s AND id > %d ORDER BY id ASC LIMIT %d', self::table(), $status, $after_id, $limit ) ) );
 	}
 
 	public static function forget( string $source_type, int $source_id ): void {

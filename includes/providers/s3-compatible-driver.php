@@ -1,13 +1,13 @@
 <?php
-namespace GemCloudStorage\Providers;
+namespace GemCloud\Providers;
 
-use GemCloudStorage\Contracts\StorageProvider;
-use GemCloudStorage\Http\Client;
-use GemCloudStorage\Http\StorageException;
-use GemCloudStorage\Security\Credentials;
-use GemCloudStorage\Settings;
-use GemCloudStorage\Signing\Presigner;
-use GemCloudStorage\Signing\SigV4;
+use GemCloud\Contracts\StorageProvider;
+use GemCloud\Http\Client;
+use GemCloud\Http\StorageException;
+use GemCloud\Security\Credentials;
+use GemCloud\Settings;
+use GemCloud\Signing\Presigner;
+use GemCloud\Signing\SigV4;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -42,7 +42,8 @@ final class S3CompatibleDriver implements StorageProvider {
 
 	public function put( string $bucket, string $key, string $local_path, array $headers = [] ): ObjectInfo {
 		if ( ! is_readable( $local_path ) ) {
-			throw new StorageException( 'LocalFileMissing', sprintf( /* translators: %s: file path */ __( 'The local file %s is missing.', 'gemcloudstorage' ), $local_path ) );
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- internal exception, caught and stored; never echoed as HTML.
+			throw new StorageException( 'LocalFileMissing', sprintf( /* translators: %s: file path */ __( 'The local file %s is missing.', 'gemcloud' ), $local_path ) );
 		}
 
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local file read for upload.
@@ -110,7 +111,8 @@ final class S3CompatibleDriver implements StorageProvider {
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.rename_rename -- atomic swap of a completed download.
 		if ( ! @rename( $tmp, $save_to ) ) {
 			wp_delete_file( $tmp );
-			throw new StorageException( 'LocalWriteFailed', sprintf( /* translators: %s: file path */ __( 'Could not write %s.', 'gemcloudstorage' ), $save_to ) );
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- internal exception, caught and stored; never echoed as HTML.
+			throw new StorageException( 'LocalWriteFailed', sprintf( /* translators: %s: file path */ __( 'Could not write %s.', 'gemcloud' ), $save_to ) );
 		}
 	}
 
@@ -186,7 +188,8 @@ final class S3CompatibleDriver implements StorageProvider {
 		$id       = $xml ? (string) $xml->UploadId : ''; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 
 		if ( '' === $id ) {
-			throw new StorageException( 'MultipartStartFailed', __( 'The provider did not return a multipart upload ID.', 'gemcloudstorage' ) );
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- internal exception, caught and stored; never echoed as HTML.
+			throw new StorageException( 'MultipartStartFailed', __( 'The provider did not return a multipart upload ID.', 'gemcloud' ) );
 		}
 		return $id;
 	}
@@ -199,7 +202,8 @@ final class S3CompatibleDriver implements StorageProvider {
 
 		$etag = trim( $response['headers']['etag'] ?? '', '"' );
 		if ( '' === $etag ) {
-			throw new StorageException( 'MultipartPartFailed', __( 'The provider did not return an ETag for the part.', 'gemcloudstorage' ) );
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- internal exception, caught and stored; never echoed as HTML.
+			throw new StorageException( 'MultipartPartFailed', __( 'The provider did not return an ETag for the part.', 'gemcloud' ) );
 		}
 		return $etag;
 	}
@@ -218,7 +222,7 @@ final class S3CompatibleDriver implements StorageProvider {
 
 		// S3 can answer 200 with an error document when completion fails late.
 		if ( $parsed && 'Error' === $parsed->getName() ) {
-			throw new StorageException( (string) $parsed->Code, (string) $parsed->Message, 200 ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			throw new StorageException( (string) $parsed->Code, (string) $parsed->Message, 200 ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase, WordPress.Security.EscapeOutput.ExceptionNotEscaped -- S3 XML fields; internal exception, never echoed as HTML.
 		}
 
 		return new ObjectInfo( $key, 0, $parsed ? (string) $parsed->ETag : '' ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
@@ -262,8 +266,8 @@ final class S3CompatibleDriver implements StorageProvider {
 	}
 
 	public function test( string $bucket ): array {
-		$key    = 'gemcloudstorage-probe/' . wp_generate_password( 12, false ) . '.txt';
-		$body   = 'GemCloudStorage connection test ' . gmdate( 'c' );
+		$key    = 'gemcloud-probe/' . wp_generate_password( 12, false ) . '.txt';
+		$body   = 'GemCloud connection test ' . gmdate( 'c' );
 		$steps  = [];
 		$report = [
 			'ok'         => false,
@@ -309,12 +313,13 @@ final class S3CompatibleDriver implements StorageProvider {
 			} );
 
 			if ( strlen( $body ) !== $info ) {
-				throw new StorageException( 'SizeMismatch', sprintf( /* translators: 1: bytes sent, 2: bytes reported */ __( 'The probe object came back with a different size: sent %1$d bytes, the bucket reports %2$d.', 'gemcloudstorage' ), strlen( $body ), $info ) );
+				throw new StorageException( 'SizeMismatch', sprintf( /* translators: 1: bytes sent, 2: bytes reported */ __( 'The probe object came back with a different size: sent %1$d bytes, the bucket reports %2$d.', 'gemcloud' ), strlen( $body ), $info ) );
 			}
 
 			$run( 'delete', function () use ( $bucket, $key ) {
 				$result = $this->delete_many( $bucket, [ $key ] );
 				if ( ! empty( $result['errors'] ) ) {
+					// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- internal exception, caught and stored; never echoed as HTML.
 					throw new StorageException( 'DeleteFailed', (string) reset( $result['errors'] ) );
 				}
 				return true;
@@ -339,7 +344,7 @@ final class S3CompatibleDriver implements StorageProvider {
 		if ( null !== $report['clock_skew'] && abs( $report['clock_skew'] ) > 300 ) {
 			$report['clock_warning'] = sprintf(
 				/* translators: %d: seconds */
-				__( 'This server\'s clock is %d seconds off the provider\'s. Signed requests fail beyond 15 minutes.', 'gemcloudstorage' ),
+				__( 'This server\'s clock is %d seconds off the provider\'s. Signed requests fail beyond 15 minutes.', 'gemcloud' ),
 				abs( $report['clock_skew'] )
 			);
 		}

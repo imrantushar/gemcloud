@@ -1,9 +1,9 @@
 <?php
-namespace GemCloudStorage\Jobs;
+namespace GemCloud\Jobs;
 
-use GemCloudStorage\Backups\Backups;
-use GemCloudStorage\Manager;
-use GemCloudStorage\Ref;
+use GemCloud\Backups\Backups;
+use GemCloud\Manager;
+use GemCloud\Ref;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * The file is plain SQL any MySQL tool can import. Every statement is on a
  * single line (values escape their newlines), which is what
- * `wp gemcloudstorage backup restore` relies on.
+ * `wp gemcloud backup restore` relies on.
  *
  * phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared -- table names come from SHOW TABLES.
  */
@@ -38,7 +38,7 @@ final class BackupJob {
 
 		$gz = gzopen( $run['file'], 'ab6' );
 		if ( ! $gz ) {
-			Backups::finish( $run, 'failed', __( 'Could not write the backup file to the temp folder.', 'gemcloudstorage' ) );
+			Backups::finish( $run, 'failed', __( 'Could not write the backup file to the temp folder.', 'gemcloud' ) );
 			return;
 		}
 
@@ -112,7 +112,7 @@ final class BackupJob {
 
 	private static function header( array $run ): string {
 		global $wpdb;
-		return '-- GemCloudStorage database backup' . "\n"
+		return '-- GemCloud database backup' . "\n"
 			. '-- Site: ' . home_url() . "\n"
 			. '-- Created: ' . gmdate( 'Y-m-d H:i:s', (int) $run['started_at'] ) . " UTC\n"
 			. '-- Tables: ' . count( (array) $run['tables'] ) . ' (prefix ' . $wpdb->base_prefix . ")\n"

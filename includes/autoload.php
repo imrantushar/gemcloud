@@ -1,12 +1,12 @@
 <?php
-namespace GemCloudStorage;
+namespace GemCloud;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * Maps GemCloudStorage\Foo\BarBaz to includes/foo/bar-baz.php, the same
+ * Maps GemCloud\Foo\BarBaz to includes/foo/bar-baz.php, the same
  * convention Zaplane uses.
  */
 class Autoload {

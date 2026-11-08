@@ -1,8 +1,8 @@
 <?php
-namespace GemCloudStorage\Jobs;
+namespace GemCloud\Jobs;
 
-use GemCloudStorage\Items\Item;
-use GemCloudStorage\Items\ItemRepository;
+use GemCloud\Items\Item;
+use GemCloud\Items\ItemRepository;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

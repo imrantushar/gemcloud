@@ -1,7 +1,7 @@
 <?php
-namespace GemCloudStorage\Admin;
+namespace GemCloud\Admin;
 
-use GemCloudStorage\Utils\Helper;
+use GemCloud\Utils\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -20,25 +20,25 @@ class Menu {
 	 * since the sidebar is on every screen.
 	 */
 	public function menu_css(): void {
-		$menu  = '#adminmenu #toplevel_page_' . GEMCLOUDSTORAGE_PLUGIN_SLUG . ' > .wp-submenu > li';
+		$menu  = '#adminmenu #toplevel_page_' . GEMCLOUD_PLUGIN_SLUG . ' > .wp-submenu > li';
 		$after = [
-			$menu . ':has(> a[href$="page=' . GEMCLOUDSTORAGE_PLUGIN_SLUG . '"])',
-			$menu . ':has(+ li > a[href$="page=' . GEMCLOUDSTORAGE_PLUGIN_SLUG . '-settings"])',
+			$menu . ':has(> a[href$="page=' . GEMCLOUD_PLUGIN_SLUG . '"])',
+			$menu . ':has(+ li > a[href$="page=' . GEMCLOUD_PLUGIN_SLUG . '-settings"])',
 		];
 		printf(
-			'<style id="gemcloudstorage-menu">%s{margin-bottom:6px;padding-bottom:7px;border-bottom:1px solid rgba(255,255,255,.14)}</style>',
+			'<style id="gemcloud-menu">%s{margin-bottom:6px;padding-bottom:7px;border-bottom:1px solid rgba(255,255,255,.14)}</style>',
 			implode( ',', $after ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fixed selectors.
 		);
 	}
 
 	public function admin_menu(): void {
-		$title = apply_filters( 'gemcloudstorage/admin/toplevel_menu_title', __( 'GemCloudStorage', 'gemcloudstorage' ) );
+		$title = apply_filters( 'gemcloud/admin/toplevel_menu_title', __( 'GemCloud', 'gemcloud' ) );
 
 		// The sidebar is too narrow for the name on one line; let it wrap
 		// between words instead of before its last letter.
-		$menu_title = str_replace( 'GemCloudStorage', 'GemCloud<wbr>Storage', esc_html( $title ) );
+		$menu_title = str_replace( 'GemCloud', 'GemCloud<wbr>Storage', esc_html( $title ) );
 
-		add_menu_page( $title, $menu_title, 'manage_options', GEMCLOUDSTORAGE_PLUGIN_SLUG, [ $this, 'load_main_template' ], self::icon(), 81 );
+		add_menu_page( $title, $menu_title, 'manage_options', GEMCLOUD_PLUGIN_SLUG, [ $this, 'load_main_template' ], self::icon(), 81 );
 
 		foreach ( Helper::get_admin_menu_list() as $key => $item ) {
 			add_submenu_page( $item['parent_slug'], $item['title'], $item['title'], $item['capability'], $key, [ $this, 'load_main_template' ] );
@@ -46,14 +46,14 @@ class Menu {
 	}
 
 	public function load_main_template(): void {
-		echo '<div id="gemcloudstorage-app" class="gemcloudstorage-app">' . esc_html__( 'Loading…', 'gemcloudstorage' ) . '</div>';
+		echo '<div id="gemcloud-app" class="gemcloud-app">' . esc_html__( 'Loading…', 'gemcloud' ) . '</div>';
 	}
 
 	/**
 	 * One shape with a single fill, so WordPress can repaint it for the admin colour scheme.
 	 */
 	private static function icon(): string {
-		$path = GEMCLOUDSTORAGE_ASSETS_DIR_PATH . 'images/menu-icon.svg';
+		$path = GEMCLOUD_ASSETS_DIR_PATH . 'images/menu-icon.svg';
 		if ( ! is_readable( $path ) ) {
 			return 'dashicons-cloud';
 		}

@@ -1,24 +1,24 @@
 <?php
-namespace GemCloudStorage\Api;
+namespace GemCloud\Api;
 
-use GemCloudStorage\Backups\Backups;
-use GemCloudStorage\Contexts;
-use GemCloudStorage\Http\StorageException;
-use GemCloudStorage\Items\Item;
-use GemCloudStorage\Integrations\Integrations;
-use GemCloudStorage\Items\ItemRepository;
-use GemCloudStorage\Jobs\DownloadBackJob;
-use GemCloudStorage\Media\MediaHooks;
-use GemCloudStorage\Jobs\MigrateJob;
-use GemCloudStorage\Jobs\Queue;
-use GemCloudStorage\Manager;
-use GemCloudStorage\Providers\Presets;
-use GemCloudStorage\Providers\S3CompatibleDriver;
-use GemCloudStorage\Ref;
-use GemCloudStorage\Security\Credentials;
-use GemCloudStorage\Settings;
-use GemCloudStorage\Utils\Conflicts;
-use GemCloudStorage\Utils\Helper;
+use GemCloud\Backups\Backups;
+use GemCloud\Contexts;
+use GemCloud\Http\StorageException;
+use GemCloud\Items\Item;
+use GemCloud\Integrations\Integrations;
+use GemCloud\Items\ItemRepository;
+use GemCloud\Jobs\DownloadBackJob;
+use GemCloud\Media\MediaHooks;
+use GemCloud\Jobs\MigrateJob;
+use GemCloud\Jobs\Queue;
+use GemCloud\Manager;
+use GemCloud\Providers\Presets;
+use GemCloud\Providers\S3CompatibleDriver;
+use GemCloud\Ref;
+use GemCloud\Security\Credentials;
+use GemCloud\Settings;
+use GemCloud\Utils\Conflicts;
+use GemCloud\Utils\Helper;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -28,11 +28,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * REST routes for the admin app, under gemcloudstorage/v1. Administrators only.
+ * REST routes for the admin app, under gemcloud/v1. Administrators only.
  */
 final class RestController {
 
-	const NS = 'gemcloudstorage/v1';
+	const NS = 'gemcloud/v1';
 
 	public static function init(): void {
 		add_action( 'rest_api_init', [ self::class, 'routes' ] );
@@ -133,7 +133,7 @@ final class RestController {
 			'conflicts'   => Conflicts::active(),
 			'site_origin' => self::origin( home_url() ),
 			'constants'   => [
-				'encryption_key' => defined( 'GEMCLOUDSTORAGE_KEY' ),
+				'encryption_key' => defined( 'GEMCLOUD_KEY' ),
 			],
 		];
 	}
@@ -151,7 +151,7 @@ final class RestController {
 			return new WP_REST_Response( [
 				'ok'      => false,
 				'results' => [],
-				'message' => __( 'Enter the access key ID and secret access key first.', 'gemcloudstorage' ),
+				'message' => __( 'Enter the access key ID and secret access key first.', 'gemcloud' ),
 			] );
 		}
 
@@ -175,7 +175,7 @@ final class RestController {
 			return new WP_REST_Response( [
 				'ok'      => false,
 				'results' => [],
-				'message' => __( 'Enter at least one bucket name.', 'gemcloudstorage' ),
+				'message' => __( 'Enter at least one bucket name.', 'gemcloud' ),
 			] );
 		}
 
@@ -214,7 +214,7 @@ final class RestController {
 				$done[] = $bucket;
 			}
 		} catch ( StorageException $e ) {
-			return new WP_Error( 'gemcloudstorage_cors_failed', $e->getMessage() . ' ' . $e->hint(), [ 'status' => 400 ] );
+			return new WP_Error( 'gemcloud_cors_failed', $e->getMessage() . ' ' . $e->hint(), [ 'status' => 400 ] );
 		}
 
 		return new WP_REST_Response( [
@@ -234,19 +234,19 @@ final class RestController {
 		if ( $stats['oldest_pending'] && strtotime( $stats['oldest_pending'] ) < time() - 15 * MINUTE_IN_SECONDS ) {
 			$warnings[] = [
 				'type'    => 'warning',
-				'message' => __( 'Uploads have been waiting over 15 minutes. WP-Cron may be disabled or blocked on this host; run "wp gemcloudstorage run" or set up a real cron job.', 'gemcloudstorage' ),
+				'message' => __( 'Uploads have been waiting over 15 minutes. WP-Cron may be disabled or blocked on this host; run "wp gemcloud run" or set up a real cron job.', 'gemcloud' ),
 			];
 		}
 		if ( 'r2' === $settings['provider'] && $settings['buckets']['public']['name'] && ! $settings['buckets']['public']['public_url'] ) {
 			$warnings[] = [
 				'type'    => 'warning',
-				'message' => __( 'R2 serves public files only through a custom domain or the r2.dev subdomain. Add a Public URL, or public files keep being served from this server.', 'gemcloudstorage' ),
+				'message' => __( 'R2 serves public files only through a custom domain or the r2.dev subdomain. Add a Public URL, or public files keep being served from this server.', 'gemcloud' ),
 			];
 		}
 		if ( $settings['buckets']['public']['name'] && ! $settings['buckets']['private']['name'] ) {
 			$warnings[] = [
 				'type'    => 'info',
-				'message' => __( 'Private files share the public bucket. They still need a signed URL, but use a separate private bucket so a public bucket policy can never expose them.', 'gemcloudstorage' ),
+				'message' => __( 'Private files share the public bucket. They still need a signed URL, but use a separate private bucket so a public bucket policy can never expose them.', 'gemcloud' ),
 			];
 		}
 		$waiting = Integrations::waiting();
@@ -255,7 +255,7 @@ final class RestController {
 				'type'    => 'warning',
 				'message' => sprintf(
 					/* translators: %s: product names */
-					__( 'Add a private bucket to protect %s files. Until then they stay where they are: course videos, lesson attachments and paid downloads are not moved into the public bucket.', 'gemcloudstorage' ),
+					__( 'Add a private bucket to protect %s files. Until then they stay where they are: course videos, lesson attachments and paid downloads are not moved into the public bucket.', 'gemcloud' ),
 					Integrations::labels( $waiting )
 				),
 			];
@@ -266,7 +266,7 @@ final class RestController {
 				'type'    => 'info',
 				'message' => sprintf(
 					/* translators: %s: product names */
-					__( 'Protecting files for %s: course and download files go to the private bucket and open only after the product\'s own access check.', 'gemcloudstorage' ),
+					__( 'Protecting files for %s: course and download files go to the private bucket and open only after the product\'s own access check.', 'gemcloud' ),
 					Integrations::labels( $active )
 				),
 			];
@@ -274,7 +274,7 @@ final class RestController {
 		if ( 'aws' === $settings['provider'] ) {
 			$warnings[] = [
 				'type'    => 'info',
-				'message' => __( 'Amazon S3 charges for every GB downloaded. Cloudflare R2 has no egress fees and suits large paid downloads and video.', 'gemcloudstorage' ),
+				'message' => __( 'Amazon S3 charges for every GB downloaded. Cloudflare R2 has no egress fees and suits large paid downloads and video.', 'gemcloud' ),
 			];
 		}
 
@@ -348,11 +348,11 @@ final class RestController {
 			return $row;
 		}, $result['items'] );
 
-		$sources = [ [ 'value' => 'media', 'label' => __( 'Media library', 'gemcloudstorage' ) ] ];
+		$sources = [ [ 'value' => 'media', 'label' => __( 'Media library', 'gemcloud' ) ] ];
 		foreach ( Integrations::detected() as $key => $integration ) {
 			$sources[] = [ 'value' => $key, 'label' => $integration->label() ];
 		}
-		$sources[] = [ 'value' => Backups::CONTEXT, 'label' => __( 'Database backups', 'gemcloudstorage' ) ];
+		$sources[] = [ 'value' => Backups::CONTEXT, 'label' => __( 'Database backups', 'gemcloud' ) ];
 
 		return new WP_REST_Response( [
 			'items'   => $rows,
@@ -387,7 +387,7 @@ final class RestController {
 	public static function attachment( WP_REST_Request $request ) {
 		$id = (int) $request->get_param( 'id' );
 		if ( 'attachment' !== get_post_type( $id ) || ! current_user_can( 'edit_post', $id ) ) {
-			return new WP_Error( 'gemcloudstorage_not_found', __( 'That file is no longer in the media library.', 'gemcloudstorage' ), [ 'status' => 404 ] );
+			return new WP_Error( 'gemcloud_not_found', __( 'That file is no longer in the media library.', 'gemcloud' ), [ 'status' => 404 ] );
 		}
 		return new WP_REST_Response( self::attachment_payload( $id ) );
 	}
@@ -398,7 +398,7 @@ final class RestController {
 	public static function attachment_save( WP_REST_Request $request ) {
 		$id = (int) $request->get_param( 'id' );
 		if ( 'attachment' !== get_post_type( $id ) || ! current_user_can( 'edit_post', $id ) ) {
-			return new WP_Error( 'gemcloudstorage_not_found', __( 'That file is no longer in the media library.', 'gemcloudstorage' ), [ 'status' => 404 ] );
+			return new WP_Error( 'gemcloud_not_found', __( 'That file is no longer in the media library.', 'gemcloud' ), [ 'status' => 404 ] );
 		}
 
 		$post = [ 'ID' => $id ];
@@ -533,7 +533,7 @@ final class RestController {
 	}
 
 	public static function queue_pause(): WP_REST_Response {
-		Queue::pause( 'manual', __( 'Paused by an administrator.', 'gemcloudstorage' ) );
+		Queue::pause( 'manual', __( 'Paused by an administrator.', 'gemcloud' ) );
 		return new WP_REST_Response( Queue::state() );
 	}
 
@@ -593,7 +593,7 @@ final class RestController {
 	public static function backups_download( WP_REST_Request $request ) {
 		$item = Backups::find( absint( $request->get_param( 'id' ) ) );
 		if ( ! $item || ! $item->is_synced() ) {
-			return new WP_Error( 'gemcloudstorage_not_found', __( 'This backup is not stored.', 'gemcloudstorage' ), [ 'status' => 404 ] );
+			return new WP_Error( 'gemcloud_not_found', __( 'This backup is not stored.', 'gemcloud' ), [ 'status' => 404 ] );
 		}
 		$url = Manager::signed_url_for( $item, [ 'ttl' => 5 * MINUTE_IN_SECONDS ] );
 		if ( is_wp_error( $url ) ) {
@@ -635,14 +635,14 @@ final class RestController {
 
 		$access = Credentials::access_key_id();
 		// A masked secret means the stored one of the provider on screen.
-		$secret = defined( 'GEMCLOUDSTORAGE_SECRET_ACCESS_KEY' ) ? (string) Credentials::secret() : Credentials::secret_for( (string) $settings['provider'] );
+		$secret = defined( 'GEMCLOUD_SECRET_ACCESS_KEY' ) ? (string) Credentials::secret() : Credentials::secret_for( (string) $settings['provider'] );
 
 		if ( isset( $body['credentials'] ) && is_array( $body['credentials'] ) ) {
-			if ( ! defined( 'GEMCLOUDSTORAGE_ACCESS_KEY_ID' ) && isset( $body['credentials']['access_key_id'] ) ) {
+			if ( ! defined( 'GEMCLOUD_ACCESS_KEY_ID' ) && isset( $body['credentials']['access_key_id'] ) ) {
 				$access = preg_replace( '/[^A-Za-z0-9]/', '', (string) $body['credentials']['access_key_id'] );
 			}
 			$posted = trim( (string) ( $body['credentials']['secret_access_key'] ?? '' ) );
-			if ( ! defined( 'GEMCLOUDSTORAGE_SECRET_ACCESS_KEY' ) && '' !== $posted && ! Credentials::is_mask( $posted ) ) {
+			if ( ! defined( 'GEMCLOUD_SECRET_ACCESS_KEY' ) && '' !== $posted && ! Credentials::is_mask( $posted ) ) {
 				$secret = $posted;
 			}
 		}
@@ -659,6 +659,6 @@ final class RestController {
 	}
 
 	private static function unavailable(): WP_Error {
-		return new WP_Error( 'gemcloudstorage_unavailable', __( 'Connect a bucket and switch cloud storage on in Settings first.', 'gemcloudstorage' ), [ 'status' => 400 ] );
+		return new WP_Error( 'gemcloud_unavailable', __( 'Connect a bucket and switch cloud storage on in Settings first.', 'gemcloud' ), [ 'status' => 400 ] );
 	}
 }

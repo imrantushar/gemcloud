@@ -1,0 +1,2114 @@
+# Copyright (C) 2026 Kodezen
+# This file is distributed under the GPL-3.0+.
+msgid ""
+msgstr ""
+"Project-Id-Version: GemCloud 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/gemcloud\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-11-08T04:48:29+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: gemcloud\n"
+
+#. Plugin Name of the plugin
+#: gemcloud.php
+#: includes/admin/menu.php:35
+#: includes/admin/notices.php:32
+#: assets/build/app.1.0.0.js:1
+#: assets/build/app.1.0.0.js:7
+msgid "GemCloud"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: gemcloud.php
+msgid "https://github.com/imrantushar/gemcloud"
+msgstr ""
+
+#. Description of the plugin
+#: gemcloud.php
+msgid "Offload the media library and protected files to Amazon S3, Cloudflare R2 or any S3-compatible storage — public files from your CDN, private files through short-lived signed URLs."
+msgstr ""
+
+#. Author of the plugin
+#: gemcloud.php
+msgid "Kodezen"
+msgstr ""
+
+#. Author URI of the plugin
+#: gemcloud.php
+msgid "https://kodezen.com/"
+msgstr ""
+
+#: includes/admin/menu.php:49
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:7
+msgid "Loading…"
+msgstr ""
+
+#: includes/admin/notices.php:39
+msgid "Uploads are paused because this server's clock is wrong."
+msgstr ""
+
+#: includes/admin/notices.php:39
+msgid "Uploads are paused after repeated connection errors."
+msgstr ""
+
+#: includes/admin/notices.php:42
+msgid "Fix the connection"
+msgstr ""
+
+#: includes/admin/notices.php:50
+msgid "The stored secret key can't be read since the WordPress salts changed."
+msgstr ""
+
+#: includes/admin/notices.php:52
+#: assets/build/app.1.0.0.js:1
+#: assets/build/app.1.0.0.js:4
+msgid "Re-enter your secret key"
+msgstr ""
+
+#. translators: %s: product names
+#: includes/admin/notices.php:63
+#, php-format
+msgid "%s files are not protected yet: add a private bucket."
+msgstr ""
+
+#: includes/admin/notices.php:67
+#: assets/build/app.1.0.0.js:1
+msgid "Open settings"
+msgstr ""
+
+#. translators: %s: plugin names
+#: includes/admin/notices.php:78
+#, php-format
+msgid "Media library offload is off because %s also rewrites media URLs. Deactivate it to use ours; plugin file contexts keep working."
+msgstr ""
+
+#: includes/api/rest-controller.php:154
+msgid "Enter the access key ID and secret access key first."
+msgstr ""
+
+#: includes/api/rest-controller.php:178
+msgid "Enter at least one bucket name."
+msgstr ""
+
+#: includes/api/rest-controller.php:237
+msgid "Uploads have been waiting over 15 minutes. WP-Cron may be disabled or blocked on this host; run \"wp gemcloud run\" or set up a real cron job."
+msgstr ""
+
+#: includes/api/rest-controller.php:243
+msgid "R2 serves public files only through a custom domain or the r2.dev subdomain. Add a Public URL, or public files keep being served from this server."
+msgstr ""
+
+#: includes/api/rest-controller.php:249
+msgid "Private files share the public bucket. They still need a signed URL, but use a separate private bucket so a public bucket policy can never expose them."
+msgstr ""
+
+#. translators: %s: product names
+#: includes/api/rest-controller.php:258
+#, php-format
+msgid "Add a private bucket to protect %s files. Until then they stay where they are: course videos, lesson attachments and paid downloads are not moved into the public bucket."
+msgstr ""
+
+#. translators: %s: product names
+#: includes/api/rest-controller.php:269
+#, php-format
+msgid "Protecting files for %s: course and download files go to the private bucket and open only after the product's own access check."
+msgstr ""
+
+#: includes/api/rest-controller.php:277
+msgid "Amazon S3 charges for every GB downloaded. Cloudflare R2 has no egress fees and suits large paid downloads and video."
+msgstr ""
+
+#: includes/api/rest-controller.php:351
+#: includes/contexts.php:24
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:7
+msgid "Media library"
+msgstr ""
+
+#: includes/api/rest-controller.php:355
+#: includes/backups/backups.php:58
+#: assets/build/app.1.0.0.js:6
+msgid "Database backups"
+msgstr ""
+
+#: includes/api/rest-controller.php:390
+#: includes/api/rest-controller.php:401
+msgid "That file is no longer in the media library."
+msgstr ""
+
+#: includes/api/rest-controller.php:536
+msgid "Paused by an administrator."
+msgstr ""
+
+#: includes/api/rest-controller.php:596
+msgid "This backup is not stored."
+msgstr ""
+
+#: includes/api/rest-controller.php:662
+msgid "Connect a bucket and switch cloud storage on in Settings first."
+msgstr ""
+
+#: includes/backups/backups.php:59
+msgid "Compressed copies of this site's database."
+msgstr ""
+
+#. translators: %s: backup plugin name
+#: includes/backups/backups.php:92
+#, php-format
+msgid "%s already backs up this database to your bucket on a schedule, so backups here are paused to avoid a second copy. Earlier backups below stay downloadable."
+msgstr ""
+
+#: includes/backups/backups.php:97
+msgid "Connect a bucket and switch cloud storage on first."
+msgstr ""
+
+#: includes/backups/backups.php:100
+msgid "Backups hold every customer, order and password hash, so they are only kept in a private bucket. Add one under Connection."
+msgstr ""
+
+#: includes/backups/backups.php:103
+msgid "This server's PHP has no zlib extension, which backups need for compression."
+msgstr ""
+
+#: includes/backups/backups.php:148
+msgid "A backup is already running."
+msgstr ""
+
+#: includes/backups/backups.php:180
+msgid "The backup stopped responding and was abandoned."
+msgstr ""
+
+#: includes/backups/backups.php:188
+msgid "The upload was lost."
+msgstr ""
+
+#: includes/backups/backups.php:241
+msgid "The upload failed."
+msgstr ""
+
+#: includes/contexts.php:25
+msgid "Images and every generated size, video, audio and documents uploaded to the media library."
+msgstr ""
+
+#: includes/contexts.php:33
+msgid "Private media files"
+msgstr ""
+
+#: includes/contexts.php:34
+msgid "Media library files marked \"Private\". Served through a signed URL after an access check."
+msgstr ""
+
+#. translators: 1: HTTP status, 2: error code
+#: includes/http/client.php:105
+#, php-format
+msgid "The storage provider answered HTTP %1$d (%2$s)."
+msgstr ""
+
+#: includes/http/storage-exception.php:73
+msgid "Check the bucket name first: a scoped R2 token answers \"access denied\" for a bucket it doesn't know, never \"not found\". Then check that the key may read and write that bucket."
+msgstr ""
+
+#: includes/http/storage-exception.php:75
+msgid "The access key ID is wrong or was deleted."
+msgstr ""
+
+#: includes/http/storage-exception.php:77
+msgid "The secret access key is wrong. On Amazon S3 a wrong region causes this too."
+msgstr ""
+
+#: includes/http/storage-exception.php:79
+msgid "The bucket doesn't exist. Create it first, or check the spelling."
+msgstr ""
+
+#: includes/http/storage-exception.php:82
+msgid "The region is wrong for this bucket."
+msgstr ""
+
+#: includes/http/storage-exception.php:84
+msgid "This server's clock is more than 15 minutes off. Ask your host to enable time sync (NTP)."
+msgstr ""
+
+#: includes/http/storage-exception.php:86
+msgid "The endpoint can't be reached. Check the account ID or endpoint URL, and that the server can make outgoing HTTPS requests."
+msgstr ""
+
+#: includes/integrations/academy.php:38
+msgid "Academy LMS"
+msgstr ""
+
+#: includes/integrations/academy.php:55
+msgid "Lesson videos"
+msgstr ""
+
+#: includes/integrations/academy.php:56
+msgid "Self-hosted videos played in lessons. Links last at least 4 hours so a long lesson keeps playing."
+msgstr ""
+
+#: includes/integrations/academy.php:59
+msgid "Video subtitles"
+msgstr ""
+
+#: includes/integrations/academy.php:60
+msgid "Caption files (.vtt) of lesson videos, streamed through this site."
+msgstr ""
+
+#: includes/integrations/academy.php:63
+msgid "Lesson attachments"
+msgstr ""
+
+#: includes/integrations/academy.php:64
+msgid "Paid materials attached to lessons: PDFs, slides, ZIPs."
+msgstr ""
+
+#: includes/integrations/academy.php:67
+msgid "Assignment files"
+msgstr ""
+
+#: includes/integrations/academy.php:68
+msgid "Files instructors attach to assignments."
+msgstr ""
+
+#: includes/integrations/academy.php:71
+msgid "Assignment submissions"
+msgstr ""
+
+#: includes/integrations/academy.php:72
+msgid "Files students submit. Only the student and the course instructors can open them."
+msgstr ""
+
+#: includes/integrations/academy.php:79
+msgid "Academy LMS course files"
+msgstr ""
+
+#: includes/integrations/academy.php:80
+msgid "Lesson videos, subtitles and attachments, assignment files and student submissions. Kept in the private bucket and opened only by students who can access the lesson, the course instructors and admins."
+msgstr ""
+
+#. translators: %s: lesson title.
+#: includes/integrations/academy.php:156
+#, php-format
+msgid "Video of lesson \"%s\""
+msgstr ""
+
+#. translators: %s: lesson title.
+#: includes/integrations/academy.php:158
+#, php-format
+msgid "Subtitles of lesson \"%s\""
+msgstr ""
+
+#. translators: %s: lesson title.
+#: includes/integrations/academy.php:160
+#, php-format
+msgid "Attachment of lesson \"%s\""
+msgstr ""
+
+#. translators: %s: assignment title
+#: includes/integrations/academy.php:171
+#, php-format
+msgid "File of assignment \"%s\""
+msgstr ""
+
+#. translators: 1: assignment title, 2: student name
+#: includes/integrations/academy.php:177
+#, php-format
+msgid "Submission to \"%1$s\" by %2$s"
+msgstr ""
+
+#: includes/integrations/store-engine.php:45
+msgid "StoreEngine"
+msgstr ""
+
+#: includes/integrations/store-engine.php:55
+msgid "Downloads from the media library"
+msgstr ""
+
+#: includes/integrations/store-engine.php:56
+msgid "Ebooks, software, templates, music and other files picked from the media library. Moved to the private bucket."
+msgstr ""
+
+#: includes/integrations/store-engine.php:59
+msgid "Downloads stored elsewhere on this server"
+msgstr ""
+
+#: includes/integrations/store-engine.php:60
+msgid "Files outside the media library, such as storeengine_uploads. Copied to the private bucket; the server keeps its copy."
+msgstr ""
+
+#: includes/integrations/store-engine.php:67
+msgid "StoreEngine downloadable files"
+msgstr ""
+
+#: includes/integrations/store-engine.php:68
+msgid "Files customers buy. Kept in the private bucket and handed out only through StoreEngine's download link, after it checks the order, then as a signed link that expires in minutes."
+msgstr ""
+
+#. translators: 1: file name, 2: product name
+#: includes/integrations/store-engine.php:237
+#, php-format
+msgid "Download \"%1$s\" of product \"%2$s\""
+msgstr ""
+
+#: includes/integrations/true-player.php:59
+msgid "TruePlayer"
+msgstr ""
+
+#: includes/integrations/true-player.php:73
+msgid "Private videos"
+msgstr ""
+
+#: includes/integrations/true-player.php:74
+msgid "The video or audio file of videos switched to \"Private\" in TruePlayer. Plays only for viewers TruePlayer lets in."
+msgstr ""
+
+#: includes/integrations/true-player.php:77
+msgid "Subtitles of private videos"
+msgstr ""
+
+#: includes/integrations/true-player.php:78
+msgid "Caption files (.vtt) of those videos."
+msgstr ""
+
+#: includes/integrations/true-player.php:81
+msgid "Files stored outside the media library"
+msgstr ""
+
+#: includes/integrations/true-player.php:82
+msgid "Videos, posters and captions picked by URL from elsewhere in uploads, such as ZenCommunity uploads. Copied to the cloud; the server keeps its copy."
+msgstr ""
+
+#: includes/integrations/true-player.php:89
+msgid "TruePlayer videos"
+msgstr ""
+
+#: includes/integrations/true-player.php:90
+msgid "Self-hosted videos play from the cloud. Videos switched to \"Private\" in TruePlayer are kept in the private bucket and open only for viewers TruePlayer allows. Posters stay public."
+msgstr ""
+
+#: includes/integrations/true-player.php:100
+msgid "TruePlayer files outside the media library"
+msgstr ""
+
+#: includes/integrations/true-player.php:101
+msgid "Public copies of files TruePlayer plays from elsewhere in uploads."
+msgstr ""
+
+#: includes/integrations/true-player.php:331
+msgid "You don't have access to this video."
+msgstr ""
+
+#. translators: %s: video title
+#: includes/integrations/true-player.php:410
+#, php-format
+msgid "Subtitles of private video \"%s\""
+msgstr ""
+
+#. translators: %s: video title
+#: includes/integrations/true-player.php:412
+#, php-format
+msgid "Private video \"%s\""
+msgstr ""
+
+#: includes/jobs/backup-job.php:41
+msgid "Could not write the backup file to the temp folder."
+msgstr ""
+
+#. translators: %s: file path
+#: includes/jobs/upload-job.php:48
+#: includes/providers/s3-compatible-driver.php:46
+#, php-format
+msgid "The local file %s is missing."
+msgstr ""
+
+#: includes/jobs/upload-job.php:132
+msgid "Could not open the local file."
+msgstr ""
+
+#: includes/jobs/upload-job.php:178
+msgid "The upload finished but the object is not in the bucket."
+msgstr ""
+
+#. translators: 1: bytes in bucket, 2: local bytes
+#: includes/jobs/upload-job.php:182
+#, php-format
+msgid "Size mismatch after upload: %1$d bytes in the bucket, %2$d locally."
+msgstr ""
+
+#: includes/jobs/upload-job.php:186
+msgid "Checksum mismatch after upload."
+msgstr ""
+
+#: includes/manager.php:70
+#: includes/manager.php:222
+msgid "Cloud storage is not configured."
+msgstr ""
+
+#. translators: %s: context key
+#: includes/manager.php:75
+#, php-format
+msgid "Unknown storage context \"%s\"."
+msgstr ""
+
+#: includes/manager.php:78
+msgid "This kind of file is switched off in the storage settings."
+msgstr ""
+
+#: includes/manager.php:81
+msgid "The file to upload does not exist."
+msgstr ""
+
+#: includes/manager.php:86
+msgid "The file is larger than this context allows."
+msgstr ""
+
+#: includes/manager.php:212
+msgid "This file is not in cloud storage."
+msgstr ""
+
+#: includes/manager.php:225
+msgid "This file has not finished uploading."
+msgstr ""
+
+#: includes/media/media-hooks.php:309
+msgid "Private: keep in the private bucket and serve through a signed URL after an access check"
+msgstr ""
+
+#: includes/media/media-hooks.php:313
+#: assets/build/app.1.0.0.js:2
+msgid "Kept private because it is used by:"
+msgstr ""
+
+#: includes/media/media-hooks.php:322
+msgid "Made private by a product that no longer uses it. It stays private until you untick the box."
+msgstr ""
+
+#: includes/media/media-hooks.php:328
+#: assets/build/app.1.0.0.js:4
+msgid "Cloud storage"
+msgstr ""
+
+#: includes/media/media-hooks.php:372
+msgid "Cloud"
+msgstr ""
+
+#: includes/media/media-hooks.php:399
+msgid "Local only"
+msgstr ""
+
+#: includes/media/media-hooks.php:403
+#: assets/build/app.1.0.0.js:2
+msgid "In the cloud"
+msgstr ""
+
+#: includes/media/media-hooks.php:404
+msgid "Waiting to upload"
+msgstr ""
+
+#: includes/media/media-hooks.php:405
+#: assets/build/app.1.0.0.js:1
+#: assets/build/app.1.0.0.js:3
+#: assets/build/app.1.0.0.js:6
+msgid "Uploading"
+msgstr ""
+
+#: includes/media/media-hooks.php:406
+msgid "Upload failed"
+msgstr ""
+
+#: includes/media/media-hooks.php:407
+#: assets/build/app.1.0.0.js:1
+msgid "Removing"
+msgstr ""
+
+#: includes/media/media-hooks.php:412
+msgid "private"
+msgstr ""
+
+#: includes/media/media-hooks.php:415
+msgid "not on this server"
+msgstr ""
+
+#: includes/media/private-delivery.php:216
+msgid "File not found."
+msgstr ""
+
+#: includes/media/private-delivery.php:216
+msgid "You do not have access to this file."
+msgstr ""
+
+#: includes/media/private-delivery.php:216
+msgid "The file could not be fetched from storage."
+msgstr ""
+
+#: includes/providers/presets.php:67
+#: assets/build/app.1.0.0.js:1
+msgid "Cloudflare R2"
+msgstr ""
+
+#: includes/providers/presets.php:68
+msgid "No egress fees. Recommended for downloads and video."
+msgstr ""
+
+#: includes/providers/presets.php:73
+#: assets/build/app.1.0.0.js:1
+msgid "Amazon S3"
+msgstr ""
+
+#: includes/providers/presets.php:74
+msgid "Egress is charged per GB. Use CloudFront for public files."
+msgstr ""
+
+#: includes/providers/presets.php:79
+#: assets/build/app.1.0.0.js:1
+msgid "S3-compatible"
+msgstr ""
+
+#: includes/providers/presets.php:80
+msgid "Wasabi, Backblaze B2, DigitalOcean Spaces, MinIO. Untested; works with any SigV4 endpoint."
+msgstr ""
+
+#. translators: %s: file path
+#: includes/providers/s3-compatible-driver.php:115
+#, php-format
+msgid "Could not write %s."
+msgstr ""
+
+#: includes/providers/s3-compatible-driver.php:192
+msgid "The provider did not return a multipart upload ID."
+msgstr ""
+
+#: includes/providers/s3-compatible-driver.php:206
+msgid "The provider did not return an ETag for the part."
+msgstr ""
+
+#. translators: 1: bytes sent, 2: bytes reported
+#: includes/providers/s3-compatible-driver.php:316
+#, php-format
+msgid "The probe object came back with a different size: sent %1$d bytes, the bucket reports %2$d."
+msgstr ""
+
+#. translators: %d: seconds
+#: includes/providers/s3-compatible-driver.php:347
+#, php-format
+msgid "This server's clock is %d seconds off the provider's. Signed requests fail beyond 15 minutes."
+msgstr ""
+
+#: includes/utils/helper.php:17
+#: assets/build/app.1.0.0.js:1
+msgid "Dashboard"
+msgstr ""
+
+#: includes/utils/helper.php:22
+#: assets/build/app.1.0.0.js:3
+msgid "Files"
+msgstr ""
+
+#: includes/utils/helper.php:27
+#: assets/build/app.1.0.0.js:3
+msgid "Tools"
+msgstr ""
+
+#: includes/utils/helper.php:32
+#: assets/build/app.1.0.0.js:7
+msgid "Settings"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "Something went wrong."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "Close notification"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "Switch to light mode"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "Switch to dark mode"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "Help"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "GemCloud sections"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+#: assets/build/app.1.0.0.js:3
+msgid "Synced"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+#: assets/build/app.1.0.0.js:3
+msgid "Pending"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:3
+#: assets/build/app.1.0.0.js:4
+#: assets/build/app.1.0.0.js:6
+msgid "Failed"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "Keep local copies"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+#: assets/build/app.1.0.0.js:6
+msgid "Remove generated sizes"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "Remove all local files"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "Offloading…"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+#: assets/build/app.1.0.0.js:3
+msgid "Offload existing media"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "Connect storage"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "Media and protected files offloaded to Amazon S3 or Cloudflare R2."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "Connect a bucket to get started"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "Choose Cloudflare R2 or Amazon S3, enter an access key and a bucket, and test the connection. Files keep being served from this server until each upload is confirmed."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "Cloud storage is switched off"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "The connection is set up but switched off, so nothing uploads and every URL points at this server. Switch it on in Settings → Connection."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "Uploads paused: server clock is wrong"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "Uploads paused"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+#: assets/build/app.1.0.0.js:3
+msgid "Resume"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "Uploads stopped after repeated errors. Fix the connection, test it, then resume."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+msgid "The stored secret can no longer be decrypted because the WordPress salts changed. Define GEMCLOUD_KEY in wp-config.php to avoid this."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:1
+#: assets/build/app.1.0.0.js:5
+msgid "Media offload is off"
+msgstr ""
+
+#. translators: %s: plugin names
+#: assets/build/app.1.0.0.js:2
+#, js-format
+msgid "%s also rewrites media library URLs, so ours stays off to avoid broken links. Plugin file contexts keep working."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:6
+msgid "Waiting"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Private files"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:7
+msgid "Connection"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Active"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Switched off"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Not connected"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:4
+msgid "Provider"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:3
+#: assets/build/app.1.0.0.js:4
+#: assets/build/app.1.0.0.js:6
+msgid "Public bucket"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:3
+#: assets/build/app.1.0.0.js:4
+msgid "Public URL"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Provider default"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:3
+#: assets/build/app.1.0.0.js:4
+#: assets/build/app.1.0.0.js:6
+msgid "Private bucket"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Shares the public bucket"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "New media uploads"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Offloaded"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Stay local"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:6
+msgid "Local files"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:3
+msgid "Running"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:3
+msgid "Finished"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:3
+msgid "Stopped"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:3
+msgid "Not started"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Existing media checked"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#, js-format
+msgid "%1$s of %2$s attachments"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Storage by context"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Each plugin that stores files registers a context: the media library, paid downloads, course materials, chat attachments."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Context"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Objects"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Synced size"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Nothing stored yet. New uploads go to the cloud once storage is on; use “Offload existing media” for the files already here."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#, js-format
+msgid "%1$d–%2$d of %3$d"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Previous page"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#, js-format
+msgid "Page %1$d of %2$d"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Next page"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Close"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Cancel"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Discard your changes to this file?"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:3
+msgid "File details"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "File URL"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Couldn't copy. Select the address and copy it instead."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:3
+msgid "Copied"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:3
+msgid "Copy"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "A private link: it opens only for people allowed to see the file, through a short-lived signed address."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "File type"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "File size"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Dimensions"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Length"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Uploaded on"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Uploaded by"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:3
+msgid "Private"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Kept in the private bucket and opened through a signed link after an access check."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Made private by a product that no longer uses it. It stays private until you switch this off."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Not in the cloud yet. Only this server has the file."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Title"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Alternative text"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Describe the image for people who can't see it. Leave empty if it is only decoration."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Caption"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Description"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Shown on the file's attachment page."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:7
+msgid "Download"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Open in WordPress"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "File updated."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:4
+#: assets/build/app.1.0.0.js:7
+msgid "Saving…"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+#: assets/build/app.1.0.0.js:4
+#: assets/build/app.1.0.0.js:7
+msgid "Save changes"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:2
+msgid "Every failed upload is queued again."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+#, js-format
+msgid "%d files queued again."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "All"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Public"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Private. Moving to the private bucket; already served only through signed links."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "In the private bucket. Opens only through a short-lived signed link after an access check."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "In the public bucket. Anyone with the address can open it."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Every object in your buckets, one row per file and image size."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Retry all failed"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "All sources"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Source"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Public and private"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Visibility"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Search object keys"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+#, js-format
+msgid "%d selected"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Upload again"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Clear"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Select all"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "File"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Access"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Object key"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+#: assets/build/app.1.0.0.js:7
+msgid "Size"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+#: assets/build/app.1.0.0.js:7
+msgid "Status"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Updated"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+#: assets/build/app.1.0.0.js:7
+msgid "Actions"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "No files found."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Select file"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Media"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "The cloud has the only copy. Deleting it from the bucket loses the file for good."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Not on this server"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Open public URL"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Retry every failed upload?"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Retry all"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Failed files are queued again with a fresh attempt count. Fix the cause first (shown under each file), or they fail again."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Every failed file in every page is queued again with a fresh attempt count."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+#, js-format
+msgid "%1$s of %2$s"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Connection, queue and per-status counts."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Put, head and delete a probe object in each bucket."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Offload existing media inside the command, without cron."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Run waiting uploads now."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Queue every failed upload again."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "HEAD every synced object; re-upload missing or wrong-sized ones."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Download every removed local file back to this server."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Bulk jobs run in the background through Action Scheduler; you can leave this page."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Connect a bucket and switch cloud storage on in Settings before running these tools."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Walks the media library 50 attachments at a time and queues every file and image size. Safe to stop and resume."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Stop"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Start offloading"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Start over"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Upload queue"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Temporary errors retry after 1 min, 5 min, 30 min, 2 h and 6 h. Five connection errors in a row pause the queue."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Paused"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Waiting jobs"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Failed jobs"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Resume uploads"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Pause uploads"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+#, js-format
+msgid "Engine: %s"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Bring files back"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Downloads every file Offload mode removed from this server. Use it before leaving the cloud or after switching local files back to \"Keep\"."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+#, js-format
+msgid "%s files are only in the cloud right now."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Download files back"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Bucket CORS"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Lets this site read files across origins: video subtitles, web fonts and direct browser uploads need it. Writes one rule allowing GET, HEAD and PUT from this site."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "CORS rules written."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Writing…"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Configure CORS"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+#, js-format
+msgid "Rule written to %1$s for %2$s."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "WP-CLI"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "For large libraries, or hosts where WP-Cron is disabled."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Developer API"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Academy LMS, StoreEngine, ZenCommunity or any plugin registers a context, hands files over, and asks for URLs. Every call falls back to local behaviour when storage is off."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Download files back?"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Start downloading"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Every file that is only in the cloud is downloaded to this server again. Check there is enough free disk space first. Cloud copies stay where they are."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "You have unsaved changes. Are you sure you want to leave?"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Settings saved."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Set by a constant in wp-config.php"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Access Keys → Create new access key"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "The Endpoint shown on the Buckets page, with https:// in front (https://s3.us-west-004.backblazeb2.com)"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Application Keys → Add a New Application Key, for all buckets. keyID is the Access key ID, applicationKey the secret."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "API → Spaces Keys → Generate New Key"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Your MinIO server address, such as https://minio.example.com:9000. Switch on path-style addressing."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Access Keys → Create access key"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Done"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+#: assets/build/app.1.0.0.js:6
+msgid "Recommended"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Service"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+#: assets/build/app.1.0.0.js:4
+msgid "Endpoint URL"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Region, e.g."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Access keys"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Go to this field"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Open R2 in your Cloudflare dashboard"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Log in to Cloudflare and choose R2 Object Storage in the sidebar. The first time, Cloudflare asks you to turn R2 on and add a payment method. The free tier includes 10 GB of storage a month, and downloads are always free."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Open R2"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Copy your Account ID"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "On the R2 Overview page, the Account ID is in the Account Details panel on the right. Copy it into Account ID."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+#: assets/build/app.1.0.0.js:4
+msgid "Account ID"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Create the public bucket"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Select Create bucket and give it a name such as mysite-media (lowercase letters, numbers and hyphens). Leave Location on Automatic and the storage class on Standard, then create it."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "If you choose a jurisdiction (EU or FedRAMP) here, choose the same under Jurisdiction below. Otherwise leave it on Default."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Give the public bucket an address"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Open the bucket, then Settings → Public access. Under Custom Domains, select Connect Domain and enter a subdomain of a domain that is already on Cloudflare, such as media.example.com. This is the recommended choice: it is cached by Cloudflare's CDN."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "To try things out first, select Allow under R2.dev subdomain instead. That address is rate-limited, so switch to a custom domain before going live."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Copy the address it shows (https://media.example.com or https://pub-….r2.dev) into Public URL."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Create the private bucket"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Create a second bucket, such as mysite-private, for course videos, downloads and backups. Leave its public access exactly as it is: no custom domain and the R2.dev subdomain off."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Create an API token"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Back on the R2 Overview, select Manage API tokens, then Create Account API token. An account token keeps working if the person who made it leaves the team."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Permissions: Object Read & Write. Specify bucket(s): Apply to specific buckets only, and pick both buckets. TTL: Forever. Then create the token."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Copy the Access Key ID and the Secret Access Key now: Cloudflare shows the secret only once. You don't need the token value or the S3 endpoint it also shows."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Open API tokens"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+#: assets/build/app.1.0.0.js:4
+msgid "Access key ID"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+#: assets/build/app.1.0.0.js:4
+msgid "Secret access key"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Let your site load files from the bucket (CORS)"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Needed for video captions, poster images captured from a video, and web fonts. Open the public bucket, then Settings → CORS Policy → Add CORS policy, paste this and save."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "The Set up CORS button under Tools does the same, but only with a token that has Admin Read & Write permission."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "CORS policy"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Open S3 and choose a region"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Sign in to the AWS console and open S3. Pick the region closest to your visitors in the region menu at the top right, and choose the same region under Region below. Both buckets must be in this region."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Open S3"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+#: assets/build/app.1.0.0.js:4
+msgid "Region"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Select Create bucket. Bucket type: General purpose. Give it a name such as mysite-media. Object Ownership: ACLs disabled."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Under Block Public Access settings, clear Block all public access and tick the acknowledgement. Leave everything else as it is and create the bucket."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Allow anyone to read the public bucket"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Open the bucket, then Permissions → Bucket policy → Edit. Paste this and save."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Leave Public URL empty to use the bucket's own address, or put a CloudFront distribution in front of the bucket for faster, cheaper delivery and enter its domain (https://d123….cloudfront.net or your own)."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Bucket policy"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Public URL (optional)"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Create a second bucket, such as mysite-private, in the same region. Keep Block all public access switched on."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Create a user that can only reach these buckets"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "In IAM, create a user named gemcloud without console access. On the permissions step choose Attach policies directly → Create policy → JSON, paste this policy, name it GemCloud and create it. Then attach it to the user and finish."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "The policy below already has your bucket names. Fill in both bucket fields first, then copy it."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Open IAM users"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Permissions policy"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Create an access key"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Open the user, then Security credentials → Create access key. Choose Application running outside AWS and create it."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Copy the Access key and the Secret access key now: AWS shows the secret only once. You can also download the .csv file."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "After saving, select Set up CORS under Tools. It is needed for video captions, poster images captured from a video, and web fonts."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Find your service's endpoint and region"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Every S3-compatible service lists an S3 endpoint for each region. Enter it under Endpoint URL, and the region code under Region."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Create a bucket such as mysite-media and make its files publicly readable. Most services have a Public option when you create the bucket. Others use a bucket policy that allows s3:GetObject for everyone."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Enter its public address, or your CDN in front of it, under Public URL. Leave Public URL empty to use the endpoint address."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Create a second bucket, such as mysite-private, and keep it private (the default on every service)."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Create a key that can read, write, list and delete objects in both buckets (where each service keeps them is listed in step 1). Copy both parts: most services show the secret only once."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+#, js-format
+msgid "How to get these details from %s"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:3
+msgid "Every field is filled in. Open the guide to check a step again."
+msgstr ""
+
+#. translators: %d: number of steps
+#: assets/build/app.1.0.0.js:4
+#, js-format
+msgid "%d steps, about 10 minutes. Each step shows which field it fills."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Test, then save"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Select Test connection at the bottom. When both buckets show Works, select Save changes and switch Cloud storage on at the top."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Upload a probe file"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Read it back"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Delete it"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Works"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "When off, nothing uploads and every URL points at this server again. Stored objects are kept."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "The stored secret can't be decrypted because the WordPress salts changed."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Endpoint"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "The endpoint is built from your account ID: https://<account_id>.r2.cloudflarestorage.com."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "The region is part of every signature; a wrong one fails with “signature does not match”."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Any service that speaks the S3 API with SigV4 signing."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Cloudflare dashboard → R2 → Account details."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Jurisdiction"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Only for buckets created with a data-location jurisdiction."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Default"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "European Union (EU)"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "For example https://s3.eu-central-1.wasabisys.com"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Path-style addressing"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "endpoint/bucket/key instead of bucket.endpoint/key. MinIO needs it."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Access key"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Create an R2 API token with “Object Read & Write”, scoped to your buckets."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Use an IAM user limited to s3:GetObject, s3:PutObject, s3:DeleteObject and s3:ListBucket on your buckets."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "A key from your storage service that can read, write, list and delete objects in both buckets."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Encrypted with libsodium before it is stored, and never sent back to the browser."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Show or hide the secret"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Buckets"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Public media goes to the public bucket behind your CDN domain. Protected files go to the private bucket and are only ever served through short-lived signed URLs."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Your R2 custom domain (recommended) or the r2.dev subdomain, which is rate-limited and meant for testing."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Your CloudFront or CDN domain. Leave empty to use the bucket’s own address (needs a public-read bucket policy)."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Keep \"Block public access\" on. Leave empty to share the public bucket (not recommended)."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Testing…"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Test connection"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Testing doesn't save. Save to keep these values."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:4
+msgid "Tests the values above, saved or not: uploads, reads and deletes a small probe file."
+msgstr ""
+
+#. translators: %d: number of buckets
+#: assets/build/app.1.0.0.js:5
+#, js-format
+msgid "Connection works for %d bucket(s). Save to apply."
+msgstr ""
+
+#. translators: %s: plugin names
+#: assets/build/app.1.0.0.js:6
+#, js-format
+msgid "%s is active and rewrites the same URLs. Deactivate it to offload the media library here."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Offload new uploads"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Every new media library file, and every image size WordPress generates, is copied to the cloud in the background. URLs switch to the cloud only once the upload is verified, so a failed upload never shows a broken image."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "What happens to the copy on this server after a verified upload."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Keep local copies (Sync mode)"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "The cloud gets a copy, nothing is deleted. No disk space is freed, but every plugin that reads files from disk keeps working."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Deletes thumbnails and other generated sizes; originals stay as a backup. Most of the disk saving, very little risk."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Remove all local files (Offload mode)"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Deletes every local copy. When the image editor, thumbnail regeneration or another plugin needs a file, it is downloaded back automatically for a day."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Path prefix"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Automatic"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Set automatically from where WordPress keeps uploads, so a file's cloud address mirrors its local one:"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Private media"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Any media library file can be marked “Private” in its attachment details. It then moves to the private bucket and is served through a signed URL to logged-in users who can read it."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "1 minute"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "5 minutes"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "15 minutes"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "1 hour"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "1 day"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Signed URL lifetime"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "A signed URL is created at the moment of the click, after the access check, and is never printed into a page. The signature is checked when the download starts, so a long download that starts in time still finishes."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Lifetime"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "seconds"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Common lifetimes"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "1 to 604,800 seconds (7 days). Default 300 (5 minutes). Video and audio links always last at least 4 hours, so a long lesson keeps playing."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Private file delivery"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Redirect to a signed URL"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "The browser downloads straight from the bucket. No load on this server."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Stream through this server"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "For networks that block redirects to the storage provider. Supports resumable downloads, but every byte passes through PHP."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "How secrets are kept"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Add these lines to wp-config.php, above the line /* That's all, stop editing! */."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "The secret key is encrypted with GEMCLOUD_KEY from wp-config.php."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "The secret key is encrypted with a key made from your WordPress salts, so changing the salts makes it unreadable. Your own key in wp-config.php avoids that. One was generated for you below, in this browser; it is never sent anywhere."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "New key"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "After adding the key, enter each provider's secret access key again under Connection and save: secrets stored before were encrypted with the old key."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Keep the connection out of the database (optional)"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Filled in from your current connection; paste your secret access key in place of the placeholder. These values then win over the Connection tab, which shows them locked."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+#: assets/build/app.1.0.0.js:7
+msgid "Contexts"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "A context is a kind of file a plugin stores: the media library, paid downloads, course materials, chat attachments. Academy LMS, StoreEngine and ZenCommunity add theirs when they are active."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Bucket"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Switching a kind off keeps new files of that kind public. Files already private stay private, and the people allowed to open them still can."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Stored"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Deleting"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "A compressed copy of this site's database: orders, products, license keys, customers and purchase history, posts and settings. Kept only in the private bucket, never on a public address."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Back up automatically"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Runs in the background. Large databases are written a slice at a time, so the site stays fast."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "How often"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Every day"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "For shops and course sites: at most a day of orders can be lost."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Every week"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "For sites that rarely change."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Keep backups for"
+msgstr ""
+
+#. translators: %d: number of days
+#: assets/build/app.1.0.0.js:6
+#, js-format
+msgid "%d days"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Older backups are deleted from the bucket. The newest one is always kept."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Stored backups"
+msgstr ""
+
+#. translators: %s: date and time
+#: assets/build/app.1.0.0.js:6
+#, js-format
+msgid "Next automatic backup: around %s."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Back up before updating plugins, importing data or making big changes."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Backup started. You can leave this page."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Back up now"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Writing the backup…"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:6
+msgid "Uploading the backup…"
+msgstr ""
+
+#. translators: 1: table number, 2: table count, 3: table name, 4: rows written
+#: assets/build/app.1.0.0.js:7
+#, js-format
+msgid "Table %1$d of %2$d (%3$s), %4$s rows so far."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "Every table is written. Sending the file to the private bucket and checking it arrived intact."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "The last backup failed"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "Created"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "No backups yet."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "Delete"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "Restoring"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "A restore replaces every table, so anything written since the backup is lost. It runs from WP-CLI, not from a button, so it can't be clicked by accident. The file is plain SQL: phpMyAdmin or any MySQL tool can import a downloaded backup too."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "Terminal"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "Delete this backup?"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "Delete backup"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "Backup deleted."
+msgstr ""
+
+#. translators: %s: date and time
+#: assets/build/app.1.0.0.js:7
+#, js-format
+msgid "The backup from %s is removed from the bucket. This can't be undone."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "Security"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "Backups"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "Appearance"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "Default theme"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "The mode these screens open in. Each person can still switch with the button in the top bar."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "Light"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "White surfaces, the WordPress admin look."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "Dark"
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "Dark surfaces, easier at night."
+msgstr ""
+
+#: assets/build/app.1.0.0.js:7
+msgid "No page found"
+msgstr ""

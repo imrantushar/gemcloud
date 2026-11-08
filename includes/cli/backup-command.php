@@ -1,10 +1,10 @@
 <?php
-namespace GemCloudStorage\Cli;
+namespace GemCloud\Cli;
 
-use GemCloudStorage\Backups\Backups;
-use GemCloudStorage\Jobs\BackupJob;
-use GemCloudStorage\Jobs\UploadJob;
-use GemCloudStorage\Manager;
+use GemCloud\Backups\Backups;
+use GemCloud\Jobs\BackupJob;
+use GemCloud\Jobs\UploadJob;
+use GemCloud\Manager;
 use WP_CLI;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -26,7 +26,7 @@ final class BackupCommand {
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     wp gemcloudstorage backup create --sync
+	 *     wp gemcloud backup create --sync
 	 */
 	public function create( array $args, array $assoc ): void {
 		$run = Backups::start( 'cli' );
@@ -35,15 +35,15 @@ final class BackupCommand {
 		}
 
 		if ( empty( $assoc['sync'] ) ) {
-			WP_CLI::success( sprintf( 'Backup %d queued (%d tables). Check it with "wp gemcloudstorage backup list".', $run['id'], count( $run['tables'] ) ) );
+			WP_CLI::success( sprintf( 'Backup %d queued (%d tables). Check it with "wp gemcloud backup list".', $run['id'], count( $run['tables'] ) ) );
 			return;
 		}
 
 		// Export every slice, then upload, without waiting for cron.
-		as_unschedule_all_actions( \GemCloudStorage\Jobs\Queue::BACKUP, [], \GemCloudStorage\Jobs\Queue::GROUP );
+		as_unschedule_all_actions( \GemCloud\Jobs\Queue::BACKUP, [], \GemCloud\Jobs\Queue::GROUP );
 		do {
 			BackupJob::run();
-			as_unschedule_all_actions( \GemCloudStorage\Jobs\Queue::BACKUP, [], \GemCloudStorage\Jobs\Queue::GROUP );
+			as_unschedule_all_actions( \GemCloud\Jobs\Queue::BACKUP, [], \GemCloud\Jobs\Queue::GROUP );
 			$current = get_option( Backups::RUN_OPTION, null );
 		} while ( is_array( $current ) && 'exporting' === $current['status'] );
 

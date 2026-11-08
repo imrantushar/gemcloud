@@ -1,7 +1,7 @@
 <?php
-namespace GemCloudStorage\Contracts;
+namespace GemCloud\Contracts;
 
-use GemCloudStorage\Providers\ObjectInfo;
+use GemCloud\Providers\ObjectInfo;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

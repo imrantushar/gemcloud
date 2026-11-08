@@ -1,5 +1,5 @@
 <?php
-namespace GemCloudStorage\Security;
+namespace GemCloud\Security;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Seals secrets with libsodium secretbox. WordPress ships sodium_compat, so
  * this works even where the PHP extension is missing.
  *
- * The key is GEMCLOUDSTORAGE_KEY from wp-config.php when defined; otherwise it
+ * The key is GEMCLOUD_KEY from wp-config.php when defined; otherwise it
  * is derived from AUTH_KEY and AUTH_SALT. Rotating the salts makes stored
  * secrets unreadable, which decrypt() reports instead of returning garbage.
  */
@@ -57,12 +57,12 @@ final class Vault {
 	 * before any API call.
 	 */
 	public static function fingerprint(): string {
-		return 'sha256:' . substr( hash( 'sha256', 'gemcloudstorage-fp' . self::key() ), 0, 16 );
+		return 'sha256:' . substr( hash( 'sha256', 'gemcloud-fp' . self::key() ), 0, 16 );
 	}
 
 	private static function key(): string {
-		if ( defined( 'GEMCLOUDSTORAGE_KEY' ) && '' !== (string) GEMCLOUDSTORAGE_KEY ) {
-			return hash( 'sha256', (string) GEMCLOUDSTORAGE_KEY, true );
+		if ( defined( 'GEMCLOUD_KEY' ) && '' !== (string) GEMCLOUD_KEY ) {
+			return hash( 'sha256', (string) GEMCLOUD_KEY, true );
 		}
 
 		$material = ( defined( 'AUTH_KEY' ) ? AUTH_KEY : '' ) . ( defined( 'AUTH_SALT' ) ? AUTH_SALT : '' );
@@ -70,6 +70,6 @@ final class Vault {
 			$material = wp_salt( 'auth' );
 		}
 
-		return hash_hkdf( 'sha256', $material, SODIUM_CRYPTO_SECRETBOX_KEYBYTES, 'gemcloudstorage-vault' );
+		return hash_hkdf( 'sha256', $material, SODIUM_CRYPTO_SECRETBOX_KEYBYTES, 'gemcloud-vault' );
 	}
 }

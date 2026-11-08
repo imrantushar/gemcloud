@@ -1,7 +1,7 @@
 <?php
-namespace GemCloudStorage\Signing;
+namespace GemCloud\Signing;
 
-use GemCloudStorage\Security\Credentials;
+use GemCloud\Security\Credentials;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

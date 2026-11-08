@@ -1,5 +1,5 @@
 <?php
-namespace GemCloudStorage;
+namespace GemCloud;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -39,7 +39,7 @@ final class Keys {
 		 * @param string $key  The key.
 		 * @param array  $vars Template variables (context, id, filename, file).
 		 */
-		return ltrim( (string) apply_filters( 'gemcloudstorage/object_key', $key, $vars ), '/' );
+		return ltrim( (string) apply_filters( 'gemcloud/object_key', $key, $vars ), '/' );
 	}
 
 	/**

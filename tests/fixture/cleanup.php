@@ -2,7 +2,7 @@
 /**
  * Removes exactly what seed.php created, cloud copies included.
  *
- *     wp eval-file wp-content/plugins/gemcloudstorage/tests/fixture/cleanup.php
+ *     wp eval-file wp-content/plugins/gemcloud/tests/fixture/cleanup.php
  *
  * phpcs:ignoreFile -- developer fixture.
  */
@@ -32,7 +32,7 @@ foreach ( $fx['prices'] as $price_id ) {
 	$wpdb->delete( $wpdb->prefix . 'storeengine_product_price', [ 'id' => $price_id ] );
 }
 
-// Courses, products (their cloud copies are deleted by GemCloudStorage's hooks).
+// Courses, products (their cloud copies are deleted by GemCloud's hooks).
 foreach ( $fx['posts'] as $post_id ) {
 	if ( 'academy_courses' === get_post_type( $post_id ) ) {
 		delete_user_meta( get_post_field( 'post_author', $post_id ), 'academy_instructor_course_id', $post_id );

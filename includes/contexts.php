@@ -1,5 +1,5 @@
 <?php
-namespace GemCloudStorage;
+namespace GemCloud;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -21,20 +21,20 @@ final class Contexts {
 
 	public static function register_defaults(): void {
 		self::register( self::MEDIA, [
-			'label'       => __( 'Media library', 'gemcloudstorage' ),
-			'description' => __( 'Images and every generated size, video, audio and documents uploaded to the media library.', 'gemcloudstorage' ),
+			'label'       => __( 'Media library', 'gemcloud' ),
+			'description' => __( 'Images and every generated size, video, audio and documents uploaded to the media library.', 'gemcloud' ),
 			'visibility'  => 'public',
 			'path'        => '{prefix}/{file}',
-			'source'      => 'GemCloudStorage',
+			'source'      => 'GemCloud',
 			'locked'      => [ 'visibility' ],
 		] );
 
 		self::register( self::MEDIA_PRIVATE, [
-			'label'       => __( 'Private media files', 'gemcloudstorage' ),
-			'description' => __( 'Media library files marked "Private". Served through a signed URL after an access check.', 'gemcloudstorage' ),
+			'label'       => __( 'Private media files', 'gemcloud' ),
+			'description' => __( 'Media library files marked "Private". Served through a signed URL after an access check.', 'gemcloud' ),
 			'visibility'  => 'private',
 			'path'        => 'private/media/{Y}/{m}/{uuid}/{filename}',
-			'source'      => 'GemCloudStorage',
+			'source'      => 'GemCloud',
 			'locked'      => [ 'visibility' ],
 		] );
 	}

@@ -1,5 +1,5 @@
 <?php
-namespace GemCloudStorage\Http;
+namespace GemCloud\Http;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -35,13 +35,14 @@ final class Client {
 					'timeout'     => 60,
 					'redirection' => 0,
 					'sslverify'   => true,
-					'user-agent'  => 'GemCloudStorage/' . GEMCLOUDSTORAGE_VERSION . '; ' . home_url( '/' ),
+					'user-agent'  => 'GemCloud/' . GEMCLOUD_VERSION . '; ' . home_url( '/' ),
 				],
 				$args
 			)
 		);
 
 		if ( is_wp_error( $response ) ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- internal exception, caught and stored; never echoed as HTML.
 			throw new StorageException( 'network', $response->get_error_message() );
 		}
 
@@ -61,6 +62,7 @@ final class Client {
 		}
 
 		if ( $status >= 300 ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- internal exception, caught and stored; never echoed as HTML.
 			throw self::error_from( $status, $response_body, $headers );
 		}
 
@@ -100,7 +102,7 @@ final class Client {
 
 		if ( '' === $message ) {
 			/* translators: 1: HTTP status, 2: error code */
-			$message = sprintf( __( 'The storage provider answered HTTP %1$d (%2$s).', 'gemcloudstorage' ), $status, $code );
+			$message = sprintf( __( 'The storage provider answered HTTP %1$d (%2$s).', 'gemcloud' ), $status, $code );
 		}
 
 		return new StorageException( $code, $message, $status );

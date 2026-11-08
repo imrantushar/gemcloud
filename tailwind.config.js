@@ -3,8 +3,8 @@ module.exports = {
 	corePlugins: {
 		preflight: false,
 	},
-	content: [ './dev_gemcloudstorage/**/*.{js,jsx}', './assets/scss/**/*.scss' ],
-	important: '.gemcloudstorage-scope',
+	content: [ './dev_gemcloud/**/*.{js,jsx}', './assets/scss/**/*.scss' ],
+	important: '.gemcloud-scope',
 	theme: {
 		extend: {},
 	},

@@ -1,11 +1,11 @@
 <?php
-namespace GemCloudStorage\Integrations;
+namespace GemCloud\Integrations;
 
-use GemCloudStorage\Contexts;
-use GemCloudStorage\Items\ItemRepository;
-use GemCloudStorage\Manager;
-use GemCloudStorage\Media\UrlRewriter;
-use GemCloudStorage\Ref;
+use GemCloud\Contexts;
+use GemCloud\Items\ItemRepository;
+use GemCloud\Manager;
+use GemCloud\Media\UrlRewriter;
+use GemCloud\Ref;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -42,7 +42,7 @@ final class StoreEngine extends Integration {
 	}
 
 	public function label(): string {
-		return __( 'StoreEngine', 'gemcloudstorage' );
+		return __( 'StoreEngine', 'gemcloud' );
 	}
 
 	public function detected(): bool {
@@ -52,20 +52,20 @@ final class StoreEngine extends Integration {
 	public function kinds(): array {
 		return [
 			'media_downloads' => [
-				'label'       => __( 'Downloads from the media library', 'gemcloudstorage' ),
-				'description' => __( 'Ebooks, software, templates, music and other files picked from the media library. Moved to the private bucket.', 'gemcloudstorage' ),
+				'label'       => __( 'Downloads from the media library', 'gemcloud' ),
+				'description' => __( 'Ebooks, software, templates, music and other files picked from the media library. Moved to the private bucket.', 'gemcloud' ),
 			],
 			'other_downloads' => [
-				'label'       => __( 'Downloads stored elsewhere on this server', 'gemcloudstorage' ),
-				'description' => __( 'Files outside the media library, such as storeengine_uploads. Copied to the private bucket; the server keeps its copy.', 'gemcloudstorage' ),
+				'label'       => __( 'Downloads stored elsewhere on this server', 'gemcloud' ),
+				'description' => __( 'Files outside the media library, such as storeengine_uploads. Copied to the private bucket; the server keeps its copy.', 'gemcloud' ),
 			],
 		];
 	}
 
 	public function register_context(): void {
 		Contexts::register( self::KEY, [
-			'label'       => __( 'StoreEngine downloadable files', 'gemcloudstorage' ),
-			'description' => __( 'Files customers buy. Kept in the private bucket and handed out only through StoreEngine\'s download link, after it checks the order, then as a signed link that expires in minutes.', 'gemcloudstorage' ),
+			'label'       => __( 'StoreEngine downloadable files', 'gemcloud' ),
+			'description' => __( 'Files customers buy. Kept in the private bucket and handed out only through StoreEngine\'s download link, after it checks the order, then as a signed link that expires in minutes.', 'gemcloud' ),
 			'visibility'  => 'private',
 			'path'        => 'private/storeengine/{id}/{uuid}/{filename}',
 			'source'      => 'StoreEngine',
@@ -214,10 +214,10 @@ final class StoreEngine extends Integration {
 		/**
 		 * Fires before a buyer is sent to a signed download link.
 		 *
-		 * @param \GemCloudStorage\Items\Item $item       The stored file.
+		 * @param \GemCloud\Items\Item $item       The stored file.
 		 * @param int                         $product_id Product.
 		 */
-		do_action( 'gemcloudstorage/storeengine/download', $item, (int) $product_id );
+		do_action( 'gemcloud/storeengine/download', $item, (int) $product_id );
 
 		nocache_headers();
 		header( 'Referrer-Policy: no-referrer' );
@@ -234,7 +234,7 @@ final class StoreEngine extends Integration {
 		$reasons = [];
 		foreach ( $this->products_using( $attachment_id ) as $product_id => $name ) {
 			/* translators: 1: file name, 2: product name */
-			$reasons[] = sprintf( __( 'Download "%1$s" of product "%2$s"', 'gemcloudstorage' ), $name, get_the_title( $product_id ) );
+			$reasons[] = sprintf( __( 'Download "%1$s" of product "%2$s"', 'gemcloud' ), $name, get_the_title( $product_id ) );
 		}
 		return $reasons;
 	}

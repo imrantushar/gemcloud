@@ -1,5 +1,5 @@
 <?php
-namespace GemCloudStorage\Items;
+namespace GemCloud\Items;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

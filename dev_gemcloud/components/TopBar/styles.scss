@@ -1,0 +1,70 @@
+.gemcloud-topbar {
+	position: sticky;
+	top: 32px;
+	z-index: 999;
+	height: 72px;
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 16px 24px;
+	margin-bottom: 32px;
+	border-bottom: 1px solid var(--gcs-border-color);
+	background: var(--gcs-background);
+
+	&__left {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		min-width: 0;
+		color: var(--gcs-font-color);
+	}
+
+	&__middle {
+		min-width: 0;
+	}
+
+	&__right {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	&__crumb {
+		font-size: 16px;
+		font-weight: 500;
+		color: var(--gcs-font-color);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}
+
+@media (max-width: 782px) {
+	.gemcloud-topbar {
+		top: 46px;
+		height: 64px;
+		padding: 10px 12px;
+		margin-bottom: 20px;
+	}
+}
+
+@media (max-width: 600px) {
+	.gemcloud-topbar {
+		top: 0;
+		height: 58px;
+		margin-bottom: 16px;
+	}
+
+	.gemcloud-help-button {
+		width: 36px;
+		padding: 0 !important;
+	}
+
+	.gemcloud-help-button__label {
+		display: none;
+	}
+}

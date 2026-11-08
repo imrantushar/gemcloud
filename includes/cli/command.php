@@ -1,15 +1,15 @@
 <?php
-namespace GemCloudStorage\Cli;
+namespace GemCloud\Cli;
 
-use GemCloudStorage\Http\StorageException;
-use GemCloudStorage\Items\Item;
-use GemCloudStorage\Items\ItemRepository;
-use GemCloudStorage\Jobs\DownloadBackJob;
-use GemCloudStorage\Jobs\Queue;
-use GemCloudStorage\Jobs\UploadJob;
-use GemCloudStorage\Manager;
-use GemCloudStorage\Media\MediaHooks;
-use GemCloudStorage\Settings;
+use GemCloud\Http\StorageException;
+use GemCloud\Items\Item;
+use GemCloud\Items\ItemRepository;
+use GemCloud\Jobs\DownloadBackJob;
+use GemCloud\Jobs\Queue;
+use GemCloud\Jobs\UploadJob;
+use GemCloud\Manager;
+use GemCloud\Media\MediaHooks;
+use GemCloud\Settings;
 use WP_CLI;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -26,7 +26,7 @@ final class Command {
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     wp gemcloudstorage status
+	 *     wp gemcloud status
 	 */
 	public function status(): void {
 		$stats = ItemRepository::stats();
@@ -72,7 +72,7 @@ final class Command {
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     wp gemcloudstorage migrate --sync
+	 *     wp gemcloud migrate --sync
 	 */
 	public function migrate( array $args, array $assoc ): void {
 		$this->require_available();
@@ -211,16 +211,16 @@ final class Command {
 	/**
 	 * Make every file Academy LMS and StoreEngine use private, now.
 	 *
-	 * Uploads still run in the queue; follow with `wp gemcloudstorage run`.
+	 * Uploads still run in the queue; follow with `wp gemcloud run`.
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     wp gemcloudstorage reconcile
+	 *     wp gemcloud reconcile
 	 */
 	public function reconcile(): void {
 		$this->require_available();
 
-		$active = \GemCloudStorage\Integrations\Integrations::switched_on();
+		$active = \GemCloud\Integrations\Integrations::switched_on();
 		if ( ! $active ) {
 			WP_CLI::warning( 'No product integration is switched on.' );
 			return;
@@ -228,9 +228,9 @@ final class Command {
 
 		$offset = 0;
 		do {
-			$checked = \GemCloudStorage\Jobs\ReconcileJob::run( $offset );
+			$checked = \GemCloud\Jobs\ReconcileJob::run( $offset );
 			$offset += $checked;
-		} while ( \GemCloudStorage\Jobs\ReconcileJob::BATCH === $checked );
+		} while ( \GemCloud\Jobs\ReconcileJob::BATCH === $checked );
 
 		// The last batch queued nothing, but an earlier one may have.
 		as_unschedule_all_actions( Queue::RECONCILE, null, Queue::GROUP );

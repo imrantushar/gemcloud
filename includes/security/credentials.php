@@ -1,5 +1,5 @@
 <?php
-namespace GemCloudStorage\Security;
+namespace GemCloud\Security;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class Credentials {
 
-	const OPTION = 'gemcloudstorage_credentials';
+	const OPTION = 'gemcloud_credentials';
 
 	const MASK = '••••';
 
@@ -32,8 +32,8 @@ final class Credentials {
 	}
 
 	public static function access_key_id(): string {
-		if ( defined( 'GEMCLOUDSTORAGE_ACCESS_KEY_ID' ) ) {
-			return (string) GEMCLOUDSTORAGE_ACCESS_KEY_ID;
+		if ( defined( 'GEMCLOUD_ACCESS_KEY_ID' ) ) {
+			return (string) GEMCLOUD_ACCESS_KEY_ID;
 		}
 		return (string) ( self::stored()['access_key_id'] ?? '' );
 	}
@@ -42,8 +42,8 @@ final class Credentials {
 	 * @return string|null Null when a secret is stored but can't be decrypted.
 	 */
 	public static function secret(): ?string {
-		if ( defined( 'GEMCLOUDSTORAGE_SECRET_ACCESS_KEY' ) ) {
-			return (string) GEMCLOUDSTORAGE_SECRET_ACCESS_KEY;
+		if ( defined( 'GEMCLOUD_SECRET_ACCESS_KEY' ) ) {
+			return (string) GEMCLOUD_SECRET_ACCESS_KEY;
 		}
 
 		$sealed = (string) ( self::stored()['secret_access_key'] ?? '' );
@@ -70,7 +70,7 @@ final class Credentials {
 	 * True when a secret is stored but the encryption key changed since.
 	 */
 	public static function needs_reentry(): bool {
-		if ( defined( 'GEMCLOUDSTORAGE_SECRET_ACCESS_KEY' ) ) {
+		if ( defined( 'GEMCLOUD_SECRET_ACCESS_KEY' ) ) {
 			return false;
 		}
 		$stored = self::stored();
@@ -139,7 +139,7 @@ final class Credentials {
 
 	/** The provider the top-level keys belong to. */
 	private static function owner( array $stored ): string {
-		return (string) ( $stored['provider'] ?? \GemCloudStorage\Settings::get()['provider'] );
+		return (string) ( $stored['provider'] ?? \GemCloud\Settings::get()['provider'] );
 	}
 
 	/**
@@ -170,10 +170,10 @@ final class Credentials {
 			'needs_reentry'     => self::needs_reentry(),
 			'profiles'          => self::profiles_for_display(),
 			'locked'            => [
-				'provider'          => defined( 'GEMCLOUDSTORAGE_PROVIDER' ),
-				'account_id'        => defined( 'GEMCLOUDSTORAGE_ACCOUNT_ID' ),
-				'access_key_id'     => defined( 'GEMCLOUDSTORAGE_ACCESS_KEY_ID' ),
-				'secret_access_key' => defined( 'GEMCLOUDSTORAGE_SECRET_ACCESS_KEY' ),
+				'provider'          => defined( 'GEMCLOUD_PROVIDER' ),
+				'account_id'        => defined( 'GEMCLOUD_ACCOUNT_ID' ),
+				'access_key_id'     => defined( 'GEMCLOUD_ACCESS_KEY_ID' ),
+				'secret_access_key' => defined( 'GEMCLOUD_SECRET_ACCESS_KEY' ),
 			],
 		];
 	}

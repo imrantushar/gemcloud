@@ -1,11 +1,11 @@
 <?php
-namespace GemCloudStorage\Media;
+namespace GemCloud\Media;
 
-use GemCloudStorage\Integrations\Integrations;
-use GemCloudStorage\Items\Item;
-use GemCloudStorage\Items\ItemRepository;
-use GemCloudStorage\Manager;
-use GemCloudStorage\Settings;
+use GemCloud\Integrations\Integrations;
+use GemCloud\Items\Item;
+use GemCloud\Items\ItemRepository;
+use GemCloud\Manager;
+use GemCloud\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -92,7 +92,7 @@ final class PrivateDelivery {
 		 * @param bool $allowed
 		 * @param Item $item
 		 */
-		return (bool) apply_filters( 'gemcloudstorage/can_access', $allowed, $item );
+		return (bool) apply_filters( 'gemcloud/can_access', $allowed, $item );
 	}
 
 	public static function serve( Item $item ): void {
@@ -119,7 +119,7 @@ final class PrivateDelivery {
 		 * @param string $mode
 		 * @param Item   $item
 		 */
-		$mode = apply_filters( 'gemcloudstorage/private_delivery_mode', $mode, $item );
+		$mode = apply_filters( 'gemcloud/private_delivery_mode', $mode, $item );
 
 		if ( 'stream' !== $mode ) {
 			$url = Manager::signed_url_for( $item, $opts );
@@ -153,7 +153,7 @@ final class PrivateDelivery {
 			$headers['Range'] = $range;
 		}
 
-		$tmp      = wp_tempnam( 'gemcloudstorage' );
+		$tmp      = wp_tempnam( 'gemcloud' );
 		$response = wp_remote_get( $url, [
 			'timeout'  => 600,
 			'stream'   => true,
@@ -213,7 +213,7 @@ final class PrivateDelivery {
 		nocache_headers();
 		status_header( $status );
 		wp_die(
-			esc_html( 404 === $status ? __( 'File not found.', 'gemcloudstorage' ) : ( 403 === $status ? __( 'You do not have access to this file.', 'gemcloudstorage' ) : __( 'The file could not be fetched from storage.', 'gemcloudstorage' ) ) ),
+			esc_html( 404 === $status ? __( 'File not found.', 'gemcloud' ) : ( 403 === $status ? __( 'You do not have access to this file.', 'gemcloud' ) : __( 'The file could not be fetched from storage.', 'gemcloud' ) ) ),
 			'',
 			[ 'response' => (int) $status ]
 		);

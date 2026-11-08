@@ -1,5 +1,5 @@
 <?php
-namespace GemCloudStorage\Http;
+namespace GemCloud\Http;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -70,20 +70,20 @@ class StorageException extends \RuntimeException {
 		switch ( $this->error_code ) {
 			case 'AccessDenied':
 			case 'Unauthorized':
-				return __( 'Check the bucket name first: a scoped R2 token answers "access denied" for a bucket it doesn\'t know, never "not found". Then check that the key may read and write that bucket.', 'gemcloudstorage' );
+				return __( 'Check the bucket name first: a scoped R2 token answers "access denied" for a bucket it doesn\'t know, never "not found". Then check that the key may read and write that bucket.', 'gemcloud' );
 			case 'InvalidAccessKeyId':
-				return __( 'The access key ID is wrong or was deleted.', 'gemcloudstorage' );
+				return __( 'The access key ID is wrong or was deleted.', 'gemcloud' );
 			case 'SignatureDoesNotMatch':
-				return __( 'The secret access key is wrong. On Amazon S3 a wrong region causes this too.', 'gemcloudstorage' );
+				return __( 'The secret access key is wrong. On Amazon S3 a wrong region causes this too.', 'gemcloud' );
 			case 'NoSuchBucket':
-				return __( 'The bucket doesn\'t exist. Create it first, or check the spelling.', 'gemcloudstorage' );
+				return __( 'The bucket doesn\'t exist. Create it first, or check the spelling.', 'gemcloud' );
 			case 'AuthorizationHeaderMalformed':
 			case 'PermanentRedirect':
-				return __( 'The region is wrong for this bucket.', 'gemcloudstorage' );
+				return __( 'The region is wrong for this bucket.', 'gemcloud' );
 			case 'RequestTimeTooSkewed':
-				return __( 'This server\'s clock is more than 15 minutes off. Ask your host to enable time sync (NTP).', 'gemcloudstorage' );
+				return __( 'This server\'s clock is more than 15 minutes off. Ask your host to enable time sync (NTP).', 'gemcloud' );
 			case 'network':
-				return __( 'The endpoint can\'t be reached. Check the account ID or endpoint URL, and that the server can make outgoing HTTPS requests.', 'gemcloudstorage' );
+				return __( 'The endpoint can\'t be reached. Check the account ID or endpoint URL, and that the server can make outgoing HTTPS requests.', 'gemcloud' );
 			default:
 				return '';
 		}

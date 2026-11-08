@@ -1,15 +1,15 @@
 <?php
-namespace GemCloudStorage;
+namespace GemCloud;
 
-use GemCloudStorage\Admin\Assets;
-use GemCloudStorage\Admin\Menu;
-use GemCloudStorage\Admin\Notices;
-use GemCloudStorage\Api\RestController;
-use GemCloudStorage\Backups\Backups;
-use GemCloudStorage\Integrations\Integrations;
-use GemCloudStorage\Jobs\Queue;
-use GemCloudStorage\Media\MediaHooks;
-use GemCloudStorage\Media\PrivateDelivery;
+use GemCloud\Admin\Assets;
+use GemCloud\Admin\Menu;
+use GemCloud\Admin\Notices;
+use GemCloud\Api\RestController;
+use GemCloud\Backups\Backups;
+use GemCloud\Integrations\Integrations;
+use GemCloud\Jobs\Queue;
+use GemCloud\Media\MediaHooks;
+use GemCloud\Media\PrivateDelivery;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -48,7 +48,7 @@ final class Plugin {
 		RestController::init();
 
 		// A context switched back on, or a bucket just connected.
-		add_action( 'gemcloudstorage/settings_saved', [ Integrations::class, 'schedule_reconcile' ] );
+		add_action( 'gemcloud/settings_saved', [ Integrations::class, 'schedule_reconcile' ] );
 
 		if ( is_admin() ) {
 			( new Menu() )->register();
@@ -57,8 +57,8 @@ final class Plugin {
 		}
 
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
-			\WP_CLI::add_command( 'gemcloudstorage', Cli\Command::class );
-			\WP_CLI::add_command( 'gemcloudstorage backup', Cli\BackupCommand::class );
+			\WP_CLI::add_command( 'gemcloud', Cli\Command::class );
+			\WP_CLI::add_command( 'gemcloud backup', Cli\BackupCommand::class );
 		}
 	}
 
@@ -69,10 +69,10 @@ final class Plugin {
 		 * Fires once the storage API is ready (init, priority 1). Products
 		 * register their file contexts here with Manager::register_context().
 		 */
-		do_action( 'gemcloudstorage/loaded', GEMCLOUDSTORAGE_VERSION );
+		do_action( 'gemcloud/loaded', GEMCLOUD_VERSION );
 	}
 
 	public function load_textdomain(): void {
-		load_plugin_textdomain( 'gemcloudstorage', false, dirname( plugin_basename( GEMCLOUDSTORAGE_PLUGIN_FILE ) ) . '/languages' );
+		load_plugin_textdomain( 'gemcloud', false, dirname( plugin_basename( GEMCLOUD_PLUGIN_FILE ) ) . '/languages' );
 	}
 }

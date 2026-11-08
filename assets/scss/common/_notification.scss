@@ -1,4 +1,4 @@
-.gemcloudstorage-notification {
+.gemcloud-notification {
 	position: fixed;
 	left: 50%;
 	bottom: 50px;
@@ -53,7 +53,7 @@
 }
 
 @media (max-width: 600px) {
-	.gemcloudstorage-notification {
+	.gemcloud-notification {
 		min-width: 0;
 		width: calc(100vw - 32px);
 	}

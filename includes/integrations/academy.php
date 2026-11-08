@@ -1,7 +1,7 @@
 <?php
-namespace GemCloudStorage\Integrations;
+namespace GemCloud\Integrations;
 
-use GemCloudStorage\Contexts;
+use GemCloud\Contexts;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -35,7 +35,7 @@ final class Academy extends Integration {
 	}
 
 	public function label(): string {
-		return __( 'Academy LMS', 'gemcloudstorage' );
+		return __( 'Academy LMS', 'gemcloud' );
 	}
 
 	public function detected(): bool {
@@ -52,32 +52,32 @@ final class Academy extends Integration {
 	public function kinds(): array {
 		return [
 			'lesson_videos'      => [
-				'label'       => __( 'Lesson videos', 'gemcloudstorage' ),
-				'description' => __( 'Self-hosted videos played in lessons. Links last at least 4 hours so a long lesson keeps playing.', 'gemcloudstorage' ),
+				'label'       => __( 'Lesson videos', 'gemcloud' ),
+				'description' => __( 'Self-hosted videos played in lessons. Links last at least 4 hours so a long lesson keeps playing.', 'gemcloud' ),
 			],
 			'subtitles'          => [
-				'label'       => __( 'Video subtitles', 'gemcloudstorage' ),
-				'description' => __( 'Caption files (.vtt) of lesson videos, streamed through this site.', 'gemcloudstorage' ),
+				'label'       => __( 'Video subtitles', 'gemcloud' ),
+				'description' => __( 'Caption files (.vtt) of lesson videos, streamed through this site.', 'gemcloud' ),
 			],
 			'lesson_attachments' => [
-				'label'       => __( 'Lesson attachments', 'gemcloudstorage' ),
-				'description' => __( 'Paid materials attached to lessons: PDFs, slides, ZIPs.', 'gemcloudstorage' ),
+				'label'       => __( 'Lesson attachments', 'gemcloud' ),
+				'description' => __( 'Paid materials attached to lessons: PDFs, slides, ZIPs.', 'gemcloud' ),
 			],
 			'assignment_files'   => [
-				'label'       => __( 'Assignment files', 'gemcloudstorage' ),
-				'description' => __( 'Files instructors attach to assignments.', 'gemcloudstorage' ),
+				'label'       => __( 'Assignment files', 'gemcloud' ),
+				'description' => __( 'Files instructors attach to assignments.', 'gemcloud' ),
 			],
 			'submissions'        => [
-				'label'       => __( 'Assignment submissions', 'gemcloudstorage' ),
-				'description' => __( 'Files students submit. Only the student and the course instructors can open them.', 'gemcloudstorage' ),
+				'label'       => __( 'Assignment submissions', 'gemcloud' ),
+				'description' => __( 'Files students submit. Only the student and the course instructors can open them.', 'gemcloud' ),
 			],
 		];
 	}
 
 	public function register_context(): void {
 		Contexts::register( self::KEY, [
-			'label'       => __( 'Academy LMS course files', 'gemcloudstorage' ),
-			'description' => __( 'Lesson videos, subtitles and attachments, assignment files and student submissions. Kept in the private bucket and opened only by students who can access the lesson, the course instructors and admins.', 'gemcloudstorage' ),
+			'label'       => __( 'Academy LMS course files', 'gemcloud' ),
+			'description' => __( 'Lesson videos, subtitles and attachments, assignment files and student submissions. Kept in the private bucket and opened only by students who can access the lesson, the course instructors and admins.', 'gemcloud' ),
 			'visibility'  => 'private',
 			'source'      => 'Academy LMS',
 			'locked'      => [ 'visibility' ],
@@ -152,9 +152,12 @@ final class Academy extends Integration {
 	public function uses( int $attachment_id, bool $all_kinds = false ): array {
 		$reasons = [];
 		$roles   = [
-			'video'      => __( 'Video of lesson "%s"', 'gemcloudstorage' ),
-			'subtitle'   => __( 'Subtitles of lesson "%s"', 'gemcloudstorage' ),
-			'attachment' => __( 'Attachment of lesson "%s"', 'gemcloudstorage' ),
+			/* translators: %s: lesson title. */
+			'video'      => __( 'Video of lesson "%s"', 'gemcloud' ),
+			/* translators: %s: lesson title. */
+			'subtitle'   => __( 'Subtitles of lesson "%s"', 'gemcloud' ),
+			/* translators: %s: lesson title. */
+			'attachment' => __( 'Attachment of lesson "%s"', 'gemcloud' ),
 		];
 
 		foreach ( $this->lessons_using( $attachment_id ) as $lesson_id => $role ) {
@@ -165,13 +168,13 @@ final class Academy extends Integration {
 		$assignments = $this->kind_on( 'assignment_files', $all_kinds ) ? $this->assignments_using( $attachment_id ) : [];
 		foreach ( $assignments as $assignment_id ) {
 			/* translators: %s: assignment title */
-			$reasons[] = sprintf( __( 'File of assignment "%s"', 'gemcloudstorage' ), get_the_title( $assignment_id ) );
+			$reasons[] = sprintf( __( 'File of assignment "%s"', 'gemcloud' ), get_the_title( $assignment_id ) );
 		}
 		$submissions = $this->kind_on( 'submissions', $all_kinds ) ? $this->submissions_using( $attachment_id ) : [];
 		foreach ( $submissions as $comment ) {
 			$user = get_userdata( (int) $comment->user_id );
 			/* translators: 1: assignment title, 2: student name */
-			$reasons[] = sprintf( __( 'Submission to "%1$s" by %2$s', 'gemcloudstorage' ), get_the_title( (int) $comment->comment_post_ID ), $user ? $user->display_name : '#' . (int) $comment->user_id );
+			$reasons[] = sprintf( __( 'Submission to "%1$s" by %2$s', 'gemcloud' ), get_the_title( (int) $comment->comment_post_ID ), $user ? $user->display_name : '#' . (int) $comment->user_id );
 		}
 
 		return $reasons;
@@ -293,11 +296,13 @@ final class Academy extends Integration {
 			return (array) $wpdb->get_results( "SELECT lesson_id, meta_key, meta_value FROM {$table} WHERE {$where}" );
 		}
 
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $where is built from prepared fragments by the callers.
 		return (array) $wpdb->get_results(
 			"SELECT pm.post_id AS lesson_id, pm.meta_key, pm.meta_value
 			FROM {$wpdb->postmeta} pm INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id AND p.post_type = 'academy_lessons'
 			WHERE " . str_replace( [ 'meta_key', 'meta_value' ], [ 'pm.meta_key', 'pm.meta_value' ], $where )
 		);
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	/**

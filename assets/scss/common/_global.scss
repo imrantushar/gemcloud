@@ -50,21 +50,21 @@ html[data-theme="dark"] {
 	--gcs-shadow-menu: 0 0 1px 0 rgba(0, 0, 0, 0.6), 0 8px 16px 0 rgba(0, 0, 0, 0.4);
 }
 
-body[class*="_page_gemcloudstorage"] #wpcontent {
+body[class*="_page_gemcloud"] #wpcontent {
 	padding: 0;
 	background: var(--gcs-body-background);
 }
 
-body[class*="_page_gemcloudstorage"] #wpbody-content {
+body[class*="_page_gemcloud"] #wpbody-content {
 	background: var(--gcs-body-background);
 	padding-bottom: 40px;
 }
 
-body[class*="_page_gemcloudstorage"] #wpfooter {
+body[class*="_page_gemcloud"] #wpfooter {
 	display: none;
 }
 
-.gemcloudstorage-page-content {
+.gemcloud-page-content {
 	max-width: calc(1280px - 30px);
 	width: 100%;
 	min-width: 0;
@@ -74,13 +74,13 @@ body[class*="_page_gemcloudstorage"] #wpfooter {
 }
 
 @media all and (max-width: 1300px) {
-	.gemcloudstorage-page-content {
+	.gemcloud-page-content {
 		max-width: calc(1120px - 30px);
 	}
 }
 
 @media screen and (max-width: 782px) {
-	body[class*="_page_gemcloudstorage"] #wpcontent {
+	body[class*="_page_gemcloud"] #wpcontent {
 		margin-left: 0;
 	}
 }

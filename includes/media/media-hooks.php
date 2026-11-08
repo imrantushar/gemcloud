@@ -1,17 +1,17 @@
 <?php
-namespace GemCloudStorage\Media;
+namespace GemCloud\Media;
 
-use GemCloudStorage\Contexts;
-use GemCloudStorage\Integrations\Integrations;
-use GemCloudStorage\Items\Item;
-use GemCloudStorage\Items\ItemRepository;
-use GemCloudStorage\Jobs\DownloadBackJob;
-use GemCloudStorage\Jobs\Queue;
-use GemCloudStorage\Keys;
-use GemCloudStorage\Manager;
-use GemCloudStorage\Ref;
-use GemCloudStorage\Settings;
-use GemCloudStorage\Utils\Conflicts;
+use GemCloud\Contexts;
+use GemCloud\Integrations\Integrations;
+use GemCloud\Items\Item;
+use GemCloud\Items\ItemRepository;
+use GemCloud\Jobs\DownloadBackJob;
+use GemCloud\Jobs\Queue;
+use GemCloud\Keys;
+use GemCloud\Manager;
+use GemCloud\Ref;
+use GemCloud\Settings;
+use GemCloud\Utils\Conflicts;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class MediaHooks {
 
 	/** Set by an admin ticking "Private". */
-	const PRIVATE_META = '_gemcloudstorage_private';
+	const PRIVATE_META = '_gemcloud_private';
 
 	/**
 	 * Products that made the file private, e.g. ['academy.course_files'].
@@ -33,7 +33,7 @@ final class MediaHooks {
 	 * a removed submission) until an admin unticks "Private": a file that
 	 * was once protected never becomes public by itself.
 	 */
-	const PRIVATE_BY_META = '_gemcloudstorage_private_by';
+	const PRIVATE_BY_META = '_gemcloud_private_by';
 
 	public static function init(): void {
 		// Objects already stored must still be cleaned up and brought back
@@ -290,7 +290,7 @@ final class MediaHooks {
 		 *
 		 * @param bool $default
 		 */
-		return (bool) apply_filters( 'gemcloudstorage/download_on_demand', $default );
+		return (bool) apply_filters( 'gemcloud/download_on_demand', $default );
 	}
 
 	// ── Media library UI ────────────────────────────────────────────────────
@@ -305,12 +305,12 @@ final class MediaHooks {
 		$uses    = Integrations::uses( $post->ID );
 
 		$html  = '<p style="margin:0 0 6px">' . esc_html( $label ) . '</p>';
-		$html .= '<label><input type="checkbox" name="attachments[' . (int) $post->ID . '][gemcloudstorage_private]" value="1" ' . checked( $private, true, false ) . disabled( (bool) $uses, true, false ) . ' /> ';
-		$html .= esc_html__( 'Private: keep in the private bucket and serve through a signed URL after an access check', 'gemcloudstorage' ) . '</label>';
+		$html .= '<label><input type="checkbox" name="attachments[' . (int) $post->ID . '][gemcloud_private]" value="1" ' . checked( $private, true, false ) . disabled( (bool) $uses, true, false ) . ' /> ';
+		$html .= esc_html__( 'Private: keep in the private bucket and serve through a signed URL after an access check', 'gemcloud' ) . '</label>';
 
 		if ( $uses ) {
 			// Products decide while they use the file; the box can't be unticked.
-			$html .= '<p class="description" style="margin:6px 0 0">' . esc_html__( 'Kept private because it is used by:', 'gemcloudstorage' ) . '</p><ul style="margin:4px 0 0 16px;list-style:disc">';
+			$html .= '<p class="description" style="margin:6px 0 0">' . esc_html__( 'Kept private because it is used by:', 'gemcloud' ) . '</p><ul style="margin:4px 0 0 16px;list-style:disc">';
 			foreach ( $uses as $key => $reasons ) {
 				$integration = Integrations::get( $key );
 				foreach ( array_slice( $reasons, 0, 5 ) as $reason ) {
@@ -319,13 +319,13 @@ final class MediaHooks {
 			}
 			$html .= '</ul>';
 		} elseif ( self::private_by( $post->ID ) ) {
-			$html .= '<p class="description" style="margin:6px 0 0">' . esc_html__( 'Made private by a product that no longer uses it. It stays private until you untick the box.', 'gemcloudstorage' ) . '</p>';
+			$html .= '<p class="description" style="margin:6px 0 0">' . esc_html__( 'Made private by a product that no longer uses it. It stays private until you untick the box.', 'gemcloud' ) . '</p>';
 		}
 
-		$html .= '<input type="hidden" name="attachments[' . (int) $post->ID . '][gemcloudstorage_present]" value="1" />';
+		$html .= '<input type="hidden" name="attachments[' . (int) $post->ID . '][gemcloud_present]" value="1" />';
 
-		$fields['gemcloudstorage'] = [
-			'label' => __( 'Cloud storage', 'gemcloudstorage' ),
+		$fields['gemcloud'] = [
+			'label' => __( 'Cloud storage', 'gemcloud' ),
 			'input' => 'html',
 			'html'  => $html,
 		];
@@ -334,11 +334,11 @@ final class MediaHooks {
 	}
 
 	public static function fields_to_save( array $post, array $attachment ): array {
-		if ( empty( $attachment['gemcloudstorage_present'] ) || empty( $post['ID'] ) ) {
+		if ( empty( $attachment['gemcloud_present'] ) || empty( $post['ID'] ) ) {
 			return $post;
 		}
 
-		self::set_private( (int) $post['ID'], ! empty( $attachment['gemcloudstorage_private'] ) );
+		self::set_private( (int) $post['ID'], ! empty( $attachment['gemcloud_private'] ) );
 
 		return $post;
 	}
@@ -369,12 +369,12 @@ final class MediaHooks {
 	}
 
 	public static function columns( array $columns ): array {
-		$columns['gemcloudstorage'] = __( 'Cloud', 'gemcloudstorage' );
+		$columns['gemcloud'] = __( 'Cloud', 'gemcloud' );
 		return $columns;
 	}
 
 	public static function column( string $column, int $post_id ): void {
-		if ( 'gemcloudstorage' !== $column ) {
+		if ( 'gemcloud' !== $column ) {
 			return;
 		}
 		$item  = ItemRepository::find_variant( 'attachment', $post_id );
@@ -396,23 +396,23 @@ final class MediaHooks {
 	public static function status_label( int $attachment_id ): string {
 		$item = ItemRepository::find_variant( 'attachment', $attachment_id );
 		if ( ! $item ) {
-			return __( 'Local only', 'gemcloudstorage' );
+			return __( 'Local only', 'gemcloud' );
 		}
 
 		$labels = [
-			Item::SYNCED    => __( 'In the cloud', 'gemcloudstorage' ),
-			Item::PENDING   => __( 'Waiting to upload', 'gemcloudstorage' ),
-			Item::UPLOADING => __( 'Uploading', 'gemcloudstorage' ),
-			Item::FAILED    => __( 'Upload failed', 'gemcloudstorage' ),
-			Item::DELETING  => __( 'Removing', 'gemcloudstorage' ),
+			Item::SYNCED    => __( 'In the cloud', 'gemcloud' ),
+			Item::PENDING   => __( 'Waiting to upload', 'gemcloud' ),
+			Item::UPLOADING => __( 'Uploading', 'gemcloud' ),
+			Item::FAILED    => __( 'Upload failed', 'gemcloud' ),
+			Item::DELETING  => __( 'Removing', 'gemcloud' ),
 		];
 
 		$label = $labels[ $item->status ] ?? $item->status;
 		if ( $item->is_private() ) {
-			$label .= ' · ' . __( 'private', 'gemcloudstorage' );
+			$label .= ' · ' . __( 'private', 'gemcloud' );
 		}
 		if ( 'removed' === $item->local_state ) {
-			$label .= ' · ' . __( 'not on this server', 'gemcloudstorage' );
+			$label .= ' · ' . __( 'not on this server', 'gemcloud' );
 		}
 		return $label;
 	}

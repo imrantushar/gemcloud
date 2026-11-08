@@ -1,11 +1,11 @@
 <?php
-namespace GemCloudStorage\Jobs;
+namespace GemCloud\Jobs;
 
-use GemCloudStorage\Http\StorageException;
-use GemCloudStorage\Items\Item;
-use GemCloudStorage\Items\ItemRepository;
-use GemCloudStorage\Manager;
-use GemCloudStorage\Settings;
+use GemCloud\Http\StorageException;
+use GemCloud\Items\Item;
+use GemCloud\Items\ItemRepository;
+use GemCloud\Manager;
+use GemCloud\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -45,7 +45,7 @@ final class UploadJob {
 
 		try {
 			if ( ! is_readable( $item->local_path ) ) {
-				throw new StorageException( 'LocalFileMissing', sprintf( /* translators: %s: file path */ __( 'The local file %s is missing.', 'gemcloudstorage' ), $item->local_path ) );
+				throw new StorageException( 'LocalFileMissing', sprintf( /* translators: %s: file path */ __( 'The local file %s is missing.', 'gemcloud' ), $item->local_path ) );
 			}
 
 			$size    = (int) filesize( $item->local_path );
@@ -57,7 +57,7 @@ final class UploadJob {
 			 * @param int  $limit Bytes. Default 64 MB.
 			 * @param Item $item  The object.
 			 */
-			$limit = (int) apply_filters( 'gemcloudstorage/multipart_threshold', self::SINGLE_PUT_LIMIT, $item );
+			$limit = (int) apply_filters( 'gemcloud/multipart_threshold', self::SINGLE_PUT_LIMIT, $item );
 
 			if ( $size <= $limit ) {
 				$info = Manager::driver()->put( $item->bucket, $item->object_key, $item->local_path, $headers );
@@ -92,7 +92,7 @@ final class UploadJob {
 			 *
 			 * @param Item $item The object.
 			 */
-			do_action( 'gemcloudstorage/uploaded', $item );
+			do_action( 'gemcloud/uploaded', $item );
 
 			if ( 'attachment' === $item->source_type && ( $item->is_private() || 'keep' !== Settings::value( 'media.local_files', 'keep' ) ) ) {
 				Queue::enqueue( Queue::REMOVE_LOCAL, [ $item->source_id ], 30 );
@@ -128,7 +128,8 @@ final class UploadJob {
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- chunked read of a local upload.
 		$handle = fopen( $item->local_path, 'rb' );
 		if ( ! $handle ) {
-			throw new StorageException( 'LocalFileMissing', __( 'Could not open the local file.', 'gemcloudstorage' ) );
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- internal exception, caught and stored; never echoed as HTML.
+			throw new StorageException( 'LocalFileMissing', __( 'Could not open the local file.', 'gemcloud' ) );
 		}
 
 		try {
@@ -173,13 +174,16 @@ final class UploadJob {
 		$head = Manager::driver()->head( $item->bucket, $item->object_key );
 
 		if ( ! $head ) {
-			throw new StorageException( 'VerifyFailed', __( 'The upload finished but the object is not in the bucket.', 'gemcloudstorage' ) );
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- internal exception, caught and stored; never echoed as HTML.
+			throw new StorageException( 'VerifyFailed', __( 'The upload finished but the object is not in the bucket.', 'gemcloud' ) );
 		}
 		if ( $head->size !== $size ) {
-			throw new StorageException( 'VerifyFailed', sprintf( /* translators: 1: bytes in bucket, 2: local bytes */ __( 'Size mismatch after upload: %1$d bytes in the bucket, %2$d locally.', 'gemcloudstorage' ), $head->size, $size ) );
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- internal exception, caught and stored; never echoed as HTML.
+			throw new StorageException( 'VerifyFailed', sprintf( /* translators: 1: bytes in bucket, 2: local bytes */ __( 'Size mismatch after upload: %1$d bytes in the bucket, %2$d locally.', 'gemcloud' ), $head->size, $size ) );
 		}
 		if ( $single && $head->etag && strtolower( $head->etag ) !== md5_file( $item->local_path ) ) {
-			throw new StorageException( 'VerifyFailed', __( 'Checksum mismatch after upload.', 'gemcloudstorage' ) );
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- internal exception, caught and stored; never echoed as HTML.
+			throw new StorageException( 'VerifyFailed', __( 'Checksum mismatch after upload.', 'gemcloud' ) );
 		}
 	}
 
@@ -199,7 +203,7 @@ final class UploadJob {
 		 * @param array $headers Lower-case header names.
 		 * @param Item  $item    The object.
 		 */
-		return (array) apply_filters( 'gemcloudstorage/object_headers', $headers, $item );
+		return (array) apply_filters( 'gemcloud/object_headers', $headers, $item );
 	}
 
 	private static function fail( Item $item, StorageException $e ): void {
@@ -255,7 +259,7 @@ final class UploadJob {
 			 * @param Item             $item  The object.
 			 * @param StorageException $error The last error.
 			 */
-			do_action( 'gemcloudstorage/upload_failed', ItemRepository::find( $item->id ), $e );
+			do_action( 'gemcloud/upload_failed', ItemRepository::find( $item->id ), $e );
 		}
 	}
 }
