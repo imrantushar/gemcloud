@@ -12,7 +12,6 @@ class Installer {
 	const DB_VERSION_OPTION = 'gemcloud_db_version';
 
 	public static function activate(): void {
-		self::migrate_legacy_name();
 		self::create_tables();
 		Settings::ensure_defaults();
 		update_option( self::DB_VERSION_OPTION, GEMCLOUD_DB_VERSION, false );
@@ -23,36 +22,9 @@ class Installer {
 	}
 
 	public static function maybe_upgrade(): void {
-		self::migrate_legacy_name();
 		if ( get_option( self::DB_VERSION_OPTION ) !== GEMCLOUD_DB_VERSION ) {
 			self::activate();
 		}
-	}
-
-	/**
-	 * Carry data over from the beta, when the plugin was named GemCloudStorage:
-	 * options, the items table and the per-file "private" post meta.
-	 */
-	public static function migrate_legacy_name(): void {
-		global $wpdb;
-		if ( false === get_option( 'gemcloudstorage_db_version' ) ) {
-			return;
-		}
-		foreach ( [ 'settings', 'credentials', 'queue_state', 'migration', 'download_back', 'backup_last', 'backup_run', 'backup_blocked' ] as $name ) {
-			$old = get_option( 'gemcloudstorage_' . $name, null );
-			if ( null !== $old && false === get_option( 'gemcloud_' . $name ) ) {
-				update_option( 'gemcloud_' . $name, $old, false );
-			}
-			delete_option( 'gemcloudstorage_' . $name );
-		}
-		// The beta's db_version option above means its table was created too.
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- one-time rename of this plugin's own table.
-		$suppress = $wpdb->suppress_errors( true );
-		$wpdb->query( $wpdb->prepare( 'RENAME TABLE %i TO %i', $wpdb->prefix . 'gemcloudstorage_items', self::table() ) );
-		$wpdb->suppress_errors( $suppress );
-		$wpdb->query( "UPDATE {$wpdb->postmeta} SET meta_key = REPLACE(meta_key, '_gemcloudstorage_', '_gemcloud_') WHERE meta_key LIKE '\\_gemcloudstorage\\_%'" );
-		// phpcs:enable
-		delete_option( 'gemcloudstorage_db_version' );
 	}
 
 	public static function table(): string {
